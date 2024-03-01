@@ -1,0 +1,43 @@
+{
+  "name": "my-tubi",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/inter": "^5.0.16",
+    "@mui/icons-material": "^5.15.2",
+    "@mui/joy": "^5.0.0-beta.20",
+    "animate": "^1.0.0",
+    "axios": "^1.6.3",
+    "colorthief": "^2.2.0",
+    "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.6",
+    "react-redux": "^9.0.4",
+    "react-router-dom": "^6.21.1",
+    "react-youtube": "^10.1.0",
+    "redux": "^5.0.1",
+    "sass": "^1.69.7",
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "vite": "^5.0.8"
+  }
+}

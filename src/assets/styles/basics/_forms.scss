@@ -1,0 +1,27 @@
+button {
+    border:0;
+    
+    color:$clr4;
+    padding: 0;
+    margin:0;
+   
+    cursor: pointer;
+}
+
+// form > * {
+//   text-align: center;
+//     width: 210px;
+//     align-self: center;
+// }
+
+.btn-link {
+    border:0;
+    
+    text-decoration: underline;
+    transition: .5s;
+    color:$clr7;
+
+}
+.btn-link:hover {
+    color: $clr5;
+}

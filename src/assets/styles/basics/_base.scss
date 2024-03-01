@@ -1,0 +1,62 @@
+* {
+    box-sizing: border-box;
+}
+
+::selection {
+    background-color: $clr1;
+    color: $clr6;
+}
+
+html {
+
+    font-family: 'Montserrat', sans-serif;
+    color: $clr4;
+}
+
+body {
+    background-color: $clr9;
+    font-size: rem(16px);
+    margin: 0;
+}
+
+// h1,
+// h2,
+// h3,
+// h4,
+// h5,
+// h6 {
+//     // line-height: 0;
+// }
+// .main-content>* {
+//     >* {
+
+//         background-color: inherit !important;
+//     }
+
+//     background-color: inherit !important;
+// }
+
+
+section,
+main,
+footer {
+    padding: 0px;
+}
+
+img {
+    width: 100%;
+}
+
+p {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+a:hover {
+    text-decoration: none;
+}

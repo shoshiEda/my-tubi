@@ -1,0 +1,244 @@
+.app-header>* {
+
+    box-sizing: border-box;
+}
+
+.app-header {
+
+    background-color: inherit;
+    color: $clr4;
+    display: grid;
+    align-items: center;
+    grid-template-columns: auto 12rem;
+    width: 100%;
+    border-radius: $panel-gap;
+    margin-block-end: 16px;
+
+    .search-box {
+        background-color: #242424;
+        border-radius: 2rem;
+        width: 19rem;
+        border: none;
+        height: 3rem;
+        align-self: center;
+
+        input:focus {
+            outline: none;
+        }
+
+        form {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            height: 100%;
+        }
+
+        img {
+            width: 1rem;
+            height: 1rem;
+            filter: invert(58%) sepia(0%) saturate(1%) hue-rotate(173deg) brightness(87%) contrast(88%);
+
+        }
+
+        input {
+            background-color: inherit;
+            border: none;
+            width: 100%;
+            color: $clr5;
+            padding-left: 0.5rem;
+
+        }
+
+        input:hover::placeholder {
+            color: $clr4;
+        }
+
+    }
+
+    .user-acess {
+
+        grid-area: 1/2/2/3;
+
+        .no-user {
+            button {
+                height: 3rem;
+                background-color: inherit;
+                width: 100%;
+                border: 1px solid whitesmoke;
+                border-radius: 24px;
+                margin: 1px;
+                color: whitesmoke;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                position: relative;
+                overflow: hidden;
+                box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+                max-width: 192px;
+            }
+
+            button:hover {
+                animation: rgb-flashing 1s linear infinite;
+            }
+
+            @keyframes rgb-flashing {
+                0% {
+                    background-color: #ff0000;
+                }
+
+                33% {
+                    background-color: #00ff00;
+                }
+
+                66% {
+                    background-color: #0000ff;
+                }
+
+                100% {
+                    background-color: #ff0000;
+                }
+            }
+        }
+
+        .user-nav {
+            display: grid;
+            grid-template-columns: auto 4rem;
+            gap: 8px;
+
+            button {
+                height: 3rem;
+                background-color: inherit;
+                width: 100%;
+                border: 1px solid whitesmoke;
+                border-radius: 24px;
+                margin: 1px;
+                color: whitesmoke;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                position: relative;
+                overflow: hidden;
+                box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+                max-width: 192px;
+            }
+
+            .avatar {
+                width: 3rem;
+                border: 1px solid whitesmoke;
+                border-radius: 100px;
+                height: 3rem;
+                display: grid;
+                align-items: center;
+                opacity: 70%;
+                box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+
+
+                svg {
+                    width: 2rem;
+                    height: 2rem;
+                    align-self: center;
+                    justify-self: center;
+                    margin-bottom: 3px;
+                    filter: invert(58%) sepia(0%) saturate(1%) hue-rotate(173deg) brightness(87%) contrast(88%);
+
+                }
+
+                img {
+                    width: 2rem;
+                    height: 2rem;
+                    align-self: center;
+                    justify-self: center;
+                    margin-bottom: 3px;
+                }
+            }
+
+            button:hover {
+                animation: rgb-flashing 1s linear infinite;
+            }
+
+            @keyframes rgb-flashing {
+                0% {
+                    background-color: #ff0000;
+                }
+
+                33% {
+                    background-color: #00ff00;
+                }
+
+                66% {
+                    background-color: #0000ff;
+                }
+
+                100% {
+                    background-color: #ff0000;
+                }
+            }
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+
+
+            .modal-content {
+                background-color: #191414;
+                padding: 20px;
+                border-radius: 10px;
+                width: 300px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+                form {
+                    display: flex;
+                    flex-direction: column;
+
+                    h2 {
+                        color: white;
+                        margin-bottom: 20px;
+                    }
+
+                    input {
+                        margin-bottom: 10px;
+                        padding: 10px;
+                        border: none;
+                        border-radius: 5px;
+                    }
+
+                    button {
+                        background-color: #1DB954;
+                        color: white;
+                        border: none;
+                        padding: 10px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        align-self: center;
+                        transition: background-color 0.3s;
+
+                        &:hover {
+                            background-color: #1ED760;
+                        }
+                    }
+                }
+
+                input[type="text"],
+                input[type="email"],
+                input[type="password"] {
+                    background-color: #282828;
+                    color: white;
+
+                    input[type="text"]::placeholder,
+                    input[type="email"]::placeholder,
+                    input[type="password"]::placeholder {
+                        color: #b3b3b3;
+                    }
+                }
+            }
+        }
+    }
+}

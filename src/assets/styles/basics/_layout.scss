@@ -1,0 +1,145 @@
+.main-container {
+    padding: $panel-gap $panel-gap 0;
+
+    display: grid;
+    grid-template-columns: minmax(280px, auto) minmax(400px, 1fr);
+    // grid-template-rows: 1fr auto;
+    grid-template-areas:
+        "left-sidebar main"
+        "player player";
+    //gap: $panel-gap;
+    height: 100vh;
+    overflow: hidden;
+    gap: $panel-gap;
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    &.expanded {
+        grid-template-columns: $sidebar-width 1fr $expanded-sidebar-width; // Adjusted
+        grid-template-areas:
+            "left-sidebar main right-sidebar"
+            "player player player";
+    }
+}
+
+.left-sidebar {
+    grid-area: left-sidebar;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.main-content {
+    grid-area: main;
+    overflow-y: auto; ////////////OLD
+
+    //this is if we want css variables changed by js
+    // --left-sidebar-width: 420px;
+    // --panel-width: 292px;
+    // --content-spacing: clamp(16px, 16px + (100vw - var(--left-sidebar-width, 0px) - var(--panel-width, 0px) - 600px)/424*8, 24px);
+    // padding: 16px var(--content-spacing);
+
+    padding: calc($panel-gap*2) calc($panel-gap*3);
+    border-radius: $panel-gap;
+}
+
+// .home-page{overflow-y: auto;////////////////////NEW
+// }
+
+.right-sidebar {
+    grid-area: right-sidebar;
+    color: pink;
+}
+
+.search-page {
+    grid-area: main;
+}
+
+.login-form {
+    grid-area: main;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.station-page {
+    grid-area: main;
+
+    // padding: 24px;
+
+    form {
+        gap: calc($panel-gap*2);
+    }
+
+    .upload-img {
+        width: 100%;
+        height: 100%;
+
+        min-width: 128px;
+        max-width: 232px;
+        min-height: 128px;
+        max-height: 232px;
+        height: auto;
+
+        border-radius: calc($panel-gap/2);
+
+        transition: width 0.5s ease, height 0.5s ease;
+    }
+
+    .hero-right-section {
+        input {
+            font-size: 2rem;
+            margin: 0.32rem 0px 0.48rem;
+            color: white;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+        }
+
+        .meta {
+            gap: .5em;
+        }
+
+        flex-grow: 1;
+
+        flex-direction: column;
+        justify-content: end;
+    }
+
+
+    .play-and-context {
+        margin: 48px 0 24px 0;
+
+        .play-under-hero {
+            height: 56px;
+            width: 56px;
+            background-color: $clr1;
+            border-radius: 28px;
+
+            img {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        .dot-dot-dot {
+
+            background-color: transparent;
+            font-size: 2em;
+        }
+    }
+}
+
+.main-container.MOBILE {
+    display: grid;
+    grid-template-rows: 80% 10% 10%;
+    grid-template-columns: 100vw;
+    grid-template-areas:
+        " main"
+        " player"
+        " left-sidebar";
+}

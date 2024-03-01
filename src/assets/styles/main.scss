@@ -1,0 +1,30 @@
+// Setup
+@import "setup/variables.scss";
+@import "setup/functions.scss";
+@import "setup/mixins.scss";
+@import "setup/typography.scss";
+
+// Basics
+@import "basics/helpers.scss";
+@import "basics/layout.scss";
+// @import "/src/styles/basics/layout.css";
+@import "basics/base.scss";
+@import "basics/links.scss";
+@import "basics/forms";
+
+
+// Views
+//@import "views/StationIndex.scss";
+//////@import "views/LoginSighnup.scss";
+//@import "views/SearchPage.scss";
+//@import "/src/styles/views/StationDeatils.scss";
+
+
+
+// Components
+@import "cmps/AppHeader.scss";
+@import "cmps/AppFooter.scss";
+@import "cmps/LeftSideBarMenu.scss";
+// @import "cmps/leftsidebar.css";
+//@import "cmps/RightSideBar.scss";
+// @import "cmps/UserMsg";

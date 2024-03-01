@@ -1,0 +1,114 @@
+// Font Sizes
+.fs12 {
+    font-size: rem(12px);
+}
+
+.fs14 {
+    font-size: rem(14px);
+}
+
+.fs18 {
+    font-size: rem(18px);
+}
+
+.fs20 {
+    font-size: rem(20px);
+}
+
+.fs24 {
+    font-size: rem(24px);
+}
+
+.fs28 {
+    font-size: rem(28px);
+}
+
+.fs30 {
+    font-size: rem(30px);
+}
+
+// grid helpers
+
+.grid {
+    display: grid;
+}
+
+// flex helpers
+
+.flex {
+
+    display: flex;
+
+    >*.full {
+        flex: 1;
+    }
+
+    &.column {
+        flex-direction: column;
+    }
+
+    &.justify-center {
+        justify-content: center;
+    }
+
+    &.align-center {
+        align-items: center;
+    }
+}
+
+// display helpers
+
+.hidden {
+    display: none;
+}
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.contents {
+    display: contents;
+}
+
+// Media helpers
+
+.square-ratio {
+    @include aspect-ratio(1, 1);
+}
+
+.video-ratio {
+    @include aspect-ratio(16, 9);
+}
+
+.portrait-ratio {
+    @include aspect-ratio(9, 16);
+}
+
+// Clean list
+
+.clean-list {
+    list-style-type: none;
+    // background-color: yellow;
+}
+
+// Context menu
+
+.context {
+    color: $clr4;
+    background-color: $clr10;
+
+    li:hover {
+        background-color: $clr11;
+        cursor: pointer;
+    }
+}
+
+// DEBUG
+
+.debug {
+    border: 1px solid yellow;
+}
