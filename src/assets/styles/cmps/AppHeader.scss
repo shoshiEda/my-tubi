@@ -5,14 +5,34 @@
 
 .app-header {
 
-    background-color: inherit;
+    background-color:$clr7;
     color: $clr4;
     display: grid;
     align-items: center;
     grid-template-columns: auto 12rem;
     width: 100%;
     border-radius: $panel-gap;
-    margin-block-end: 16px;
+    margin-block-start: 0;
+
+    .main-nav {
+        margin-inline-start: 1rem;
+
+        button {
+            background-color: black; 
+            border: none;          
+            margin: $panel-gap*0.5;
+            border-radius: 50%;
+
+        
+            img {
+                width: 2.3rem; 
+                height: 2.3rem;
+                filter: invert(58%) sepia(0%) saturate(1%) hue-rotate(173deg) brightness(87%) contrast(88%);                
+                padding: $panel-gap;
+                border-radius: 50%;
+        }
+    }
+}
 
     .search-box {
         background-color: #242424;
@@ -66,7 +86,7 @@
                 width: 100%;
                 border: 1px solid whitesmoke;
                 border-radius: 24px;
-                margin: 1px;
+                margin: 1rem;
                 color: whitesmoke;
                 cursor: pointer;
                 transition: background-color 0.3s;
@@ -74,6 +94,7 @@
                 overflow: hidden;
                 box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
                 max-width: 192px;
+                right: 2rem;
             }
 
             button:hover {

@@ -40,7 +40,6 @@
     // --content-spacing: clamp(16px, 16px + (100vw - var(--left-sidebar-width, 0px) - var(--panel-width, 0px) - 600px)/424*8, 24px);
     // padding: 16px var(--content-spacing);
 
-    padding: calc($panel-gap*2) calc($panel-gap*3);
     border-radius: $panel-gap;
 }
 

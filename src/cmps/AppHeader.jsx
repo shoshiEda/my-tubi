@@ -6,8 +6,8 @@ import { LoginSignup } from './LoginSignup.jsx'
 import { Search } from './Search.jsx'
 
 
-import  prevPage  from '../assets/img/icons/prev-page.svg'
-import  nextPage  from '../assets/img/icons/next-page.svg'
+import  prevPage  from '../assets/img/icons/prevPage.svg'
+import  nextPage  from '../assets/img/icons/nextPage.svg'
 
 
 
@@ -42,28 +42,32 @@ export function AppHeader() {
     }
 
     return (
-        <header className="app-header">
-                <div>
+        <header className="app-header flex justify-between">
+                <div className='main-nav'>
                     <button><img src={prevPage} alt="previous page" title="previous page"/></button>
                     <button><img src={nextPage} alt="next page" title="next page"/></button>
                 </div>
                 {isSearch && <Search/>}
-                {user &&
-                    <span className="user-icon">
-                        <div onClick={openModal}>
-                            {user.imgUrl? <img src={user.imgUrl} /> : user.fullname[0]}
-                        </div>
+                <section className='user-acess'>
+                    {user? (
+                        <span className="user-nav">
+                            <div onClick={openModal}>
+                                {user.imgUrl? <img src={user.imgUrl} /> : user.fullname[0]}
+                            </div>
 
-                        <section className='modal'>
-                        <Link to={`user/${user._id}`}></Link>
-                        <button onClick={onLogout}>Logout</button>
-                        </section>
-                    </span>
-                }
-                {!user &&
-                <button onClick={()=>setIsSighningIn(true)}>Register here</button>
-                }
-                {isSighningIn && <LoginSignup onLogin={onLogin} onSignup={onSignup} />}
+                            <section className='modal'>
+                            <Link to={`user/${user._id}`}></Link>
+                            <button onClick={onLogout}>Logout</button>
+                            </section>
+                        </span>
+                    ):(
+                    <section className='no-user'>
+                        <button onClick={()=>setIsSighningIn(true)}>Start listening</button>
+                        {isSighningIn && <LoginSignup onLogin={onLogin} onSignup={onSignup} />}
+                    </section>
+                    )}
+                    </section>
+
         </header>
     )
 }
