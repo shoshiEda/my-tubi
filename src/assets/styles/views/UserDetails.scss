@@ -1,7 +1,164 @@
 .user-details {
-    .user-img {
-        height: 200px;
-        width: 200px;
+
+    display: flex;
+    background-image: linear-gradient(to bottom, $clr4, $clr9);
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    color:$clr5;
+
+    .user-info{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        margin-inline-end: 2rem;
+    }
+
+    .image-container{
+        position: relative;
+
+
+    &:hover{
+        .user-img{
+            opacity: 0.4;
+        }
+
+        .user-icon-background{
+            opacity: 0.4;
+        }
+        .edit-pic{
+            display: block;
+        }
+    }
+    }
+
+    .edit-pic{
+        position: absolute;
+        z-index: 5;
+        top:35%;
+        right:28%;
+        font-weight: bold;
+        display: none;        
+        transition: opacity 0.3s;
         background-size: contain;
+        cursor: pointer;
+
+       
+        .edit-icon{
+            width: 3rem;
+            height: 3rem;
+            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(292deg) brightness(2005%) contrast(100%);
+            margin: 1rem;
+        }
+    }
+
+    .user-img {
+        height: 300px;
+        width: 300px;
+        background-size: contain;
+        border-radius: 50%;
+        margin: 1rem;
+        box-shadow: 20px 40px 60px rgba(0, 0, 0, 0.6);
+        cursor: pointer;
+        transition: opacity 0.3s;
+
+
+
+        /*&:hover{
+            opacity: 0.4;
+
+            .edit-pic{
+                color:red;
+            }
+        }*/
+
+    }
+
+    .user-icon-background{
+        position: relative;
+        height: 300px;
+        width: 300px;
+        background-size: contain;
+        background-color: $clr9-5;
+        border-radius: 50%;
+        margin: 1rem;
+        box-shadow: 20px 40px 60px rgba(0, 0, 0, 0.6);
+        cursor: pointer;
+        transition: opacity 0.3s;
+
+        .user-icon{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(292deg) brightness(2005%) contrast(100%);
+            height: 100px;
+            width: 100px;
+
+        }
+    }
+
+    
+
+    h3{
+        font-size: 5rem;      
+        margin-block-end: 3rem;
+        margin-block-start: 0.5rem;
+        text-shadow: 20px 20px 40px rgba(0, 0, 0, 0.8); 
+        cursor: pointer;
+    }
+
+    .modal-backdrop{
+
+        .modal-background{
+            position: absolute;
+            background-color: $clr11;
+            inset:0;
+            opacity:0.5;
+        }
+
+        .modal-content{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color:$clr9 ;
+            width: 40%;
+            max-width: 600px;
+            padding: 1rem;
+            border-radius: 1rem;
+            text-align: center;
+
+            
+
+            .upload-preview{
+                display: flex;
+               flex-direction: column;
+               align-items: center;
+
+               .imgUpload{
+                margin-inline-start: 50%;
+                transform: translate(-30%);
+               }
+            }
+
+            input{
+                margin-block: 0.5rem;
+            }
+
+            button{
+                color:$clr4 ;
+                padding: 0.5rem;
+                border-radius: 1rem;
+                background-color: $clr11;
+
+                &:hover{
+                    color:$clr9 ;
+                    background-color: $clr13;
+                }
+            }
+
+
+        }
+
     }
 }

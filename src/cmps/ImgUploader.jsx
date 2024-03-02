@@ -10,10 +10,13 @@ export function ImgUploader({ onUploaded = null }) {
   const [isUploading, setIsUploading] = useState(false)
 
   async function uploadImg(ev) {
+    console.log(ev)
+
     setIsUploading(true)
     const { secure_url, height, width } = await uploadService.uploadImg(ev)
     setImgData({ imgUrl: secure_url, width, height })
     setIsUploading(false)
+    console.log(secure_url)
     onUploaded && onUploaded(secure_url)
   }
 
@@ -26,7 +29,7 @@ export function ImgUploader({ onUploaded = null }) {
     <div className="upload-preview">
       {imgData.imgUrl && <img src={imgData.imgUrl} style={{ maxWidth: '200px', float: 'right' }} />}
       <label htmlFor="imgUpload">{getUploadLabel()}</label>
-      <input type="file" onChange={uploadImg} accept="img/*" id="imgUpload" />
+      <input className='imgUpload' type="file" onChange={uploadImg} accept="img/*" id="imgUpload" />
     </div>
   )
 }

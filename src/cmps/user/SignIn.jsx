@@ -1,8 +1,10 @@
-
+import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+
 import { login, signup } from '../../store/user.actions'
 import { userService } from '../../services/user.service'
-import { Link } from 'react-router-dom'
+import { ImgUploader } from '../ImgUploader'
+
 
 export function SignIn({ setIsSighningIn }) {
 
@@ -48,11 +50,21 @@ export function SignIn({ setIsSighningIn }) {
     return () => setIsSighningIn(false)}, [])
 
 
+    function onUploaded(imgUrl) {
+      setCredentials({ ...credentials, imgUrl })
+  }
+
+  function closeModal(e)
+  {
+    e.stopPropagation() 
+    setIsSighningIn(false)
+  }
 
   const { username, email, password } = credentials
   
   return (
-    <div id='modalBackdrop' className="modal-backdrop">
+    <div id='modalBackdrop' className="modal-backdrop" >
+      <div className='modal-background' onClick={closeModal}></div>
       <div className="modal-content">
         <form onSubmit={isLogin}>
           <h2>{isSignup? 'SignUp':'Login'}</h2>
@@ -70,13 +82,15 @@ export function SignIn({ setIsSighningIn }) {
             value={password}
             onChange={handleChange}
           />
-          {isSignup && <input
+          {isSignup && <><input
             type="email"
             placeholder="Email"
             name='email'
             value={email}
             onChange={handleChange}
           />
+          <ImgUploader onUploaded={onUploaded} />
+          </>
           }
           <button type="submit">{(isSignup) ? ' Signup' : 'Sign in'}</button>
           <Link href="#" onClick={() => setIsSignUp(!isSignup)} >

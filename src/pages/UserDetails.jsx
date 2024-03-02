@@ -1,45 +1,72 @@
-import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useParams } from 'react-router-dom'
 
-import { loadUser } from '../store/user.actions'
-import { store } from '../store/store'
-import { showSuccessMsg } from '../services/event-bus.service'
-//import { socketService, SOCKET_EVENT_USER_UPDATED, SOCKET_EMIT_USER_WATCH } from '../services/socket.service.js'
-import { utilService } from '../services/util.service'
+import { userService } from '../services/user.service'
+import { UserEdit} from '../cmps/user/UserEdit.jsx'
 
-export function UserDetails() {
 
-  /*const params = useParams()
-  const user = useSelector(storeState => storeState.userModule.watchedUser)
 
-    useEffect(() => {
-    loadUser(params.id)
+import editIcon from '../assets/img/icons/edit.svg'
+import userIcon from '../assets/img/icons/user.svg'
 
-    socketService.emit(SOCKET_EMIT_USER_WATCH, params.id)
-    socketService.on(SOCKET_EVENT_USER_UPDATED, onUserUpdate)
 
-    return () => {
-      socketService.off(SOCKET_EVENT_USER_UPDATED, onUserUpdate)
-    }
+export function UserDetails(){
+     const [user, setUser] = useState(userService.getLoggedinUser())
+     const [isEdit, setIsEdit] =useState(false)
 
-  }, [params.id])
 
-  function onUserUpdate(user) {
-    showSuccessMsg(`This user ${user.fullname} just got updated from socket, new score: ${user.score}`)
-    store.dispatch({ type: 'SET_WATCHED_USER', user })
-  }
 
-  return (
-    <section className="user-details">
-      <h1>User Details</h1>
-      {user && <div>
-        <h3>
-          {user.fullname}
-        </h3>
-        <img src={user.imgUrl} style={{ width: '100px' }} />
-        <pre> {JSON.stringify(user, null, 2)} </pre>
-      </div>}
-    </section>
-  )*/
+    let loggedInUser={username: user.username,email:user.email, imgUrl:user.imgUrl}
+    if (!user) return <h1>loadings....</h1>
+    return user && <div className='user-details'>
+      <div className="image-container">
+        {loggedInUser.imgUrl ?
+                <img className='user-img' src={user.imgUrl}></img>
+                :
+                <div className='user-icon-background'>
+                    <img className='user-icon' src={userIcon}></img>
+                </div>
+        }
+        <div className='edit-pic' onClick={()=>setIsEdit(true)}>
+          <img className='edit-icon' src={editIcon}></img> 
+          <p>choose a picture</p>
+        </div>
+      </div>
+      <div className='user-info'>
+            <p>Profile</p>
+            <h3 onClick={()=>setIsEdit(true)}> {loggedInUser.username} </h3>
+            <p>You have {user.station? user.station.length : 0} albums</p>
+      </div>
+      {isEdit && < UserEdit user={user} setUser={setUser} setIsEdit={setIsEdit}/>}
+        {/*  <ul className="clean-list">
+                    {
+                        userStations.map(station =>
+                            <Link key={station._id} to={'/1/station/edit/' + station._id}>
+                                <li className="grid">
+                                    <img className="station-image-left-sidebar" src={station.stationImgUrl}></img>
+                                    <header>{station.name}</header>
+                                    <p>
+                                        <img src="\src\assets\img\pinned.svg" className="left-sidebar-pinned-icon"></img>
+
+                                       
+                                        <span className="station-type">{station.type}</span>
+                                        <span>{station.songs.length} songs</span>
+                                    </p>
+
+
+                                   
+
+                                </li>
+                            </Link>
+                        )
+                    }
+                </ul>*/ }
+    </div>
+
+
+
+
+
+
+   
 }

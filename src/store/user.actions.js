@@ -81,3 +81,14 @@ export async function loadUser(userId) {
     }
 }
 
+export async function editUser(user){
+    try{
+        const updatedUser = await userService.updateUser(user)
+        store.dispatch({ type: SET_USER, user })
+        return updatedUser
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+

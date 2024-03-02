@@ -29,8 +29,8 @@ export function AppHeader() {
         }
     }
 
+   
 
-    console.log(isOpen)
     return (
         <header className="app-header flex justify-between">
                 <div className='main-nav'>
@@ -41,9 +41,13 @@ export function AppHeader() {
                 <section className='user-acess'>
                     {user? (
                         <span className="user-nav">
-                            <button className="user-pic" onClick={()=>setIsOpen(!isOpen)}>
-                                {user.imgUrl? <img src={user.imgUrl} /> : <span class="button-letter">{user.username.charAt(0)}</span>}
-                            </button>
+                            {user.imgUrl?
+                                 <img  onClick={()=>setIsOpen(!isOpen)} className='prof-img' src={user.imgUrl} title={user.username}/> 
+                                 : 
+                                 <button className="user-pic" onClick={()=>setIsOpen(!isOpen)} title={user.username}>
+                                    <span className="button-letter">{user.username.charAt(0)}</span> 
+                                </button>}
+                           
 
                             {isOpen && <section className='modal'>
                             <button onClick={()=>setIsOpen(false)}><Link to={`user/${user._id}`}><span>profile</span></Link></button>
@@ -52,7 +56,7 @@ export function AppHeader() {
                         </span>
                     ):(
                     <section className='no-user'>
-                        <button onClick={()=>setIsSighningIn(true)}>Start listening</button>
+                        <button onClick={()=>setIsSighningIn(true)}>Log in</button>
                         {isSighningIn && <SignIn setIsSighningIn={setIsSighningIn} />}
                     </section>
                     )}
