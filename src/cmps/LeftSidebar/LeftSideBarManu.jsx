@@ -19,14 +19,14 @@ export function LeftSideBarManu(){
      <ul className="clean-list">
 
 <li  >
-    <Link to={"/"} className={"flex align-center "}>
+    <Link to={"/"} className={"flex align-center "} onClick={()=>setHeaderSearch(false)} >
     <img src={isSearch? homeIcon : homeFullIcon} />
         <span>Home</span>
     </Link>
 </li>
 
 <li >
-    <Link to={"/search"} className={"flex align-center"}>
+    <Link to={"/search"} className={"flex align-center"} onClick={()=>setHeaderSearch(true)}>
     <img src={isSearch? searchFullIcon : searchIcon} />
         <span>Search</span>
     </Link>

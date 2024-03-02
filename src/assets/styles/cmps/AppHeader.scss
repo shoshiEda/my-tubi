@@ -6,10 +6,8 @@
 .app-header {
 
     background-color:$clr7;
-    color: $clr4;
-    display: grid;
-    align-items: center;
-    grid-template-columns: auto 12rem;
+    color: $clr4;  
+    align-items: center; 
     width: 100%;
     border-radius: $panel-gap;
     margin-block-start: 0;
@@ -35,12 +33,15 @@
 }
 
     .search-box {
+        position: relative;
         background-color: #242424;
         border-radius: 2rem;
         width: 19rem;
         border: none;
-        height: 3rem;
+        height: 1rem;
+        padding: 1rem;
         align-self: center;
+
 
         input:focus {
             outline: none;
@@ -48,12 +49,14 @@
 
         form {
             display: flex;
-            width: 100%;
+            width: 60%;
             align-items: center;
             height: 100%;
         }
 
         img {
+            position: absolute;
+            top:25%;
             width: 1rem;
             height: 1rem;
             filter: invert(58%) sepia(0%) saturate(1%) hue-rotate(173deg) brightness(87%) contrast(88%);
@@ -63,9 +66,11 @@
         input {
             background-color: inherit;
             border: none;
-            width: 100%;
             color: $clr5;
             padding-left: 0.5rem;
+            position: absolute;
+            top: 25%;
+            left: 2rem;
 
         }
 
@@ -121,11 +126,53 @@
         }
 
         .user-nav {
-            display: grid;
+           /* display: grid;
             grid-template-columns: auto 4rem;
-            gap: 8px;
+            gap: 8px;*/
 
-            button {
+            .user-pic{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: $clr14; 
+                width: 2rem; 
+                height: 2rem; 
+                border-radius: 50%; 
+                border: none; 
+                font-size: 1.5rem; 
+                margin-inline-end: 1rem;
+            }
+
+            .modal{
+                position: absolute;
+                top: 3.5rem;
+                right: 1rem;
+                display: flex;
+                flex-direction: column;
+
+                button{
+                    background-color:$clr7;
+                    padding: 1rem 5rem;
+
+                    span, a span {
+                        display: block;
+                        text-align: center;
+                      }
+
+                   
+                   
+            }
+            button:hover{
+                background-color:$clr11;
+            }
+        }
+
+            .button-letter {
+                color: white; 
+                font-weight: bold; 
+              }
+
+            /*button {
                 height: 3rem;
                 background-color: inherit;
                 width: 100%;
@@ -139,40 +186,19 @@
                 overflow: hidden;
                 box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
                 max-width: 192px;
-            }
+            }*/
 
-            .avatar {
-                width: 3rem;
-                border: 1px solid whitesmoke;
-                border-radius: 100px;
-                height: 3rem;
-                display: grid;
-                align-items: center;
-                opacity: 70%;
-                box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
-
-
-                svg {
-                    width: 2rem;
-                    height: 2rem;
-                    align-self: center;
-                    justify-self: center;
-                    margin-bottom: 3px;
-                    filter: invert(58%) sepia(0%) saturate(1%) hue-rotate(173deg) brightness(87%) contrast(88%);
-
-                }
-
-                img {
-                    width: 2rem;
-                    height: 2rem;
+            &img {
+                    width: 1rem;
+                    height: 1rem;
                     align-self: center;
                     justify-self: center;
                     margin-bottom: 3px;
                 }
-            }
+            
 
             button:hover {
-                animation: rgb-flashing 1s linear infinite;
+                opacity: 70%;
             }
 
             @keyframes rgb-flashing {

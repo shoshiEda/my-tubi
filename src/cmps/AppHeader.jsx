@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {useState} from 'react'
 import { login, logout, signup } from '../store/user.actions.js'
-import { LoginSignup } from './LoginSignup.jsx'
+import { SignIn } from './user/SignIn.jsx'
 import { Search } from './Search.jsx'
 
 
@@ -15,25 +15,13 @@ export function AppHeader() {
     const user = useSelector(storeState => storeState.userModule.user)
     const isSearch = useSelector(storeState => storeState.systemModule.isSearch)
     const [isSighningIn,setIsSighningIn] =useState(false)
+    const [isOpen,setIsOpen] =useState(false)
 
-    async function onLogin(credentials) {
-        try {
-            const user = await login(credentials)
-            showSuccessMsg(`Welcome: ${user.fullname}`)
-        } catch(err) {
-            showErrorMsg('Cannot login')
-        }
-    }
-    async function onSignup(credentials) {
-        try {
-            const user = await signup(credentials)
-            showSuccessMsg(`Welcome new user: ${user.fullname}`)
-        } catch(err) {
-            showErrorMsg('Cannot signup')
-        }
-    }
+
+    
     async function onLogout() {
         try {
+            setIsOpen(false)
             await logout()
             showSuccessMsg(`Bye now`)
         } catch(err) {
@@ -41,6 +29,8 @@ export function AppHeader() {
         }
     }
 
+
+    console.log(isOpen)
     return (
         <header className="app-header flex justify-between">
                 <div className='main-nav'>
@@ -51,19 +41,19 @@ export function AppHeader() {
                 <section className='user-acess'>
                     {user? (
                         <span className="user-nav">
-                            <div onClick={openModal}>
-                                {user.imgUrl? <img src={user.imgUrl} /> : user.fullname[0]}
-                            </div>
+                            <button className="user-pic" onClick={()=>setIsOpen(!isOpen)}>
+                                {user.imgUrl? <img src={user.imgUrl} /> : <span class="button-letter">{user.username.charAt(0)}</span>}
+                            </button>
 
-                            <section className='modal'>
-                            <Link to={`user/${user._id}`}></Link>
-                            <button onClick={onLogout}>Logout</button>
-                            </section>
+                            {isOpen && <section className='modal'>
+                            <button onClick={()=>setIsOpen(false)}><Link to={`user/${user._id}`}><span>profile</span></Link></button>
+                            <button onClick={onLogout}><span>Logout</span></button>
+                            </section>}
                         </span>
                     ):(
                     <section className='no-user'>
                         <button onClick={()=>setIsSighningIn(true)}>Start listening</button>
-                        {isSighningIn && <LoginSignup onLogin={onLogin} onSignup={onSignup} />}
+                        {isSighningIn && <SignIn setIsSighningIn={setIsSighningIn} />}
                     </section>
                     )}
                     </section>

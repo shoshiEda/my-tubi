@@ -15,7 +15,7 @@ export function systemReducer (state = initialState, action = {}) {
     case LOADING_DONE:
       return { ...state, isLoading: false }
     case SET_SEARCH:
-      return { ...state, isSearch: true }
+      return { ...state, isSearch: action.isTrue }
     default: return state
   }
 }

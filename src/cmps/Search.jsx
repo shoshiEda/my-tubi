@@ -35,7 +35,8 @@ export function Search(){
     }
 
     return(
-    <form onSubmit={onSetSelectedSong}>
+    <form className='search-box' onSubmit={onSetSelectedSong}>
+        <img src="\src\assets\img\icons\search.svg"></img>
         <input type="text" value={input} onChange={handleChange} ></input>
         </form>
         )
