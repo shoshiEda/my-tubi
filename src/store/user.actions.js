@@ -1,4 +1,5 @@
 import { userService } from "../services/user.service.js";
+import { utilService } from "../services/util.service.js";
 import { socketService } from "../services/socket.service.js";
 import { store } from '../store/store.js'
 
@@ -81,7 +82,18 @@ export async function loadUser(userId) {
     }
 }
 
-export async function editUser(user){
+export async function editUser(user,field='',value='',isAdd='undifined'){
+
+    if(isAdd){
+        if (!Array.isArray(user[field]))    user[field]=[] 
+        value.id=utilService.makeId()      
+        user[field].push(value)
+    }
+    else if(!isAdd){
+        console.log('hi')
+        const idx = user[field].findIndex(obj => obj.id===value.id)
+        user[field].splice(idx,1)
+    }
     try{
         const updatedUser = await userService.updateUser(user)
         store.dispatch({ type: SET_USER, user })

@@ -1,9 +1,9 @@
 import {useState, useRef} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import { useNavigate } from "react-router"
+
 
 import { utilService } from "../services/util.service.js"
 import { useEffectUpdate } from "../customHooks/useEffectUpdate.js"
-import { setSelectedSong } from "../store/song.actions.js"
 
 
 
@@ -12,11 +12,10 @@ import { setSelectedSong } from "../store/song.actions.js"
 
 export function Search(){
 
-    const SelectedSong = useSelector(storeState => storeState.songModule.SelectedSong)
     const [input,setInput] =useState('')
-    const dispatch = useDispatch();
-    const setSelectedSongDebounced = useRef(utilService.debounce(selectedSong => dispatch(setSelectedSong(selectedSong))));
-        
+    const setSelectedSongDebounced = useRef(utilService.debounce(selectedSong => navigate('/search/' + selectedSong)));
+    const navigate = useNavigate()
+
 
 
     useEffectUpdate(() => {
@@ -26,6 +25,7 @@ export function Search(){
     function onSetSelectedSong(ev)
     {
         ev.preventDefault()
+        console.log(input)
         setSelectedSongDebounced.current(input)
     }
 

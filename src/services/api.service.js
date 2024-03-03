@@ -2,8 +2,8 @@ import axios from "axios"
 import { utilService } from "./util.service"
 
 
-const API_KEY_YT = 'AIzaSyBt3urdJrr50IMTzRjY3cCqzpdxR8jmIRc'
-//const API_KEY_YT = 'AIzaSyAq166O0Zx4knj4zTocORMEpmej0XPnLIc'
+//const API_KEY_YT = 'AIzaSyBt3urdJrr50IMTzRjY3cCqzpdxR8jmIRc'
+const API_KEY_YT = 'AIzaSyAq166O0Zx4knj4zTocORMEpmej0XPnLIc'
 //const API_KEY_YT = 'AIzaSyBu-GdAUp7awvELMR3iigsESqtzB7qLekI'
 const API_KEY_LAST_FM = 'a07417914f1e93617c8e6b02d8f52c86'
 const URL_ARTIST_TUBE = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY_YT}&`
@@ -31,14 +31,12 @@ async function getContent(search) {
 
                     name: searchInfo.name,
                     artist: searchInfo.artist,
-                    type: 'song',
                     duration: duration,
                     trackId: ytItem.id.videoId,
                     imgUrl: ytItem.snippet.thumbnails.medium.url,
-                    addedBy: 'artist',
                     addedAt: Date.now(),
-                    likedBy: [],
-                    tags: []
+                    isLiked:false,
+                    isPlaying:false
                 }
             }
             catch (err) { throw err }

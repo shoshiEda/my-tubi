@@ -6,7 +6,8 @@ export const utilService = {
     randomPastTime,
     saveToStorage,
     loadFromStorage,
-    getRandomColor
+    getRandomColor,
+    animateCSS
 }
 
 function makeId(length = 6) {
@@ -46,7 +47,7 @@ function randomPastTime() {
     return Date.now() - pastTime
 }
 
-function debounce(func, timeout = 300) {
+function debounce(func, timeout = 1000) {
     let timer
     return (...args) => {
         clearTimeout(timer)
@@ -70,5 +71,22 @@ function getRandomColor(){
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+}
+
+function animateCSS(el, animation) {
+    /*const prefix = 'animate__'
+    return new Promise((resolve, reject) => {
+        const animationName = `${prefix}${animation}`
+
+        el.classList.add(`${prefix}animated`, animationName)
+
+        // When the animation ends, we clean the classes and resolve the Promise
+        function handleAnimationEnd(event) {
+            event.stopPropagation()
+            el.classList.remove(`${prefix}animated`, animationName)
+            resolve('Animation ended')
+        }
+        el.addEventListener('animationend', handleAnimationEnd, { once: true })
+    })*/
 }
 
