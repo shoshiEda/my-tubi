@@ -1,20 +1,21 @@
-/*import { utilService } from '../services/util.service'
+import { utilService } from '../services/util.service'
 import { apiService } from '../services/api.service'
 import { Fragment, useEffect, useState } from 'react'
 import { PlayCard } from '../cmps/main/PlayCard'
 import { useNavigate, useParams } from "react-router"
 import { useSelector } from 'react-redux'
-import { saveSong } from '../store/actions/song.action'
-import { saveStation } from '../store/actions/station.actions'
+///import { saveSong } from '../store/actions/song.action'
+//import { saveStation } from '../store/actions/station.actions'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
-import { LikeCard } from '../cmps/main/LikeCard'*/
+import { LikeCard } from '../cmps/main/LikeCard'
+
 
 export function SearchPage() {
 
-    /*const [searchList, setSearchList] = useState(null)
-    const user = useSelector(storeState => storeState.userMoudle.userObj)
+    const [searchList, setSearchList] = useState(null)
+    const user = useSelector(storeState => storeState.userModule.user)
 
-    const genres = ["New", 'Music', 'Pop', 'Hip-Hop', 'Rap', 'Latino', 'indi', 'Rock', 'Podcusts', 'Live', 'Sport', 'Meditation', 'Party', 'Electronic', 'For sleep']
+    const genres = ["New", 'Music', 'Pop', 'Hip-Hop', 'Rap', 'Latino', 'Indie', 'Rock', 'Podcusts', 'Live', 'Sport', 'Meditation', 'Party', 'Electronic', 'For sleep']
 
     const params = useParams()
     const navigate = useNavigate()
@@ -30,6 +31,7 @@ export function SearchPage() {
         try {
 
             const searchList = await apiService.getContent(params.searchTerm)
+            console.log(searchList)
             setSearchList(searchList)
         }
         catch (err) { console.log(err) }
@@ -55,7 +57,7 @@ export function SearchPage() {
                     <ul className="ganeres-list">
                         {genres.map(ganere =>
                             <li key={ganere} style={{ backgroundColor: utilService.getRandomColor() }} onClick={() => navigate('/search/' + ganere)}>
-                                {ganere}<img src={`src/assets/img/${ganere}.jpg`}></img></li>
+                                {ganere}<img src={`src/assets/img/pics/${ganere}.jpeg`}></img></li>
                         )}
                     </ul>
                 </Fragment>
@@ -113,5 +115,5 @@ export function SearchPage() {
 
             {(!searchList && params.searchTerm) && <div>...loading</div>}
         </section >)
-*/
+
 }

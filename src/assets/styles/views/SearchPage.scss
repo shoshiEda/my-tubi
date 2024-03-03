@@ -1,0 +1,225 @@
+.ganeres-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.5rem;
+    padding: 0;
+    overflow: hidden;
+
+}
+
+
+.ganeres-list li {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    list-style: none;
+    height: 150px;
+    width: 100%;
+    border-radius: 0.3em;
+    padding: 0.5em;
+    font-size: 1.5rem;
+    font-weight: bolder;
+    overflow: hidden;
+
+    img {
+        width: 7rem;
+        height: 7rem;
+        transform: rotate(25deg) translate(30%, -2%);
+        place-self: end;
+        overflow: hidden;
+    }
+
+}
+
+.ganeres-list li:hover {
+    opacity: 70%;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+.search-hero {
+
+    grid-template-columns: minmax(324px, 372px) 1fr;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+    column-gap: 24px;
+
+    .top-result-section {
+
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: 100%;
+
+        background-color: #181818;
+        border-radius: 8px;
+        padding: 20px;
+        transition: background-color .3s ease;
+
+        &:hover {
+            background-color: #282828;
+        }
+
+
+        .image-container {
+            width: 92px;
+            height: 92px;
+            position: relative;
+            overflow: hidden;
+
+            .top-result-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+        }
+
+        .details-container {
+            h3 {
+                padding-bottom: calc($panel-gap/2);
+            }
+        }
+    }
+
+
+
+
+    .results-section {
+
+        .search-result-list {
+            padding: 0;
+            margin: 0;
+
+            li:first-child {
+                display: none; // This will hide the first li child
+            }
+
+
+            .single-song-result {
+                grid-template-columns: minmax(120px, auto) minmax(120px, auto);
+
+                &:hover {
+                    background-color: $clr11;
+                    // opacity: 60%;
+                }
+
+                .img-play-title-artist-container {
+
+                    grid-template-columns: max-content auto;
+                    height: 56px;
+                    align-content: center;
+
+
+                    .song-image-play {
+                        width: 40px;
+                        height: 40px;
+                        position: relative;
+                        overflow: hidden;
+                        margin: 0 12px;
+
+                        img {
+                            height: 100%;
+                            width: 100%;
+                            object-fit: cover;
+                            object-position: center;
+                            border-radius: calc($panel-gap/2);
+
+                            // flex-shrink: 0;
+                        }
+
+
+
+
+                    }
+
+                    .song-title-artist {
+
+                        :last-child {
+                            color: $clr13;
+                        }
+                    }
+                }
+
+                .duration-add {
+
+                    grid-template-columns: max-content max-content;
+                    justify-content: end;
+                    align-items: center;
+                    gap: 24px;
+                    padding-right: 16px;
+
+                    .add-button {
+
+                        // height: 3rem;
+                        padding: 6px 12px;
+                        background-color: inherit;
+                        width: 100%;
+                        border: 1px solid whitesmoke;
+                        border-radius: 24px;
+                        margin: 1px;
+                        color: whitesmoke;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+
+                        &:hover {
+                            background-color: #282828;
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+    }
+
+}
+
+
+
+
+
+
+
+.search-play-button {
+    position: absolute;
+    background-color: $clr4;
+    height: 2em;
+    width: 2em;
+    padding: 0.2em;
+    left: 2.5rem;
+    top: 35%;
+    border-radius: 50%;
+    opacity: 0;
+}
+
+:hover {
+    opacity: 1;
+}
+
+.search-play-button .icon-16 {
+    position: absolute;
+    height: 2em;
+    width: 2em;
+    top: 0;
+    left: 0;
+    font-size: 1em;
+    padding: 0.5em;
+
+}
+
+.browse-all {
+    margin: 16px 0;
+}

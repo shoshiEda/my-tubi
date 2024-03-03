@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {useState} from 'react'
-import { login, logout, signup } from '../store/user.actions.js'
+import { logout } from '../store/user.actions.js'
 import { SignIn } from './user/SignIn.jsx'
 import { Search } from './Search.jsx'
 
@@ -16,7 +16,6 @@ export function AppHeader() {
     const isSearch = useSelector(storeState => storeState.systemModule.isSearch)
     const [isSighningIn,setIsSighningIn] =useState(false)
     const [isOpen,setIsOpen] =useState(false)
-
 
     
     async function onLogout() {
