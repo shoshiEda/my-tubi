@@ -12,6 +12,10 @@ import Plus from "../../assets/img/icons/plus.svg"
 import Search from "../../assets/img/icons/search.svg"
 import Library from "../../assets/img/icons/library.svg"
 import Sort from "../../assets/img/icons/sort.svg"
+import Dot from "../../assets/img/icons/dot.svg"
+
+
+import LikedCover from '../../assets/img/pics/liked-cover.png'
 
 
 export function LeftSideBarLibrary() {
@@ -91,16 +95,12 @@ export function LeftSideBarLibrary() {
             <section className="creation-and-toggle flex">
 
                 <p className="your-library flex" >
-                    <img src={Library} />
+                    <img className='svg' src={Library} />
                     <span>Your Library</span>
                 </p>
 
-                <div className="right-buttons flex">
-
                     {/*onClick={/*createStatio*/ }
-                <img className="plus-icon-left" src={Plus} />
-
-                </div>
+                <img className="plus-icon-left svg" src={Plus} />
 
             </section>
 
@@ -109,13 +109,13 @@ export function LeftSideBarLibrary() {
 
                     <div className="search-sort-toggle-buttons flex">
                         <button onClick={() => setShowSearch(!showSearch)} >
-                            <img src={Search} />
+                            <img className='svg' src={Search} />
                         </button>
                         {showSearch &&
                            <input type="text" />
                         }
                         <button className="sort" /*onClick={openModal}*/>
-                            <img src={Sort} />
+                            <img className='svg' src={Sort} />
                             {filterSort.sortBy}
                             {/*isModalOpen && <SortByModal setFilterSort={setFilterSort} isOpen={isModalOpen} onClose={closeModal} filterSort={filterSort}> </SortByModal>*/}
                         </button>
@@ -128,6 +128,13 @@ export function LeftSideBarLibrary() {
 
                 <ul>
                     {
+                        <li className='left-side-albums'>
+                            <img src={LikedCover}/>
+                            <>
+                            <p>Songs you liked</p>
+                            <p>Playlist  <img src={Dot}/> {user.likedSongs? user.likedSongs.length : 0} songs</p>
+                            </>
+                        </li>
                        /* userStations.map((station, idx) => (
                             <Link onClick={() => setStationInFoucs(station)} key={station._id} to={'/station/edit/' + station._id}>
                                 <li className={`grid ${(stationInFoucs && stationInFoucs._id === station._id) ? 'active-class' : ''}`}>

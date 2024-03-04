@@ -3,7 +3,7 @@
 
     display: grid;
     grid-template-columns: minmax(280px, auto) minmax(400px, 1fr);
-    // grid-template-rows: 1fr auto;
+    grid-template-rows: 1fr auto;
     grid-template-areas:
         "left-sidebar main"
         "player player";
@@ -27,7 +27,13 @@
 .left-sidebar {
     grid-area: left-sidebar;
     overflow-y: auto;
-    flex: 1;
+   
+}
+
+.app-footer{
+    grid-area: player;
+    height: 2rem;
+
 }
 
 .main-content {

@@ -84,7 +84,7 @@ export async function loadUser(userId) {
 
 export async function editUser(user,field='',value='',isAdd='undifined'){
 
-    if(isAdd){
+    if(isAdd && isAdd!=='undifined'){
         if (!Array.isArray(user[field]))    user[field]=[] 
         value.id=utilService.makeId()      
         user[field].push(value)

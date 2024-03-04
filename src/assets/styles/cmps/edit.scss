@@ -1,0 +1,68 @@
+
+.modal-backdrop{
+
+    .modal-background{
+        position: absolute;
+        background-color: $clr11;
+        inset:0;
+        opacity:0.5;
+    }
+
+    .modal-content{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color:$clr7 ;
+        width: 40%;
+        max-width: 600px;
+        padding: 1rem;
+        border-radius: 1rem;
+        text-align: center;
+
+        
+
+        .upload-preview{
+            display: flex;
+           flex-direction: column;
+           align-items: center;
+           margin-block-end: 0.5rem;
+
+           .imgUpload{
+            margin-inline-start: 50%;
+            transform: translate(-30%);
+           }
+        }
+
+        .details{
+            display: flex;
+        }
+
+        input{
+            margin-block: 0.5rem;
+            height: 2rem;
+            background-color: $clr11;
+            color:$clr4 ;
+            font-weight: bold;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        button{
+            color:$clr4 ;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            background-color: $clr11;
+            margin: 1rem;
+
+            &:hover{
+                color:$clr9 ;
+                background-color: $clr13;
+            }
+        }
+
+
+    }
+
+}

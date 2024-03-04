@@ -48,12 +48,35 @@
         background-color: $clr7;
         flex-grow: 1;
 
-        svg {
-            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(292deg) brightness(2005%) contrast(100%);
-            opacity: 70%;
+        button{
+            background-color: transparent;
         }
 
-        ul {
+        .svg {
+            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(292deg) brightness(2005%) contrast(100%);
+            opacity: 70%;
+            cursor: pointer;
+            height:1.5rem;
+            width: 1.5rem;
+
+            &:hover{
+                opacity: 1;
+            }
+        }
+
+        .left-side-albums{
+            display: flex;
+
+            img{
+                height:2.5rem;
+                width: 2.5rem;
+            }
+        }
+
+    }
+}
+
+      /*  ul {
             margin: 0;
             padding: 0 $panel-gap $panel-gap;
             height: 100%;
@@ -341,4 +364,4 @@
     right: 0;
     top: 0;
     z-index: 10;
-}
+}*/

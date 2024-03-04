@@ -11,11 +11,11 @@ import userIcon from '../assets/img/icons/user.svg'
 
 export function Edit({ entity ,setEntity,setIsEdit,entityType}) {
 
-  const [credentials, setCredentials] = useState(null)
+  let initialCardentials
+  if(entityType==='user')  initialCardentials = {name:entity.username , imgUrl:entity.imgUrl}
+  if(entityType==='album')  initialCardentials ={name:entity.name , imgUrl:entity.imgUrl}
 
-  if(entityType==='user') setCredentials({name:entity.username , imgUrl:entity.imgUrl})
-  if(entityType==='album') setCredentials({name:entity.name , imgUrl:entity.imgUrl})
-
+  const [credentials, setCredentials] = useState(initialCardentials)
 
 
 
@@ -26,17 +26,38 @@ export function Edit({ entity ,setEntity,setIsEdit,entityType}) {
     setCredentials(prev => ({ ...prev, [field]: value }))
   }
 
-  async function isEditUser(e){
+  async function isEditEntity(e){
     e.preventDefault()
-    let updatedUser={_id:user._id, username:credentials.username, imgUrl:credentials.imgUrl}
-    try{
+
+    if(entityType==='user') {
+      
+      let updatedUser=entity
+      updatedUser.username = credentials.name,
+      updatedUser.imgUrl = credentials.imgUrl
+      try{
         updatedUser = await editUser(updatedUser)
-        setUser(updatedUser)
+        setEntity(updatedUser)
         setIsEdit(false)
     }
     catch(err){
         console.log(err)
     }
+
+    }
+    if(entityType==='album'){
+      let updatedAlbum=entity
+      updatedAlbum.name = credentials.name,
+      updatedAlbum.imgUrl = credentials.imgUrl
+      updatedAlbum.type = credentials.type
+      try{
+        updatedAlbum = await editAlbum(updatedAlbum)
+        setEntity(updatedAlbum)
+        setIsEdit(false)
+    }
+    catch(err){
+        console.log(err)
+    }
+  }
   }
 
 
@@ -49,24 +70,26 @@ export function Edit({ entity ,setEntity,setIsEdit,entityType}) {
     e.stopPropagation() 
     setIsEdit(false)
   }
-
-  const { username, imgUrl } = credentials
+if(!credentials) return( <div>Loading...</div>)
+  const { name, imgUrl ,type} = credentials
   
   return (
     <div id='modalBackdrop' className="modal-backdrop" >
       <div className='modal-background' onClick={closeModal}></div>
       <div className="modal-content">
-        <form onSubmit={isEditUser}>
-          <h2>Edit your profile</h2>
-          <p>Name:</p>
+        <form onSubmit={isEditEntity}>
+          <h2>{(entityType==='user')? 'Edit your profile' : 'Album details'}</h2>
+          <div className='details'>
+          <ImgUploader imgUrl={imgUrl} onUploaded={onUploaded} />
+          
           <input
             type="text"
-            placeholder="Username"
-            value={username}
-            name='username'
+            placeholder="Name"
+            value={name}
+            name='name'
             onChange={handleChange}
           />
-         <ImgUploader onUploaded={onUploaded} />
+          </div>
           <button type="submit">Submit</button>
         </form>
       </div>
