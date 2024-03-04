@@ -1,17 +1,22 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 
-import { editUser } from '../../store/user.actions'
-import { userService } from '../../services/user.service'
-import { ImgUploader } from '../ImgUploader'
+import { editUser } from '../store/user.actions'
+import { userService } from '../services/user.service'
+import { ImgUploader } from './ImgUploader'
 
-import userIcon from '../../assets/img/icons/user.svg'
+import userIcon from '../assets/img/icons/user.svg'
 
 
 
-export function UserEdit({ user ,setUser,setIsEdit}) {
+export function Edit({ entity ,setEntity,setIsEdit,entityType}) {
 
-  const [credentials, setCredentials] = useState({username:user.username , imgUrl:user.imgUrl})
+  const [credentials, setCredentials] = useState(null)
+
+  if(entityType==='user') setCredentials({name:entity.username , imgUrl:entity.imgUrl})
+  if(entityType==='album') setCredentials({name:entity.name , imgUrl:entity.imgUrl})
+
+
 
 
   function handleChange({ target }) {

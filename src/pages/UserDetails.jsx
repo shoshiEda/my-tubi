@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import { userService } from '../services/user.service'
-import { UserEdit} from '../cmps/user/UserEdit.jsx'
+import { Edit} from '../cmps/Edit.jsx'
 
 
 
@@ -37,7 +37,7 @@ export function UserDetails(){
             <h3 onClick={()=>setIsEdit(true)}> {loggedInUser.username} </h3>
             <p>You have {user.station? user.station.length : 0} albums</p>
       </div>
-      {isEdit && < UserEdit user={user} setUser={setUser} setIsEdit={setIsEdit}/>}
+      {isEdit && < Edit entity={user} setEntity={setUser} setIsEdit={setIsEdit} entityType={'user'}/>}
         {/*  <ul className="clean-list">
                     {
                         userStations.map(station =>

@@ -1,0 +1,22 @@
+
+.upload-preview{
+
+    width: 100%;
+
+    .img-container{
+        height: 2rem;
+        width: 2rem;
+    
+    .imgUpload{
+       
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(292deg) brightness(2005%) contrast(100%);
+        margin: 1rem;
+        cursor: pointer;
+    }
+
+    &:hover{
+        opacity: 0.5;
+    }
+}
+}
+
