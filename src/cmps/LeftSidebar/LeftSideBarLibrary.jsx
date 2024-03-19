@@ -2,6 +2,8 @@ import React from 'react';
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
+import { Edit} from '../Edit.jsx'
+
 ////import { removeStation, saveStation, setCurrStation, setUserStations } from "../../store/actions/station.actions"
 //import { stationService } from "../../services/station.service"
 //import { updateUser } from "../../store/actions/user.actions"
@@ -28,9 +30,13 @@ export function LeftSideBarLibrary() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [stationInFoucs, setStationInFoucs] = useState(null)
     const [userStations, setUserStations] = useState(null)
+    const [isEdit, setIsEdit] =useState(false)
+
 
 
     const navigate = useNavigate()
+
+    function setStation(){}
 /*
     useEffect(() => {
         if (user) setUserStations(user.stations)
@@ -85,56 +91,58 @@ export function LeftSideBarLibrary() {
 
     }
 */
-    if (!user ) return <div>In order to save your own albums, please log in</div>
+    if (!user ) return <div className='no-user-msg'>In order to save <br/> your own albums<br/> please log in</div>
 
 
     return (
 
         <div className="side-bar-content" >
 
-            <section className="creation-and-toggle flex">
+            <section className="creation-and-toggle flex align-center justify-between">
 
-                <p className="your-library flex" >
-                    <img className='svg' src={Library} />
+                <p className="your-library flex align-center" >
+                    <img className='svg library' src={Library} />
                     <span>Your Library</span>
                 </p>
 
                     {/*onClick={/*createStatio*/ }
-                <img className="plus-icon-left svg" src={Plus} />
+                <img className="plus-icon-left svg" src={Plus} onClick={()=>setIsEdit(true)} />
 
             </section>
 
-            <section className="side-bar-filtersort">
-                <div className="search-sort-view">
+           
 
-                    <div className="search-sort-toggle-buttons flex">
+            <section className="search-sort-toggle-buttons flex align-center justify-between">
+                        <div className="search flex align-center">
                         <button onClick={() => setShowSearch(!showSearch)} >
                             <img className='svg' src={Search} />
                         </button>
                         {showSearch &&
                            <input type="text" />
                         }
+                        </div>
                         <button className="sort" /*onClick={openModal}*/>
                             <img className='svg' src={Sort} />
                             {filterSort.sortBy}
                             {/*isModalOpen && <SortByModal setFilterSort={setFilterSort} isOpen={isModalOpen} onClose={closeModal} filterSort={filterSort}> </SortByModal>*/}
                         </button>
-                    </div>
+            </section>
 
-                </div>
-            </section >
 
             <section className="side-bar-content">
 
                 <ul>
                     {
-                        <li className='left-side-albums'>
+                        <Link to={'/station/liked'}>
+                        <li className='left-side-albums flex align-center'>
+                            
                             <img src={LikedCover}/>
-                            <>
+                            <div className='album-info flex align-center column'>
                             <p>Songs you liked</p>
-                            <p>Playlist  <img src={Dot}/> {user.likedSongs? user.likedSongs.length : 0} songs</p>
-                            </>
+                            <p className='flex align-center'>Playlist  <img className='svg' src={Dot}/> {user.likedSongs? user.likedSongs.length : 0} songs</p>
+                            </div>
                         </li>
+                        </Link>
                        /* userStations.map((station, idx) => (
                             <Link onClick={() => setStationInFoucs(station)} key={station._id} to={'/station/edit/' + station._id}>
                                 <li className={`grid ${(stationInFoucs && stationInFoucs._id === station._id) ? 'active-class' : ''}`}>
@@ -158,6 +166,8 @@ export function LeftSideBarLibrary() {
                                 ))*/}
                 </ul>
             </section>
+            {isEdit && < Edit setEntity={setStation} setIsEdit={setIsEdit} entityType={'station'}/>}
+
         </div >
     )
 }

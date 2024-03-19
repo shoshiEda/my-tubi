@@ -1,116 +1,102 @@
-import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service'
-//import { socketService, SOCKET_EVENT_REVIEW_ADDED } from '../services/socket.service'
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import { useParams } from "react-router"
+import { loadStation ,getLikedStation } from "../store/station.actions"
+import { Edit} from '../cmps/Edit.jsx'
+import { SearchStation} from '../cmps/SearchStation.jsx'
 
-import { loadReviews, addReview, removeReview, getActionAddReview } from '../store/song.actions'
-import { loadUsers } from '../store/user.actions'
+
+import notes from '../assets/img/icons/notes.svg'
+import dot from '../assets/img/icons/dot.svg'
+
+
+//import { Playlist } from "../cmps/main/Playlist"
+//import { LikeCard } from "../cmps/main/LikeCard"
+//import { PlayCard } from "../cmps/main/PlayCard"
+import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
+//import { useDeviceCheck } from "../cmps/CustomHooks/UseDeviceCheck"
+
+
 
 export function StationDetails() {
 
-  const users = useSelector(storeState => storeState.userModule.users)
-  const loggedInUser = useSelector(storeState => storeState.userModule.user)
-  const reviews = useSelector(storeState => storeState.reviewModule.reviews)
+    const user = useSelector(storeState => storeState.userModule.user)
+    const currStation = useSelector(storeState => storeState.stationModule.currStation)
+    const params = useParams()
+    const [isEdit, setIsEdit] =useState(false)
 
-  const [reviewToEdit, setReviewToEdit] = useState({ txt: '', aboutUserId: '' })
+    console.log(params.id)
 
-  const dispatch = useDispatch()
+    useEffect(() => {
+        console.log('useEffect:',params.id)
+        onLoadstation()
+    }, [params.id])
 
+    useBackgroundFromImage(currStation ? currStation.imgUrl : null)
+    //useDeviceCheck()
 
-  useEffect(() => {
-    loadReviews()
-    loadUsers()
+    async function onLoadstation() {
+        console.log(params.id)
 
-    /*socketService.on(SOCKET_EVENT_REVIEW_ADDED, (review) => {
-      console.log('GOT from socket', review)
-      dispatch(getActionAddReview(review))
-    })
-
-    return () => {
-      socketService.off(SOCKET_EVENT_REVIEW_ADDED)
-    }*/
-  }, [])
-
-  const handleChange = ev => {
-    const { name, value } = ev.target
-    setReviewToEdit({ ...reviewToEdit, [name]: value })
-  }
-
-  const onAddReview = async ev => {
-    ev.preventDefault()
-    if (!reviewToEdit.txt || !reviewToEdit.aboutUserId) return alert('All fields are required')
-    try {
-
-      await addReview(reviewToEdit)
-      showSuccessMsg('Review added')
-      setReviewToEdit({ txt: '', aboutUserId: '' })
-    } catch (err) {
-      showErrorMsg('Cannot add review')
+      if(params.id==='liked')
+      {
+        getLikedStation(user)
+      }
+      else{
+        await loadStation(params.id)
+      }
     }
-  }
 
-  const onRemove = async reviewId => {
-    try {
-      await removeReview(reviewId)
-      showSuccessMsg('Review removed')
-    } catch (err) {
-      showErrorMsg('Cannot remove')
-    }
-  }
+    function setStation(){}
 
-  function canRemove(review) {
-    if (!loggedInUser) return false
-    return review.byUser._id === loggedInUser._id || loggedInUser.isAdmin
-  }
+    console.log(currStation)
 
 
-  return (
-    <div className="review-index">
-      <h1>Reviews and Gossip</h1>
-      {reviews && <ul className="review-list">
-        {reviews.map(review => (
-          <li key={review._id}>
-            {canRemove(review) &&
-              <button onClick={() => onRemove(review._id)}>X</button>}
-            <p>
-              About:
-              <Link to={`/user/${review.aboutUser._id}`}>
-                {review.aboutUser.fullname}
-              </Link>
-            </p>
-            <h3>{review.txt}</h3>
-            <p>
-              By:
-              <Link to={`/user/${review.byUser._id}`}>
-                {review.byUser.fullname}
-              </Link>
-            </p>
-          </li>
-        ))}
-      </ul>}
-      {users && loggedInUser &&
-        <form onSubmit={onAddReview}>
-          <select
-            onChange={handleChange}
-            value={reviewToEdit.aboutUserId}
-            name="aboutUserId"
-          >
-            <option value="">Select User</option>
-            {users.map(user => (
-              <option key={user._id} value={user._id}>
-                {user.fullname}
-              </option>
-            ))}
-          </select>
-          <textarea
-            name="txt"
-            onChange={handleChange}
-            value={reviewToEdit.txt}
-          ></textarea>
-          <button>Add</button>
-        </form>}
-      <hr />
-    </div>
-  )
+    if (!currStation) return <div>...Loading</div>
+
+    const { imgUrl, type, createdBy, name, duration, songs, description } = currStation
+
+    const amount = currStation.songs? currStation.songs.length : ''
+
+    console.log('Render station-details')
+    return (
+        <section className="station-details" >
+            <header className="station-header" >
+            <img src={imgUrl ? imgUrl : notes} onClick={() => setIsEdit(true)} />                <div className="station-header-info">
+                <h1 onClick={()=>setIsEdit(true)}>{name}</h1>
+                <p className="description">{description}</p>
+                < br/>
+                <p className="by">{createdBy}</p>
+                {amount&&<div >              
+                     <p>{amount} songs</p>
+                     <img src={dot}></img>                   
+                     <p>duration: {duration}</p>
+                </div>}
+                </div>
+            </header>
+
+            <section className="station-details-control">
+                <div className="station-details-control-left">
+                    {/*<PlayCard item={currStation}></PlayCard>
+                    <LikeCard item={currStation}></LikeCard>*/}
+
+                </div>
+
+            </section>
+            < br/>
+            < hr/>
+            {/*<Playlist songs={songs}></Playlist>*/}
+            <h3>Lets search for a new song</h3>
+            <SearchStation />
+            {isEdit && < Edit entity={currStation} setEntity={setStation} setIsEdit={setIsEdit} entityType={'station'}/>}
+
+        </section >
+    )
+
 }
+
+
+
+
+
+

@@ -2,20 +2,27 @@ import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 
 import { editUser } from '../store/user.actions'
+import { saveStation } from '../store/station.actions'
 import { userService } from '../services/user.service'
 import { ImgUploader } from './ImgUploader'
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+
+
 
 import userIcon from '../assets/img/icons/user.svg'
 
 
 
-export function Edit({ entity ,setEntity,setIsEdit,entityType}) {
+export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
 
   let initialCardentials
   if(entityType==='user')  initialCardentials = {name:entity.username , imgUrl:entity.imgUrl}
-  if(entityType==='album')  initialCardentials ={name:entity.name , imgUrl:entity.imgUrl}
+  if(entityType==='station')  initialCardentials ={name:entity.name || '' , imgUrl:entity.imgUrl,description:entity.description || '',type:entity.type || ''}
 
   const [credentials, setCredentials] = useState(initialCardentials)
+  const stationTypes = useSelector(storeState => storeState.stationModule.stationTypes)
+  const navigate = useNavigate()
 
 
 
@@ -44,15 +51,18 @@ export function Edit({ entity ,setEntity,setIsEdit,entityType}) {
     }
 
     }
-    if(entityType==='album'){
-      let updatedAlbum=entity
+    if(entityType==='station'){
+      let updatedAlbum=entity || {}
       updatedAlbum.name = credentials.name,
       updatedAlbum.imgUrl = credentials.imgUrl
       updatedAlbum.type = credentials.type
+      updatedAlbum.description = credentials.description
+      console.log(updatedAlbum)
+
       try{
-        updatedAlbum = await editAlbum(updatedAlbum)
-        setEntity(updatedAlbum)
-        setIsEdit(false)
+        const newUpdatedAlbum = await saveStation(updatedAlbum)
+        navigate(`/station/${newUpdatedAlbum._id}`)
+        setIsEdit(false)  
     }
     catch(err){
         console.log(err)
@@ -71,7 +81,8 @@ export function Edit({ entity ,setEntity,setIsEdit,entityType}) {
     setIsEdit(false)
   }
 if(!credentials) return( <div>Loading...</div>)
-  const { name, imgUrl ,type} = credentials
+  const { name, imgUrl ,type,description} = credentials
+  console.log(credentials)
   
   return (
     <div id='modalBackdrop' className="modal-backdrop" >
@@ -81,7 +92,7 @@ if(!credentials) return( <div>Loading...</div>)
           <h2>{(entityType==='user')? 'Edit your profile' : 'Album details'}</h2>
           <div className='details'>
           <ImgUploader imgUrl={imgUrl} onUploaded={onUploaded} />
-          
+          <section className='edit-details'>
           <input
             type="text"
             placeholder="Name"
@@ -89,6 +100,27 @@ if(!credentials) return( <div>Loading...</div>)
             name='name'
             onChange={handleChange}
           />
+
+        {(entityType==='station') && 
+        <div>
+        <label>type: </label> 
+        <select
+                    onChange={handleChange}
+                    name="type"
+                    value={type || 'Mixed'}>
+                      {stationTypes.map(type=><option key={type} value={type}> {type} </option>)}
+                </select></div>}
+
+      {(entityType==='station') && 
+      <textarea 
+      className="text-area"
+       name="description" 
+       onChange={handleChange}
+       value={description}
+       placeholder="Description">
+      </textarea>
+      }
+          </section>
           </div>
           <button type="submit">Submit</button>
         </form>
