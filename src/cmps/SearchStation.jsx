@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux'
 import { utilService } from "../services/util.service.js"
 import { useEffectUpdate } from "../customHooks/useEffectUpdate.js"
 import { apiService } from '../services/api.service'
+import { saveStation } from '../store/station.actions'
+
 
 import play from '../assets/img/icons/play.svg'
 import pause from '../assets/img/icons/pause.svg'
@@ -18,7 +20,7 @@ import Heart from '../assets/img/icons/heart.svg'
 
 
 
-export function SearchStation(){
+export function SearchStation({currStation,setCurrStation,onSaveSong}){
 
     const [input,setInput] =useState('')
     const setSelectedSongDebounced = useRef(utilService.debounce(selectedSong => fetchSearchResults(selectedSong)));
@@ -44,6 +46,13 @@ export function SearchStation(){
         setInput(target.value)
     }
 
+    
+
+    function setIsPlaying(idx){
+        searchList[idx].isPlaying=true
+        setSearchList(prevList=>prevList,searchList)
+    }
+
     async function fetchSearchResults(selectedSong) {
         try {
 
@@ -54,8 +63,13 @@ export function SearchStation(){
         catch (err) { console.log(err) }
     }
 
+    function onPlayStation(ev){}
+
+   
+
     return(
         <section className='station-search'>
+            <h3>Lets search for a new song</h3>
     <form className='search-box' onSubmit={onSetSelectedSong}>
         <img src="\src\assets\img\icons\search.svg"></img>
         <input type="text" value={input} onChange={handleChange} ></input>

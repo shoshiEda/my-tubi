@@ -68,7 +68,7 @@ async function logout() {
 
 
 function saveLocalUser(user) {
-    user = { _id: user._id, username: user.username, imgUrl: user.imgUrl || '' }
+    user = { _id: user._id, username: user.username, imgUrl: user.imgUrl || '' ,likedSongs:user.likedSongs || [],stasions:user.stasions|| [],likedStasions:user.likedStasions || []}
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     return user
 }
@@ -77,13 +77,15 @@ function getLoggedinUser() {
     return JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
 }
 
-function getEmptyCredentials(email = '', imgUrl = "", username = '', password = '', stations = [], favorites = []) {
+function getEmptyCredentials(email = '', imgUrl = "", username = '', password = '', stations = [], likedSongs = [],likedStasions=[]) {
     return {
         email,
         username,
         password,
         stations,
         imgUrl,
+        likedSongs,
+        likedStasions
     }
 }
 

@@ -4,3 +4,5 @@ import { store } from '../store/store.js'
 export function setHeaderSearch(term){
     store.dispatch({ type: SET_SEARCH ,term})
 }
+
+export function setContextMenu(){}

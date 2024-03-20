@@ -73,6 +73,7 @@ export function SearchPage() {
           editUser(user,'likedSongs',updatedSong,false)
           :
           editUser(user,'likedSongs',updatedSong,true)
+          navigate('/search/'+params.searchTerm)
     }
 
     async function setIsPlaying(idx){

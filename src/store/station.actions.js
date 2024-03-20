@@ -43,17 +43,10 @@ export async function setUserStations(stations) {
 }
 
 export async function loadStation(stationId) {
-    console.log('stationId' ,stationId)
+    
     try {
-        let station
-        if(stationId === 'liked')
-        {
-             station = stationService.getLikedStation()
-        }
-        else{
-             station = await stationService.get(stationId)
-             console.log('station:' ,station)
-        }
+        let station = await stationService.get(stationId)
+        console.log('station:' ,station)
         store.dispatch({ type: SET_CURR_STATION, station })
         console.log(station)
         return station
@@ -90,7 +83,6 @@ export async function removeStation(stationId) {
 }
 
 export async function saveStation(station) {
-    console.log(station)
 
     const type = (station._id) ? EDIT_STATION : ADD_STATION
 

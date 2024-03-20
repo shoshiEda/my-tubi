@@ -23,6 +23,8 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
   const [credentials, setCredentials] = useState(initialCardentials)
   const stationTypes = useSelector(storeState => storeState.stationModule.stationTypes)
   const navigate = useNavigate()
+  const user = useSelector(storeState => storeState.userModule.user)
+
 
 
 
@@ -57,10 +59,17 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
       updatedAlbum.imgUrl = credentials.imgUrl
       updatedAlbum.type = credentials.type
       updatedAlbum.description = credentials.description
-      console.log(updatedAlbum)
+      console.log(user)
 
       try{
         const newUpdatedAlbum = await saveStation(updatedAlbum)
+        if(!updatedAlbum._id) await editUser(user,'stasions',newUpdatedAlbum,true)
+        else{
+          const idx = user.stasions.findIndex(station => station._id===newUpdatedAlbum._id)
+          user.stasions[idx]=newUpdatedAlbum
+          await editUser(user)
+      }
+
         navigate(`/station/${newUpdatedAlbum._id}`)
         setIsEdit(false)  
     }
@@ -82,7 +91,7 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
   }
 if(!credentials) return( <div>Loading...</div>)
   const { name, imgUrl ,type,description} = credentials
-  console.log(credentials)
+  
   
   return (
     <div id='modalBackdrop' className="modal-backdrop" >

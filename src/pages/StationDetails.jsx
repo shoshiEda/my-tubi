@@ -1,77 +1,121 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useParams } from "react-router"
-import { loadStation ,getLikedStation } from "../store/station.actions"
-import { Edit} from '../cmps/Edit.jsx'
-import { SearchStation} from '../cmps/SearchStation.jsx'
-
-
+import { loadStation } from "../store/station.actions"
+import { Edit } from '../cmps/Edit.jsx'
+import { Playlist } from "../cmps/Playlist"
+import { SearchStation } from '../cmps/SearchStation.jsx'
 import notes from '../assets/img/icons/notes.svg'
 import dot from '../assets/img/icons/dot.svg'
-
-
-//import { Playlist } from "../cmps/main/Playlist"
-//import { LikeCard } from "../cmps/main/LikeCard"
-//import { PlayCard } from "../cmps/main/PlayCard"
+import likedCover from '../assets/img/pics/liked-cover.png'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
-//import { useDeviceCheck } from "../cmps/CustomHooks/UseDeviceCheck"
+import { editUser } from '../store/user.actions'
+import { useNavigate } from "react-router-dom"
+import { saveStation } from '../store/station.actions'
+import { stationService } from '../services/station.service.js'
+
+
 
 
 
 export function StationDetails() {
-
     const user = useSelector(storeState => storeState.userModule.user)
-    const currStation = useSelector(storeState => storeState.stationModule.currStation)
-    const params = useParams()
-    const [isEdit, setIsEdit] =useState(false)
+    const { id } = useParams()
+    const [isEdit, setIsEdit] = useState(false)
+    const [currStation, setCurrStation] = useState(null)
 
-    console.log(params.id)
+    const navigate = useNavigate()
 
     useEffect(() => {
-        console.log('useEffect:',params.id)
         onLoadstation()
-    }, [params.id])
+    }, [id])
 
-    useBackgroundFromImage(currStation ? currStation.imgUrl : null)
-    //useDeviceCheck()
+    useBackgroundFromImage(currStation?.imgUrl)
 
     async function onLoadstation() {
-        console.log(params.id)
-
-      if(params.id==='liked')
-      {
-        getLikedStation(user)
-      }
-      else{
-        await loadStation(params.id)
-      }
+        if (id !== 'liked') {
+            try {
+                const station = await loadStation(id)
+                setCurrStation(station)
+            } catch (error) {
+                console.error("Error loading station:", error)
+            }
+        } else {
+            setCurrStation(setLikedStation())
+        }
     }
 
-    function setStation(){}
+    function setLikedStation() {
+        return {
+            imgUrl: likedCover,
+            name: 'Songs you liked',
+            songs: user.likedSongs || []
+        }
+    }
 
-    console.log(currStation)
+    function culcDuration(){
+        if(!currStation.songs) return ''
+        return stationService.getStationDuration(currStation.songs)
+    }
 
+    async function onSaveSong(song){
+        const updatedStation = { ...currStation }
+        updatedStation.songs? updatedStation.songs.push(song) : updatedStation.songs=[(song)]
+        setCurrStation(updatedStation)
+        try{
+            await saveStation(currStation)
+            const idx = user.stasions.findIndex(station => station._id===currStation._id)
+            user.stasions[idx]=currStation
+            await editUser(user)
+            navigate('/station/'+currStation.id)
+        }
+        catch (err) { console.log(err) }
+    }
 
-    if (!currStation) return <div>...Loading</div>
+    async function onRemoveSong(deletadSong){
+        if (id === 'liked') {
+            try {        
+                await editUser(user,'likedSongs',deletadSong,false)
+            } catch (error) {
+                console.error("Error loading station:", error)
+            }
+        } else {
+            const idx = currStation.songs.findIndex(song=>song.trackId===deletadSong.trackId)
+            console.log(idx,currStation.songs,deletadSong)
+            currStation.songs.splice(idx,1)
+            try{
+                await saveStation(currStation)
+                const stationIdx = user.stasions.findIndex(station => station._id===currStation._id)
+                user.stasions[stationIdx]=currStation
+                await editUser(user)
+            }
+         catch (error) {console.log(error)}
+    }
+    navigate('/station/'+id)
+}
+    
 
-    const { imgUrl, type, createdBy, name, duration, songs, description } = currStation
+    if (!currStation || !user) return <div>...Loading</div>
 
-    const amount = currStation.songs? currStation.songs.length : ''
+    const { imgUrl, type, createdBy, name, songs, description } = currStation
 
-    console.log('Render station-details')
+    const amount = songs?.length || ''
+
     return (
-        <section className="station-details" >
-            <header className="station-header" >
-            <img src={imgUrl ? imgUrl : notes} onClick={() => setIsEdit(true)} />                <div className="station-header-info">
-                <h1 onClick={()=>setIsEdit(true)}>{name}</h1>
-                <p className="description">{description}</p>
-                < br/>
-                <p className="by">{createdBy}</p>
-                {amount&&<div >              
-                     <p>{amount} songs</p>
-                     <img src={dot}></img>                   
-                     <p>duration: {duration}</p>
-                </div>}
+        <section className="station-details">
+            <header className="station-header">
+                <img src={imgUrl || notes} onClick={() => setIsEdit(true)} />
+                <div className="station-header-info">
+                    <h1 onClick={() => setIsEdit(true)}>{name}</h1>
+                    <p className="description">{description}</p>
+                    <br />
+                    <p className="by">{createdBy}</p>
+                    {amount &&
+                        <div>
+                            <p>{amount} songs</p>
+                            <img className='svg' src={dot} alt="dot" />
+                            <p>duration: {culcDuration()}</p>
+                        </div>}
                 </div>
             </header>
 
@@ -79,24 +123,14 @@ export function StationDetails() {
                 <div className="station-details-control-left">
                     {/*<PlayCard item={currStation}></PlayCard>
                     <LikeCard item={currStation}></LikeCard>*/}
-
                 </div>
-
             </section>
-            < br/>
-            < hr/>
-            {/*<Playlist songs={songs}></Playlist>*/}
-            <h3>Lets search for a new song</h3>
-            <SearchStation />
-            {isEdit && < Edit entity={currStation} setEntity={setStation} setIsEdit={setIsEdit} entityType={'station'}/>}
-
-        </section >
+            <br />
+            <hr />
+            {songs && <Playlist songs={songs} onRemoveSong={onRemoveSong}></Playlist>}
+            
+            {id!=='liked' && <SearchStation currStation={currStation} setCurrStation={setCurrStation} onSaveSong={onSaveSong} />}
+            {isEdit && <Edit entity={currStation} setIsEdit={setIsEdit} entityType={'station'} />}
+        </section>
     )
-
 }
-
-
-
-
-
-

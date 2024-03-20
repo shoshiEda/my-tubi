@@ -17,7 +17,7 @@ export const stationService = {
     getDefaultStation,
     getEmptyStation,
     convertTimeFormat,
-    getLikedStation,
+    getStationDuration
 }
 
 function query(filterSortBy = {}) {
@@ -32,7 +32,7 @@ async function get(stationId) {
 }
 
 async function save(stationData) {
-    console.log(stationData)
+   
 
     if (stationData._id){
         const updatedStation = await storageService.put('station', stationData)
@@ -54,19 +54,6 @@ async function remove(stationId) {
     await storageService.remove('station', stationId)
    // return httpService.delete(BASE_URL + stationId)
 }
-
-function getLikedStation(user){
-    return{
-        name: "Your liked songs",
-        type: "playlist",
-        imgUrl: LikedCover,
-        createdBy:user.username,
-        likedByUsers: 0,
-        songs: user.liked,
-        duration: '',
-        description:''
-    }
-    }
 
 function getEmptyStation(name = '', idx = '', imgUrl = '', createdBy = { _id: '', username: '', }) {
     console.log("createdBy:", createdBy)
@@ -110,7 +97,7 @@ function getDefaultStation() {
 }
 
 
-function _getStationDuration(items) {
+function getStationDuration(items) {
     let totalMinutes = 0
 
     items.forEach(item => {

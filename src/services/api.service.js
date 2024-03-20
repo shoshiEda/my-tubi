@@ -1,4 +1,6 @@
 import axios from "axios"
+import moment from "moment"
+
 import { utilService } from "./util.service"
 
 
@@ -90,32 +92,33 @@ async function _getDuration(videoId) {
     try {
         const duration = await axios(url)
         const fixDuration = formatDuration(duration.data.items[0].contentDetails.duration)
+        
         return fixDuration
     }
     catch (err) { console.log(err) }
 
 }
 
-function formatDuration(duration) {
+function formatDuration(timeString) {
+    if (timeString === 'P0D') return '99:99:99'
 
-    if (duration === 'P0D') return '99:99:99'
-
-    const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/
-    const matches = duration.match(regex)
-
-    if (matches) {
-        const hours = matches[1] ? parseInt(matches[1], 10) : 0
-        const minutes = matches[2] ? parseInt(matches[2], 10) : 0
-        const seconds = matches[3] ? parseInt(matches[3], 10) : 0
-
-        if (hours > 0) {
-            return `${padWithZero(hours)}:${padWithZero(minutes)}:${padWithZero(seconds)}`
-        } else {
-            return `${padWithZero(minutes)}:${padWithZero(seconds)}`
-        }
+    const duration = moment.duration(timeString)
+    const date = moment().startOf('day')
+    date.add(duration)
+    
+    const options = {
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
     }
-    return "01:00"
+    
+    if (duration.asMinutes() < 60) {
+        return date.toDate().toLocaleTimeString('en-US', options)
+    } else {
+        return date.toDate().toLocaleTimeString()
+    }
 }
+
 
 function padWithZero(number) {
     return number.toString().padStart(2, '0')

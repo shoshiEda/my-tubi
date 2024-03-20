@@ -6,7 +6,7 @@ import { Edit} from '../Edit.jsx'
 
 ////import { removeStation, saveStation, setCurrStation, setUserStations } from "../../store/actions/station.actions"
 //import { stationService } from "../../services/station.service"
-//import { updateUser } from "../../store/actions/user.actions"
+import { editUser } from "../../store/user.actions.js"
 import { SortByModal } from "./SortModal.jsx"
 
 import Delete from "../../assets/img/icons/delete.svg"
@@ -15,6 +15,7 @@ import Search from "../../assets/img/icons/search.svg"
 import Library from "../../assets/img/icons/library.svg"
 import Sort from "../../assets/img/icons/sort.svg"
 import Dot from "../../assets/img/icons/dot.svg"
+import notes from '../../assets/img/icons/notes.svg'
 
 
 import LikedCover from '../../assets/img/pics/liked-cover.png'
@@ -32,7 +33,7 @@ export function LeftSideBarLibrary() {
     const [userStations, setUserStations] = useState(null)
     const [isEdit, setIsEdit] =useState(false)
 
-
+    console.log(user)
 
     const navigate = useNavigate()
 
@@ -60,23 +61,18 @@ export function LeftSideBarLibrary() {
         }
         catch (err) { console.log(err) }
 
-    }
+    }*/
 
-    async function onRemoveStation(ev, stationId) {
-
-        ev.preventDefault()
-        const newStations = user.stations.filter(station => station._id !== stationId)
-        try {
-            const editUser = { ...user, stations: newStations }
-            await updateUser(editUser)
-            await removeStation(stationId)
+    async function onRemoveStation( station) {
+        try {           
+            await editUser(user,'stasions',station,false)
             navigate('/')
         }
-        catch (err) { console.log(editUser.stations) }
+        catch (err) { console.log(user.stasions) }
 
     }
 
-    function handleChange({ target }) {
+    /*function handleChange({ target }) {
         setFilterSort(prev => ({ ...prev, name: target.value }))
         FilterList()
         if (!target.value) setUserStations([...user.stations])
@@ -92,7 +88,7 @@ export function LeftSideBarLibrary() {
     }
 */
     if (!user ) return <div className='no-user-msg'>In order to save <br/> your own albums<br/> please log in</div>
-
+console.log(user.stasions)
 
     return (
 
@@ -132,38 +128,36 @@ export function LeftSideBarLibrary() {
             <section className="side-bar-content">
 
                 <ul>
-                    {
+                    
                         <Link to={'/station/liked'}>
                         <li className='left-side-albums flex align-center'>
-                            
+                        <div className='pic-and-contant'>
                             <img src={LikedCover}/>
                             <div className='album-info flex align-center column'>
                             <p>Songs you liked</p>
                             <p className='flex align-center'>Playlist  <img className='svg' src={Dot}/> {user.likedSongs? user.likedSongs.length : 0} songs</p>
                             </div>
+                            </div>
+
                         </li>
                         </Link>
-                       /* userStations.map((station, idx) => (
-                            <Link onClick={() => setStationInFoucs(station)} key={station._id} to={'/station/edit/' + station._id}>
-                                <li className={`grid ${(stationInFoucs && stationInFoucs._id === station._id) ? 'active-class' : ''}`}>
-
-                                    {station.imgUrl ?
-                                        <img className="station-image-left-sidebar" src={station.imgUrl}></img> :
-                                        <div className="svg-box">
-                                            <Note></Note>
+                        {user.stasions && user.stasions.map((station, idx) => (
+                            <li  className='left-side-albums flex ' key={idx}>
+                            <Link to={'/station/' + station._id} >
+                                
+                                    <div className='pic-and-contant'>
+                                    <img className={station.imgUrl ?'':'svg-icon'} src={station.imgUrl ? station.imgUrl:notes}></img> 
+                                    <div className='album-info flex  column'>
+  
+                                        <p>{station.name}</p>
+                                        <p className='flex align-center'>by:{station.createdBy} <img className='svg' src={Dot}/>{station.songs? station.songs.length:0} songs</p>
                                         </div>
-                                    }
-                                    <header>{station.name}</header>
-                                    <p>
-                                        <Pin></Pin>
-                                        <span className="station-type">{station.type}</span>
-                                        <span>{station.songs.length} songs</span>
-                                        <button onClick={(ev) => onRemoveStation(ev, station._id)}><Delete></Delete></button>
-                                    </p>
-
+                                        </div>
+                                        </Link>
+                                        <button onClick={(ev) => onRemoveStation(station)}><img className='svg delete' src={Delete}></img></button>
                                 </li>
-                            </Link>
-                                ))*/}
+                            
+                                ))}
                 </ul>
             </section>
             {isEdit && < Edit setEntity={setStation} setIsEdit={setIsEdit} entityType={'station'}/>}

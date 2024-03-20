@@ -82,18 +82,18 @@ export async function loadUser(userId) {
     }
 }
 
-export async function editUser(user,field='',value='',isAdd='undifined'){
+export async function editUser(user,field='',value='',isAdd= undefined){
 
-    if(isAdd && isAdd!=='undifined'){
+    if(isAdd && isAdd!==undefined){
         if (!Array.isArray(user[field]))    user[field]=[] 
-        value.id=utilService.makeId()      
+        if(value==='likedSongs') value._id=utilService.makeId()      
         user[field].push(value)
     }
-    else if(!isAdd){
-        console.log('hi')
-        const idx = user[field].findIndex(obj => obj.id===value.id)
+    else if(isAdd===false){
+        const idx = user[field].findIndex(obj => obj._id===value._id)
         user[field].splice(idx,1)
     }
+    console.log(user)
     try{
         const updatedUser = await userService.updateUser(user)
         store.dispatch({ type: SET_USER, user })
