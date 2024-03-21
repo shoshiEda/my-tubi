@@ -42,6 +42,11 @@ export function stationReducer(state = intialState, action = {}) {
             return { ...state, userStations: action.newStations }
 
         default:
-            return state
+          
     }
+
+     // For debug:
+     //window.userState = state
+    //console.log('State:', state)
+    return state
 }

@@ -3,17 +3,23 @@ import play from '../assets/img/icons/play.svg'
 import pause from '../assets/img/icons/pause.svg'
 import plus from '../assets/img/icons/plus.svg'
 import trash from '../assets/img/icons/delete.svg'
+import heart from '../assets/img/icons/heart.svg'
+import fullHeart from '../assets/img/icons/full-heart.svg'
+
+
 import { useSelector } from "react-redux"
 import { setContextMenu } from "../store/system.actions"
 
 
 
-export function SongPreview({ song, idx, isEdit, onChangePlaylist, onRemoveSong, user, id, isSearch = false }) {
+export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModal, setOpenModal, setIsLiked ,setIsEdit ,saveSongInAlbum }) {
 
     //const activeContextMenuId = useSelector(storeState => storeState.appMoudle.playlistContextMenu)
     const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 })
 
     const contextMenuRef = useRef(null)
+    const user = useSelector(storeState => storeState.userModule.user)
+
     
 
    
@@ -39,6 +45,10 @@ export function SongPreview({ song, idx, isEdit, onChangePlaylist, onRemoveSong,
         setContextMenuPosition({ x: xPosition, y: yPosition })
     }
 
+    function setAction(){
+        (!isUserStation || id==='liked')? setOpenModal({isOpen:!openModal.isOpen,idx:idx}) : setIsLiked(song)
+    }
+
     function handleClickOutside(ev) {
         if (contextMenuRef.current && !contextMenuRef.current.contains(ev.target)) {
             setContextMenu(null)
@@ -51,6 +61,17 @@ export function SongPreview({ song, idx, isEdit, onChangePlaylist, onRemoveSong,
             window.removeEventListener('click', handleClickOutside)
         }
     }, [])
+
+    let iconSrc;
+if (!isUserStation || id === 'liked') {
+    iconSrc = plus;
+} else {
+    if (!song.isLiked) {
+        iconSrc = fullHeart;
+    } else {
+        iconSrc = heart;
+    }
+}
 
     return (
         <li key={idx} className="station-details-list"
@@ -68,10 +89,17 @@ export function SongPreview({ song, idx, isEdit, onChangePlaylist, onRemoveSong,
             <p >{song.artist}</p>
            
             <div className="durasion-and-icons">
-            <img className="icon svg" src={plus}/>
+            <img onClick={setAction} className="icon svg" src={iconSrc}/*src={(!isUserStation || id==='liked')? plus :{(song.isLiked?)fullHeart : heart}}*//>
             <p>{song.duration}</p>
-            <img className="icon svg" src={trash} onClick={()=>onRemoveSong(song)}/>
+            {isUserStation && <img className="icon svg" src={trash} onClick={()=>onRemoveSong(song)}/>}
             </div>
+            {openModal.isOpen && openModal.idx===idx && <div  className='modal'><ul>
+                                            <p onClick={()=>{
+                                                setIsEdit(true) 
+                                                setOpenModal({isOpen:false,idx:-1})}
+                                                }>Add a new album</p>
+                                            {user.stasions && user.stasions.map((station,idx)=> <li key={idx} onClick={()=>saveSongInAlbum(song,station)}>{station.name}</li>)}
+                                            </ul></div>}
             {/*activeContextMenuId === song.trackId && (
                 <ul ref={contextMenuRef} className="context-menu" style={{ position: 'absolute', top: `${contextMenuPosition.y}px`, left: `${contextMenuPosition.x}px` }}>
                     <li>

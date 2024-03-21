@@ -4,7 +4,7 @@ import { SongPreview } from "./SongPreview.jsx";
 
 
 
-export function Playlist({onSaveSong, songs, onRemoveSong, isEdit, id, user, onChangePlaylist,isSearch }) {
+export function Playlist({id, songs, onRemoveSong, isUserStation , openModal, setOpenModal, setIsLiked , setIsEdit,saveSongInAlbum}) {
 
     return (
 
@@ -20,9 +20,14 @@ export function Playlist({onSaveSong, songs, onRemoveSong, isEdit, id, user, onC
             </ul>
             <ul className="song-list grid clean-list">
                 {songs.map((song, idx) => (
-                    <SongPreview key={idx} idx={idx} song={song} isEdit={isEdit}
-                        onRemoveSong={onRemoveSong} isSearch={isSearch} onChangePlaylist={onChangePlaylist}
-                        user={user} id={id} onSaveSong={onSaveSong}>
+                    <SongPreview key={idx} idx={idx} id={id} song={song} 
+                        onRemoveSong={onRemoveSong} 
+                        isUserStation={isUserStation} 
+                        openModal={openModal}
+                        setOpenModal={setOpenModal} 
+                        setIsEdit={setIsEdit}
+                        setIsLiked={setIsLiked}
+                        saveSongInAlbum={saveSongInAlbum}>
                     </SongPreview>
                 ))}
 

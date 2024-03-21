@@ -7,6 +7,9 @@ import { useSelector } from 'react-redux'
 //import { saveStation } from '../store/actions/station.actions'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
 import { editUser } from '../store/user.actions'
+import { Edit } from '../cmps/Edit.jsx'
+import { saveStation } from '../store/station.actions'
+
 
 
 import plus from '../assets/img/icons/plus.svg'
@@ -23,8 +26,8 @@ import  Play  from '../assets/img/icons/play.svg'
 export function SearchPage() {
 
     const [searchList, setSearchList] = useState(null)
-
-    
+    const [openModal, setOpenModal] = useState({isOpen:false,idx:-1})
+    const [isEdit, setIsEdit] = useState(false)
 
     const user = useSelector(storeState => storeState.userModule.user)
 
@@ -50,16 +53,6 @@ export function SearchPage() {
         catch (err) { console.log(err) }
     }
 
-    async function onSaveSong(song) {
-        try {
-            const savedSong = await saveSong(song)
-            const downloadStation = user.stations[1]
-            downloadStation.songs.push(savedSong)
-            saveStation(downloadStation)
-
-        }
-        catch (err) { console.log(err) }
-    }
 
     async function setIsLiked(idx,isLiked){
         const updatedSong = searchList[idx]
@@ -86,9 +79,28 @@ export function SearchPage() {
           })   
     }
 
+    
+
+    async function saveSongInAlbum(currStation,song){
+        const updatedStation = { ...currStation }
+        updatedStation.songs? updatedStation.songs.push(song) : updatedStation.songs=[(song)]
+        try{
+            await saveStation(updatedStation)
+            const idx = user.stasions.findIndex(station => station._id===updatedStation._id)
+            if(idx!==-1)
+            {
+                user.stasions[idx]=updatedStation
+                await editUser(user)
+            }
+            setOpenModal({isOpen:false,idx:-1})
+            navigate('/search/'+params.searchTerm)
+        }
+        catch (err) { console.log(err) }
+    }
+
    
 
-     console.log(searchList)
+     console.log(user.stasions,openModal)
     return (
         <section>
             {!params.searchTerm &&
@@ -147,9 +159,17 @@ export function SearchPage() {
                                         <img onClick={()=>setIsLiked(idx,song.isLiked)} src={song.isLiked? FullHeart : Heart}/>
                                         </button>}
                                         <p>{song.duration}</p>
-                                        {user && <button className='add-button' onClick={() => onSaveSong(song)}><img className='plus' src={plus} /></button>}
+                                        {user && <button className='add-button' onClick={() => setOpenModal({isOpen:!openModal.isOpen,idx:idx})}><img className='plus' src={plus} /></button>}
                                     </div>
-
+                                    
+                                        {openModal.isOpen && openModal.idx===idx && <div  className='modal'><ul>
+                                            <p onClick={()=>{
+                                                setIsEdit(true) 
+                                                setOpenModal({isOpen:false,idx:-1})}
+                                                }>Add a new album</p>
+                                            {user.stasions && user.stasions.map((station,idx)=> <li key={idx} onClick={()=>saveSongInAlbum(station,song)}>{station.name}</li>)}
+                                            </ul></div>}
+                                            
                                 </li>
 )}
                         </ul>
@@ -157,6 +177,7 @@ export function SearchPage() {
 
                 </div>
             }
+            {isEdit && <Edit  setIsEdit={setIsEdit} entityType={'station'} />}
 
             {(!searchList && params.searchTerm) && <div>...loading</div>}
         </section >)

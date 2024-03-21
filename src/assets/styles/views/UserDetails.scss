@@ -61,16 +61,6 @@
         cursor: pointer;
         transition: opacity 0.3s;
 
-
-
-        /*&:hover{
-            opacity: 0.4;
-
-            .edit-pic{
-                color:red;
-            }
-        }*/
-
     }
 
     .user-icon-background{
@@ -104,6 +94,46 @@
         margin-block-start: 0.5rem;
         text-shadow: 20px 20px 40px rgba(0, 0, 0, 0.8); 
         cursor: pointer;
+    }
+
+   
+}
+
+.stations-conteiner{
+
+    display: flex;
+    flex-wrap: wrap;
+
+    .station-card{
+        width:13rem;
+        height: 15rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        position: relative;
+        
+        .album-cover{
+        width: 10rem; 
+        height: 11rem;
+        border-radius: 0.5rem;
+        }
+
+    
+
+        .description {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .station-name{
+            font-weight: bold;
+            text-align: end;
+        }
+
+        &:hover{
+            background-color: $clr10;
+        }
+        
     }
 
 }

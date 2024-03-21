@@ -16,6 +16,8 @@ h3{
     margin: 1rem;
 }
 
+
+
 .search-box {
     position: relative;
     background-color: #242424;
@@ -67,6 +69,7 @@ h3{
 }
 
 .station-header {
+    position: relative;
     display: flex;
     align-items: center;
     background-color: initial;
@@ -84,10 +87,45 @@ h3{
 
     img {
         width: 200px;
-        height: auto;
+        height: 200px;
         margin-right: 20px;
         border-radius: 4px;    
         cursor: pointer;
+    }
+    .big-heart{
+        width: 3.5rem;
+        height: 3.5rem;
+        opacity: 0.7;
+        position: absolute;
+        top:16.5rem;
+        right:10rem;
+        
+    }
+
+    .play-bg{
+        position: absolute;
+        grid-column: 2;
+        background-color: $clr1;
+        border-radius: 50%;
+        height: 4rem;
+        width: 4rem;
+        padding: 1rem;
+        
+        top:16rem;
+        right:3rem;
+        transition: top 0.3s ease, opacity 0.3s ease;
+        box-shadow: 0px 8px 16px 0 rgba(25, 30, 15, 9.2);
+    
+    
+    
+        .play-button{
+            height: 2rem;
+            width: 2rem;
+        }
+
+        &:hover{
+            scale:1.1;
+        }
     }
 
 
@@ -391,6 +429,37 @@ position: relative;
         p{
             margin-inline-end: 2rem;
             margin-inline-start: 0.5rem;
+        }
+    }
+
+    .modal{
+        position: absolute;
+        background-color: $clr10;
+        width: auto;
+        height:auto;
+        border-radius: 0.5rem;
+        right:7rem;
+        z-index: 5;
+        cursor: pointer;
+
+        p{
+            padding: 0.5rem;
+            width: auto;
+            height: auto;
+            padding-inline: 0.7rem;
+            border-bottom: 2px solid $clr8;
+           
+        }
+
+        li{
+            padding: 0.5rem;
+            border-bottom: 1px solid $clr8;
+        }
+
+        p,li{
+            &:hover{
+                background-color: $clr8;
+            }
         }
     }
 

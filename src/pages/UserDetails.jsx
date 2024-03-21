@@ -18,7 +18,9 @@ export function UserDetails(){
 
     let loggedInUser={username: user.username,email:user.email, imgUrl:user.imgUrl}
     if (!user) return <h1>loadings....</h1>
-    return user && <div className='user-details'>
+    return user && 
+    <div className='user-page'>
+    <div className='user-details'>
       <div className="image-container">
         {loggedInUser.imgUrl ?
                 <img className='user-img' src={user.imgUrl}></img>
@@ -35,32 +37,23 @@ export function UserDetails(){
       <div className='user-info'>
             <p>Profile</p>
             <h3 onClick={()=>setIsEdit(true)}> {loggedInUser.username} </h3>
-            <p>You have {user.station? user.station.length : 0} albums</p>
+            <p>You have {user.stasions? user.stasions.length : 0} albums</p>
       </div>
       {isEdit && < Edit entity={user} setEntity={setUser} setIsEdit={setIsEdit} entityType={'user'}/>}
-        {/*  <ul className="clean-list">
+    </div>
+    {  user.stasions &&<h2>Your albums:</h2>}
+    {  user.stasions && <ul className=" stations-conteiner clean-list">
                     {
-                        userStations.map(station =>
-                            <Link key={station._id} to={'/1/station/edit/' + station._id}>
-                                <li className="grid">
-                                    <img className="station-image-left-sidebar" src={station.stationImgUrl}></img>
-                                    <header>{station.name}</header>
-                                    <p>
-                                        <img src="\src\assets\img\pinned.svg" className="left-sidebar-pinned-icon"></img>
-
-                                       
-                                        <span className="station-type">{station.type}</span>
-                                        <span>{station.songs.length} songs</span>
-                                    </p>
-
-
-                                   
-
-                                </li>
-                            </Link>
-                        )
-                    }
-                </ul>*/ }
+                        user.stasions.map(station =>
+                                <Link to={'/station/' + station._id} className='station-card' key={station._id}>
+                               <div  >
+                                   <img className='album-cover' src={station.imgUrl || albumCover} />
+                                   <p className='station-name'>{station.name}</p>
+                                   <p className="description">{station.description}</p>
+                               </div>
+                               </Link>
+                           )}
+                </ul> }
     </div>
 
 

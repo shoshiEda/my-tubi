@@ -57,7 +57,7 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
       let updatedAlbum=entity || {}
       updatedAlbum.name = credentials.name,
       updatedAlbum.imgUrl = credentials.imgUrl
-      updatedAlbum.type = credentials.type
+      updatedAlbum.type = credentials.type || 'Mixed'
       updatedAlbum.description = credentials.description
       console.log(user)
 

@@ -158,6 +158,23 @@ console.log(user.stasions)
                                 </li>
                             
                                 ))}
+                                 {user.likedStasions && user.likedStasions.map((station, idx) => (
+                            <li  className='left-side-albums flex ' key={idx}>
+                            <Link to={'/station/' + station._id} >
+                                
+                                    <div className='pic-and-contant'>
+                                    <img className={station.imgUrl ?'':'svg-icon'} src={station.imgUrl ? station.imgUrl:notes}></img> 
+                                    <div className='album-info flex  column'>
+  
+                                        <p>{station.name}</p>
+                                        <p className='flex align-center'>by:{station.createdBy} <img className='svg' src={Dot}/>{station.songs? station.songs.length:0} songs</p>
+                                        </div>
+                                        </div>
+                                        </Link>
+                                        <button onClick={(ev) => onRemoveStation(station)}><img className='svg delete' src={Delete}></img></button>
+                                </li>
+                            
+                                ))}
                 </ul>
             </section>
             {isEdit && < Edit setEntity={setStation} setIsEdit={setIsEdit} entityType={'station'}/>}

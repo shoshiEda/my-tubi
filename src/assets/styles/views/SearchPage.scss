@@ -56,6 +56,7 @@
     column-gap: 24px;
 
     .top-result-section {
+        position: relative;
 
         justify-content: center;
         display: grid;
@@ -69,14 +70,19 @@
         transition: background-color .3s ease;
 
         .play-bg{
+            position: absolute;
             grid-column: 2;
             background-color: $clr1;
             border-radius: 50%;
-            height: 3rem;
-            width: 3rem;
+            height: 4rem;
+            width: 4rem;
             opacity: 0;
-            margin-block-start: 30%;
-            margin-inline-start: 60%;
+            top:13rem;
+            left:3rem;
+            transition: top 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0px 8px 16px 0 rgba(25, 30, 15, 9.2);
+
+
 
             .play-button{
                 height: 1.5rem;
@@ -88,6 +94,7 @@
             background-color: #282828;
 
             .play-bg{
+                top:12rem;
                 opacity: 1;
             }
         }
@@ -132,6 +139,7 @@
 
             .single-song-result {
                 grid-template-columns: minmax(120px, auto) minmax(120px, auto);
+                position: relative;
 
                 &:hover {
                     background-color: $clr11;
@@ -142,6 +150,35 @@
                     }
                     .img-play-title-artist-container .song-image-play .play-button{
                         opacity: 1;
+                    }
+                }
+
+                .modal{
+                    position: absolute;
+                    background-color: $clr10;
+                    width: auto;
+                    height:auto;
+                    border-radius: 0.5rem;
+                    right:2rem;
+                    z-index: 5;
+                    cursor: pointer;
+
+                    p{
+                        padding: 0.5rem;
+                        padding-inline: 0.7rem;
+                        border-bottom: 2px solid $clr8;
+                       
+                    }
+
+                    li{
+                        padding: 0.5rem;
+                        border-bottom: 1px solid $clr8;
+                    }
+
+                    p,li{
+                        &:hover{
+                            background-color: $clr8;
+                        }
                     }
                 }
 
@@ -203,6 +240,7 @@
                         border: none;
                         cursor: pointer;
                         opacity: 0;
+                        padding: 0;
                     }
                     img{
                         width: 1rem;
