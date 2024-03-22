@@ -47,7 +47,6 @@ export function SearchPage() {
         try {
 
             const searchList = await apiService.getContent(params.searchTerm)
-            console.log(searchList)
             setSearchList(searchList)
         }
         catch (err) { console.log(err) }
@@ -66,7 +65,6 @@ export function SearchPage() {
           editUser(user,'likedSongs',updatedSong,false)
           :
           editUser(user,'likedSongs',updatedSong,true)
-          navigate('/search/'+params.searchTerm)
     }
 
     async function setIsPlaying(idx){
@@ -101,6 +99,8 @@ export function SearchPage() {
    
 
      console.log(user.stasions,openModal)
+     if(!searchList || !searchList.length)  return <h3>There are no results</h3>
+
     return (
         <section>
             {!params.searchTerm &&

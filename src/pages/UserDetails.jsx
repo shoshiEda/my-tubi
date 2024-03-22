@@ -37,7 +37,7 @@ export function UserDetails(){
       <div className='user-info'>
             <p>Profile</p>
             <h3 onClick={()=>setIsEdit(true)}> {loggedInUser.username} </h3>
-            <p>You have {user.stasions? user.stasions.length : 0} albums</p>
+            <p>You have {user.stasions ? user.stasions.length : 0} {user.stasions.length === 1 ? ' album' : ' albums'}</p>
       </div>
       {isEdit && < Edit entity={user} setEntity={setUser} setIsEdit={setIsEdit} entityType={'user'}/>}
     </div>

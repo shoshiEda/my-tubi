@@ -8,6 +8,7 @@ import { AppHeader } from './cmps/AppHeader'
 import { AppFooter } from './cmps/AppFooter'
 import { UserDetails } from './pages/UserDetails'
 import { SearchPage } from './pages/SearchPage'
+import { StationsOfType } from './pages/StationsOfType.jsx'
 import { LeftSideBar } from './cmps/LeftSidebar/LeftSidebar.jsx'
 
 
@@ -22,6 +23,7 @@ export function RootCmp() {
                 <AppHeader />
                 <Routes>
                     <Route path="/" element={<HomePage />} />
+                    <Route path="/type/:type" element={<StationsOfType />} />
                     <Route path="station/:id" element={<StationDetails />} />
                     <Route path="user/:id" element={<UserDetails />} />`
                     <Route path="/search" element={<SearchPage />} />

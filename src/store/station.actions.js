@@ -5,7 +5,7 @@ import { ADD_STATION, EDIT_STATION, REMOVE_STATION, SET_CURR_STATION, SET_STATIO
 import { store } from "../store/store"
 
 
-export async function loadStations(filterSortBy = {}) {
+export async function loadStations(filterSortBy = '') {
     try {
         const stations = await stationService.query(filterSortBy)
         console.log("stations:", stations)

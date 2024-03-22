@@ -59,6 +59,7 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
       updatedAlbum.imgUrl = credentials.imgUrl
       updatedAlbum.type = credentials.type || 'Mixed'
       updatedAlbum.description = credentials.description
+      updatedAlbum.createdAt = Date.now()
       console.log(user)
 
       try{
@@ -71,6 +72,7 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
       }
 
         navigate(`/station/${newUpdatedAlbum._id}`)
+        setEntity()
         setIsEdit(false)  
     }
     catch(err){

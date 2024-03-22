@@ -25,6 +25,8 @@
 
         }
 
+        
+
         ul {
             padding: 8px 12px;
             margin: 0;
@@ -53,6 +55,7 @@
         border-radius: $panel-gap;
         background-color: $clr7;
         flex-grow: 1;
+      
 
         .your-library{
             font-weight: bold;
@@ -61,10 +64,37 @@
         .search{
             input{
                 background-color: $clr11;
+                width: 10rem;
                 border: none;
                 padding: 0.3rem;
                 border-radius: 1rem;
-                font-size: 0.7rem;
+                font-size: 1rem;
+                color: $clr4;
+                font-weight: bold;
+
+                &:focus {
+                    outline: none;
+                  }
+            }
+        }
+
+        .modal{
+            position: absolute;
+            background-color: $clr10;
+            width: auto;
+            height:auto;
+            border-radius: 0.5rem;
+            left:8rem;
+            z-index: 5;
+            cursor: pointer;
+
+            li{
+                padding: 0.5rem;
+                border-bottom: 1px solid $clr8;
+
+                &:hover{
+                    background-color: $clr11;
+                }
             }
         }
 
@@ -143,6 +173,9 @@
             }
         }
 
+    }
+    .selected{
+        background-color: $clr11;
     }
 }
 

@@ -20,8 +20,18 @@ export const stationService = {
     getStationDuration
 }
 
-function query(filterSortBy = {}) {
-    return storageService.query('station')
+async function query(type = '') {
+    try{
+        let stations = await storageService.query('station')
+        console.log(stations)
+        if(type) stations = stations.filter(station=> station.type===type)
+        return stations
+    }
+    catch (err) {
+        console.log('Station Action -> Cannot load stations', err)
+        throw err
+    }
+    
     //return httpService.get(BASE_URL, filterSortBy)
 }
 

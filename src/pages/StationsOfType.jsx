@@ -1,37 +1,33 @@
+import { useParams } from "react-router"
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from "react-router-dom"
-
-
-import { loadStations } from '../store/station.actions'
 
 import albumCover from '../assets/img/pics/album-cover.jpeg'
 import play from '../assets/img/icons/play.svg'
 
 
 
+import { loadStations } from '../store/station.actions'
 
 
-export function HomePage() {
-    const stationTypes = useSelector(storeState => storeState.stationModule.stationTypes)
-    const stations = useSelector(storeState => storeState.stationModule.stations)
-    
+export function StationsOfType(){
+
+    const { type } = useParams()
+    let stations = useSelector(storeState => storeState.stationModule.stations)
+
 
     useEffect(() => {
-        loadStations()
+        stations = loadStations(type)
     }, [])
 
-    //console.log(stationTypes, stations)
+    console.log(stations,type)
 
     return (
         <section>
-            {stationTypes.map(type => {
-                const filteredStations = stations.filter(station => station.type === type)
-                return (
-                    <div className='type-and-albums' key={type}>
-                        <Link to={'/type/' + type}><h2>{type}</h2></Link>
-                        <div className='type-conteiner'>
-                        {filteredStations.map(station => (
+            <h3>{type}</h3>
+            <section className="stations-by-type">
+            {stations.map((station =>
                              <Link to={'/station/' + station._id} className='station-card' key={station._id}>
                             <div  >
                                 <img className='album-cover' src={station.imgUrl || albumCover} />
@@ -41,13 +37,12 @@ export function HomePage() {
                                 <p className='station-name'>{station.name}</p>
                                 <p className="description">{station.description}</p>
                             </div>
-                            </Link>
-                        ))}
-                        </div>
-                    </div>
-                )
-            })}
+                            </Link>))}
+                            </section>
+                     
         </section>
     )
+
+
+
 }
-      

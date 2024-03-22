@@ -112,6 +112,9 @@ export function StationDetails() {
         navigate('/station/'+id)
     }
 
+    console.log(currStation)
+
+
     async function onSaveSong(song){
         
         const updatedStation = { ...currStation }
@@ -161,9 +164,9 @@ export function StationDetails() {
     return (
         <section className="station-details">
             <header className="station-header">
-                <img src={imgUrl || notes} onClick={() => setIsEdit(true)} />
+                <img src={imgUrl || notes} onClick={() => (isUserStation && id!=='liked')? setIsEdit(true):''} />
                 <div className="station-header-info">
-                    <h1 onClick={() => setIsEdit(true)}>{name}</h1>
+                    <h1 onClick={() => (isUserStation && id!=='liked')? setIsEdit(true):''}>{name}</h1>
                     <p className="description">{description}</p>
                     <br />
                     <p className="by">{createdBy}</p>
@@ -189,7 +192,7 @@ export function StationDetails() {
             {songs && <Playlist id={id} songs={songs} onRemoveSong={onRemoveSong} isUserStation={isUserStation} openModal={openModal} setOpenModal={setOpenModal} setIsLiked={setIsLiked} setIsEdit={setIsEdit} saveSongInAlbum={saveSongInAlbum}></Playlist>}
             
             {id!=='liked' && isUserStation && <SearchStation currStation={currStation} setCurrStation={setCurrStation} onSaveSong={onSaveSong} />}
-            {isEdit  && <Edit entity={(!isUserStation || id==='liked')? '' : currStation} setIsEdit={setIsEdit} entityType={'station'} />}
+            {isEdit  && <Edit entity={currStation} setIsEdit={setIsEdit} entityType={'station'} />}
         </section>
     )
 }
