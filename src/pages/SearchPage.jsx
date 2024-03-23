@@ -1,14 +1,15 @@
 import { utilService } from '../services/util.service'
 import { apiService } from '../services/api.service'
 import { Fragment, useEffect, useState } from 'react'
-import { PlayCard } from '../cmps/main/PlayCard'
 import { useNavigate, useParams } from "react-router"
 import { useSelector } from 'react-redux'
-//import { saveStation } from '../store/actions/station.actions'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
 import { editUser } from '../store/user.actions'
 import { Edit } from '../cmps/Edit.jsx'
 import { saveStation } from '../store/station.actions'
+import { setCurrPlaying } from '../store/system.actions'
+
+
 
 
 
@@ -28,8 +29,12 @@ export function SearchPage() {
     const [searchList, setSearchList] = useState(null)
     const [openModal, setOpenModal] = useState({isOpen:false,idx:-1})
     const [isEdit, setIsEdit] = useState(false)
+    const [isStationPlaying, setIsStationPlaying] = useState(false)
+
+    
 
     const user = useSelector(storeState => storeState.userModule.user)
+    const currSong = useSelector(storeState => storeState.systemModule.currSong)
 
     const genres = ["New", 'Music', 'Pop', 'Hip-Hop', 'Rap', 'Latino', 'Indie', 'Rock', 'Podcusts', 'Live', 'Sport', 'Meditation', 'Party', 'Electronic', 'For sleep']
 
@@ -52,6 +57,37 @@ export function SearchPage() {
         catch (err) { console.log(err) }
     }
 
+    async function playSong(playSong,idx){
+
+        let playingStation
+        
+        if(currSong && currSong.trackId===playSong.trackId)
+        {
+    
+        }
+        else{
+            if(idx!==-1){
+            searchList.map(song=>song.isPlaying=false)
+            setIsStationPlaying(false)
+            if(user) user.currSong=playSong
+            }
+            else{
+                if(user) user.currSong=searchList[0]
+                playingStation={name: params.searchTerm, songs:searchList}
+                if(user) user.currStation = playingStation
+            }
+        }
+        idx!==-1 ? searchList[idx].isPlaying=!searchList[idx].isPlaying : setIsStationPlaying(!isStationPlaying)
+        idx!==-1? setCurrPlaying(playSong) : setCurrPlaying(searchList[0],playingStation)
+        try{ 
+            if(user) await editUser(user)   
+            setSearchList(searchList)   
+        }
+        catch (error) {console.log(error)}
+    }
+
+    
+
 
     async function setIsLiked(idx,isLiked){
         const updatedSong = searchList[idx]
@@ -67,15 +103,6 @@ export function SearchPage() {
           editUser(user,'likedSongs',updatedSong,true)
     }
 
-    async function setIsPlaying(idx){
-        const updatedSong = searchList[idx]
-        updatedSong.isPlaying=!searchList[idx].isPlaying
-        setSearchList(prevList => {
-            const newList = [...prevList]
-            newList[idx] = updatedSong; 
-            return newList
-          })   
-    }
 
     
 
@@ -97,9 +124,7 @@ export function SearchPage() {
     }
 
    
-
-     console.log(user.stasions,openModal)
-     if(!searchList || !searchList.length)  return <h3>There are no results</h3>
+     if(searchList && !searchList.length)  return <h3>There are no results</h3>
 
     return (
         <section>
@@ -127,8 +152,8 @@ export function SearchPage() {
                         <div className='details-container'>
                             <h3>{params.searchTerm}</h3>
                         </div>
-                        <button onClick={()=>setIsPlaying(0)} className="play-bg">
-                             <img className="play-button" src={searchList[0].isPlaying ? Pause : Play } />
+                        <button className="play-bg">
+                             <img onClick={()=>playSong(searchList[0],-1)} className="play-button" src={isStationPlaying ? Pause : Play } />
                         </button>
                     </div>
 
@@ -141,10 +166,10 @@ export function SearchPage() {
                             {searchList.map((song,idx) =>
                                 <li className='single-song-result grid' key={idx}>
                                     <div className='img-play-title-artist-container grid'>
-                                        <div className='song-image-play' onClick={(ev) => onPlayStation(ev)}>
+                                        <div className='song-image-play'>
                                             <img  src={song.imgUrl}></img>
                                             
-                                                 <img onClick={()=>setIsPlaying(idx)} className="play-button" src={song.isPlaying ? Pause : Play } />
+                                                 <img onClick={()=>playSong(song,idx)} className="play-button" src={song.isPlaying ? Pause : Play } />
                                                 
                                         </div>
 

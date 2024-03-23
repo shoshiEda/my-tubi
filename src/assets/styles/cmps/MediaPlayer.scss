@@ -1,0 +1,117 @@
+.media-player{
+    background-color: $clr9;
+    color: $clr4;
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+
+    .btns{
+        margin-inline: 3rem;
+    }
+
+    button{
+        background-color: inherit;
+        padding: 1rem;
+    }
+
+    .song-info{
+        display: flex;
+        align-items: center;
+
+        .cover-img{
+            height: 5rem;
+            width: 5rem;
+        }
+
+        .song-img{
+            background-color:$clr7 ;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        
+        img{
+            height: 4rem;
+            width: 4rem;
+        }
+
+        .svg{
+            opacity: 0.7;
+        }
+    }
+
+        p{
+            margin: 0.5rem;
+        }
+
+        p:first-of-type{
+            font-weight: bold;
+        }
+    }
+
+    .audio-control{
+        .play-song{
+            background-color: $clr5;
+            border-radius: 50%;
+            padding: 0.5rem;
+            margin-inline: 0.5rem;
+            margin-block-end: 1rem;
+
+            .play-svg{
+                height: 1rem;
+                width: 1rem;
+            }
+
+            &:hover{
+                scale:1.1;
+            }
+        }
+
+        .svg{
+            height: 1rem;
+            width: 1rem;
+            opacity: 0.7;
+
+            &:hover{
+                opacity: 1;
+            }
+        }
+    }
+
+    .volume-section{
+        display: flex;
+        align-items: center;
+
+        .svg{
+            height: 1rem;
+            width: 1rem;
+            opacity: 0.7;
+
+            &:hover{
+                opacity: 1;
+            }
+        }
+
+        .volume{
+            input[type="range"]{
+               -webkit-appearance: none;
+               height: 0.3rem;
+               border-radius: 1rem;
+               background-color: $clr4;
+
+
+               &::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 10px;
+                height: 10px;
+                background-color: $clr6;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: background-color 0.2s;
+
+            }
+            }
+        }
+
+    }
+
+    
+}

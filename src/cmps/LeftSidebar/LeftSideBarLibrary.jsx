@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Edit} from '../Edit.jsx'
 
 ////import { removeStation, saveStation, setCurrStation, setUserStations } from "../../store/actions/station.actions"
@@ -27,33 +27,35 @@ export function LeftSideBarLibrary() {
     const [filterSort, setFilterSort] = useState({ txt: '', sortBy: '' })
     const [showSearch, setShowSearch] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [userStations, setUserStations] = useState([...user.stasions, ...user.likedStasions])
+    const [userStations, setUserStations] = useState(user? [...user.stasions, ...user.likedStasions]: [])
     const [isEdit, setIsEdit] =useState(false)
     const [selectedIdx, setSelectedIdx] = useState(null);
 
 
-    const handleClick = (idx) => {
-      if (selectedIdx === idx) {
-        setSelectedIdx(null);
-      } else {
-        setSelectedIdx(idx);
-      }
-    }
-
-    const navigate = useNavigate()
+   
 
     useEffect(() => {
-        console.log('hi render')
-        FilterList()
+        if (user) {
+            FilterList()
+            }
     }, [user]);
 
 
-   
     useEffect(() => {
-        FilterList();
-    }, [filterSort.txt, filterSort.sortBy, user.stasions, user.likedStasions]);
+        if (user) {
+        FilterList()
+        }
+    }, [filterSort.txt, filterSort.sortBy, user?.stasions, user?.likedStasions]);
 
+    const handleClick = (idx) => {
+        if (selectedIdx === idx) {
+          setSelectedIdx(null);
+        } else {
+          setSelectedIdx(idx);
+        }
+      }
 
+   
 
     async function onRemoveStation( station) {
         const type = station.createdBy===user.username? 'stasions' : 'likedStasions'

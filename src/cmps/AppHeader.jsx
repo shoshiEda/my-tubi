@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link ,useNavigate } from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {useState} from 'react'
 import { logout } from '../store/user.actions.js'
@@ -17,14 +17,24 @@ export function AppHeader() {
     const [isSighningIn,setIsSighningIn] =useState(false)
     const [isOpen,setIsOpen] =useState(false)
 
+    const navigate = useNavigate()
+
+    console.log('render:',user)
+
     
+    async function navigateTo(diff)
+    {
+        navigate(diff)
+    }
+
+
     async function onLogout() {
         try {
             setIsOpen(false)
-            await logout()
-            showSuccessMsg(`Bye now`)
+            const user = await logout()
+            //navigate('/')
         } catch(err) {
-            showErrorMsg('Cannot logout')
+            console.log('Cannot logout:',err)
         }
     }
 
@@ -33,8 +43,8 @@ export function AppHeader() {
     return (
         <header className="app-header flex justify-between">
                 <div className='main-nav'>
-                    <button><img src={prevPage} alt="previous page" title="previous page"/></button>
-                    <button><img src={nextPage} alt="next page" title="next page"/></button>
+                    <button><img onClick={()=>navigateTo(-1)} src={prevPage} alt="previous page" title="previous page"/></button>
+                    <button><img onClick={()=>navigateTo(1)} src={nextPage} alt="next page" title="next page"/></button>
                 </div>
                 {isSearch && <Search/>}
                 <section className='user-acess'>

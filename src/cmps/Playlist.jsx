@@ -4,7 +4,7 @@ import { SongPreview } from "./SongPreview.jsx";
 
 
 
-export function Playlist({id, songs, onRemoveSong, isUserStation , openModal, setOpenModal, setIsLiked , setIsEdit,saveSongInAlbum}) {
+export function Playlist({id, songs, onRemoveSong, isUserStation , openModal, setOpenModal, setIsLiked , setIsEdit,saveSongInAlbum, playSong}) {
 
     return (
 
@@ -27,7 +27,8 @@ export function Playlist({id, songs, onRemoveSong, isUserStation , openModal, se
                         setOpenModal={setOpenModal} 
                         setIsEdit={setIsEdit}
                         setIsLiked={setIsLiked}
-                        saveSongInAlbum={saveSongInAlbum}>
+                        saveSongInAlbum={saveSongInAlbum}
+                        playSong={playSong}>
                     </SongPreview>
                 ))}
 

@@ -8,23 +8,22 @@ import fullHeart from '../assets/img/icons/full-heart.svg'
 
 
 import { useSelector } from "react-redux"
-import { setContextMenu } from "../store/system.actions"
 
 
 
-export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModal, setOpenModal, setIsLiked ,setIsEdit ,saveSongInAlbum }) {
+export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModal, setOpenModal, setIsLiked ,setIsEdit ,saveSongInAlbum ,playSong }) {
 
     //const activeContextMenuId = useSelector(storeState => storeState.appMoudle.playlistContextMenu)
-    const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 })
+    //const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 })
 
-    const contextMenuRef = useRef(null)
+    //const contextMenuRef = useRef(null)
     const user = useSelector(storeState => storeState.userModule.user)
 
     
 
    
 
-    function handleContextMenu(ev) {
+    /*function handleContextMenu(ev) {
         ev.preventDefault()
 
         const menuWidth = 160
@@ -43,43 +42,43 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
 
         setContextMenu(song.trackId)
         setContextMenuPosition({ x: xPosition, y: yPosition })
-    }
+    }*/
 
     function setAction(){
         (!isUserStation || id==='liked')? setOpenModal({isOpen:!openModal.isOpen,idx:idx}) : setIsLiked(song)
     }
 
-    function handleClickOutside(ev) {
+    /*function handleClickOutside(ev) {
         if (contextMenuRef.current && !contextMenuRef.current.contains(ev.target)) {
             setContextMenu(null)
         }
-    }
+    }*/
 
-    useEffect(() => {
+   /* useEffect(() => {
         window.addEventListener('click', handleClickOutside)
         return () => {
             window.removeEventListener('click', handleClickOutside)
         }
-    }, [])
+    }, [])*/
 
     let iconSrc;
-if (!isUserStation || id === 'liked') {
-    iconSrc = plus;
-} else {
-    if (!song.isLiked) {
-        iconSrc = fullHeart;
-    } else {
-        iconSrc = heart;
-    }
-}
+        if (!isUserStation || id === 'liked') {
+            iconSrc = plus;
+        } else {
+            if (!song.isLiked) {
+                iconSrc = fullHeart;
+            } else {
+                iconSrc = heart;
+            }
+        }
 
     return (
         <li key={idx} className="station-details-list"
-            onContextMenu={handleContextMenu}
+            /*onContextMenu={handleContextMenu}*/
         >
             <div>
-            <p className="idx">{idx + 1}</p>
-            <img className="play svg" src={song.isPlaying? pause :play}/>
+                <p className="idx">{idx + 1}</p>
+                <img onClick={()=>playSong(song)} className="play svg" src={song.isPlaying? pause :play}/>
             </div>
             <div className="artist-and-image grid">  
                 <div className="img-list-con">
@@ -89,7 +88,7 @@ if (!isUserStation || id === 'liked') {
             <p >{song.artist}</p>
            
             <div className="durasion-and-icons">
-            <img onClick={setAction} className="icon svg" src={iconSrc}/*src={(!isUserStation || id==='liked')? plus :{(song.isLiked?)fullHeart : heart}}*//>
+            {isUserStation && <img onClick={setAction} className="icon svg" src={iconSrc}/>}
             <p>{song.duration}</p>
             {isUserStation && <img className="icon svg" src={trash} onClick={()=>onRemoveSong(song)}/>}
             </div>

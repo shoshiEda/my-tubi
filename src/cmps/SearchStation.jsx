@@ -6,6 +6,10 @@ import { utilService } from "../services/util.service.js"
 import { useEffectUpdate } from "../customHooks/useEffectUpdate.js"
 import { apiService } from '../services/api.service'
 import { saveStation } from '../store/station.actions'
+import { editUser } from '../store/user.actions'
+import { setCurrPlaying } from '../store/system.actions'
+
+
 
 
 import play from '../assets/img/icons/play.svg'
@@ -20,12 +24,14 @@ import Heart from '../assets/img/icons/heart.svg'
 
 
 
-export function SearchStation({currStation,setCurrStation,onSaveSong}){
+export function SearchStation({currStation,onSaveSong}){
 
     const [input,setInput] =useState('')
     const setSelectedSongDebounced = useRef(utilService.debounce(selectedSong => fetchSearchResults(selectedSong)));
     const user = useSelector(storeState => storeState.userModule.user)
+    const currSong=user.currSong
     const [searchList, setSearchList] = useState(null)
+
 
 
 
@@ -46,24 +52,36 @@ export function SearchStation({currStation,setCurrStation,onSaveSong}){
         setInput(target.value)
     }
 
-    
-
-    function setIsPlaying(idx){
-        searchList[idx].isPlaying=true
-        setSearchList(prevList=>prevList,searchList)
-    }
 
     async function fetchSearchResults(selectedSong) {
         try {
 
             const searchList = await apiService.getContent(selectedSong)
-            console.log(searchList)
             setSearchList(searchList)
         }
         catch (err) { console.log(err) }
     }
 
-    function onPlayStation(ev){}
+    async function onPlaySong(playSong,idx){
+        
+        if(currSong && currSong.trackId===playSong.trackId)
+        {
+    
+        }
+        else{
+            searchList.map(song=>song.isPlaying=false)
+            if(user) user.currSong=playSong
+        }
+        searchList[idx].isPlaying=!searchList[idx].isPlaying
+        setCurrPlaying(playSong)
+        try{ 
+            if(user) await editUser(user)   
+            await saveStation(currStation) 
+            setSearchList(searchList)   
+        }
+        catch (error) {console.log(error)}
+    }
+
 
    
 
@@ -80,10 +98,10 @@ export function SearchStation({currStation,setCurrStation,onSaveSong}){
                             {searchList.map((song,idx) =>
                                 <li className='single-song-result grid' key={idx}>
                                     <div className='img-play-title-artist-container grid'>
-                                        <div className='song-image-play' onClick={(ev) => onPlayStation(ev)}>
+                                        <div className='song-image-play' onClick={() => onPlaySong(song,idx)}>
                                             <img className='song-img'  src={song.imgUrl}></img>
                                             
-                                                 <img onClick={()=>setIsPlaying(idx)} className="play-button svg" src={song.isPlaying ? pause : play } />
+                                                 <img className="play-button svg" src={song.isPlaying ? pause : play } />
                                                 
                                         </div>
 

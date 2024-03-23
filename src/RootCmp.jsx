@@ -5,7 +5,7 @@ import { HomePage } from './pages/HomePage.jsx'
 import { StationDetails } from './pages/StationDetails.jsx'
 
 import { AppHeader } from './cmps/AppHeader'
-import { AppFooter } from './cmps/AppFooter'
+import { MediaPlayer } from './cmps/MediaPlayer'
 import { UserDetails } from './pages/UserDetails'
 import { SearchPage } from './pages/SearchPage'
 import { StationsOfType } from './pages/StationsOfType.jsx'
@@ -30,7 +30,7 @@ export function RootCmp() {
                     <Route path="/search/:searchTerm" element={<SearchPage />} />
                 </Routes>
             </div>
-                <AppFooter />
+                <MediaPlayer />
         </Router>
         </div>
     )

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import {setHeaderSearch} from '../../store/system.actions.js'
 import {useSelector} from 'react-redux'
+import { setHeaderSearch } from '../../store/system.actions'
+
 
 
 import  homeIcon  from '../../assets/img/icons/home.svg'

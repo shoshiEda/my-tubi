@@ -8,6 +8,7 @@ import { SearchStation } from '../cmps/SearchStation.jsx'
 import notes from '../assets/img/icons/notes.svg'
 import dot from '../assets/img/icons/dot.svg'
 import play from '../assets/img/icons/play.svg'
+import pause from '../assets/img/icons/pause.svg'
 import heart from '../assets/img/icons/heart.svg'
 import fullHeart from '../assets/img/icons/full-heart.svg'
 import likedCover from '../assets/img/pics/liked-cover.png'
@@ -15,6 +16,7 @@ import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromIma
 import { editUser } from '../store/user.actions'
 import { useNavigate } from "react-router-dom"
 import { saveStation } from '../store/station.actions'
+import { setCurrPlaying } from '../store/system.actions'
 import { stationService } from '../services/station.service.js'
 
 
@@ -22,17 +24,20 @@ import { stationService } from '../services/station.service.js'
 
 
 export function StationDetails() {
-    const user = useSelector(storeState => storeState.userModule.user)
+    const user = useSelector(storeState => storeState.userModule.user) || null
+    const currSong = useSelector(storeState => storeState.systemModule.currSong)
     const { id } = useParams()
     const [isEdit, setIsEdit] = useState(false)
     const [currStation, setCurrStation] = useState(null)
     const idx =  user? user.stasions.findIndex(station => station._id === id) :-1
     const isUserStation = (idx===-1 && id!=='liked')? false:true
-    const LikedIdx = user.likedStasions.findIndex(station => station._id===id) 
+    const LikedIdx = user? user.likedStasions.findIndex(station => station._id===id) :0
     const isUserLikedAlbum = (!isUserStation && LikedIdx!==-1)? true : false
     const [openModal, setOpenModal] = useState({isOpen:false,idx:-1})
+    const [isStationPlaying, setIsStationPlaying] = useState(false)
 
-    console.log(id)
+
+
 
     const navigate = useNavigate()
 
@@ -105,6 +110,7 @@ export function StationDetails() {
     }
 
     async function setLikedAlbum(){
+        if(!user) return 
         isUserLikedAlbum?       
         editUser(user,'likedStasions',currStation,false)
         :
@@ -112,8 +118,7 @@ export function StationDetails() {
         navigate('/station/'+id)
     }
 
-    console.log(currStation)
-
+    
 
     async function onSaveSong(song){
         
@@ -127,7 +132,7 @@ export function StationDetails() {
             const idx = user.stasions.findIndex(station => station._id===currStation._id)
             user.stasions[idx]=currStation
             await editUser(user)
-            navigate('/station/'+id)
+            
         }
         catch (err) { console.log(err) }
     }
@@ -151,11 +156,48 @@ export function StationDetails() {
             }
          catch (error) {console.log(error)}
     }
-    navigate('/station/'+id)
 }
+
+async function playStation(){
+    if(!currStation.songs || !currStation.songs.length) return
+    setIsStationPlaying(!isStationPlaying)
+    if(user){
+        user.currSong=currStation.songs[0]
+        user.currStation=currStation
+    }   
+    setCurrPlaying(currStation.songs[0],currStation)
+    try{ 
+        if(user)await editUser(user)     
+    }
+    catch (error) {console.log(error)}
+}
+
+async function playSong(playSong){
+    const idx = currStation.songs.findIndex(song=>song.trackId===playSong.trackId)
+    setIsStationPlaying(false)
+    
+    if(currSong && currSong.trackId===playSong.trackId)
+    {
+
+    }
+    else{
+        currStation.songs.map(song=>song.isPlaying=false)
+        if(user){
+            user.currSong=playSong
+            user.currStation=currStation
+        }   
+    }
+    currStation.songs[idx].isPlaying=!currStation.songs[idx].isPlaying
+    setCurrPlaying(playSong,currStation)
+    try{ 
+        if(user) await editUser(user)   
+    }
+    catch (error) {console.log(error)}
+}
+
     
 
-    if (!currStation || !user) return <div>...Loading</div>
+    if (!currStation) return <div>...Loading</div>
 
     const { imgUrl, type, createdBy, name, songs, description } = currStation
 
@@ -177,10 +219,10 @@ export function StationDetails() {
                             <p>duration: {culcDuration()}</p>
                         </div>}
                 </div>
-                <button  className="play-bg">
-                             <img className="play-button" src={ play } />
+                <button onClick={playStation}  className="play-bg">
+                             <img className="play-button" src={isStationPlaying? pause : play } />
                         </button>
-                        {!isUserStation && <img onClick={setLikedAlbum} className="big-heart svg" src={isUserLikedAlbum? fullHeart:heart}/>}
+                        {!isUserStation && <img onClick={setLikedAlbum} className="big-heart svg" src={isUserLikedAlbum && user? fullHeart:heart}/>}
             </header>
 
             <section className="station-details-control">
@@ -189,7 +231,7 @@ export function StationDetails() {
             </section>
             <br />
             <hr />
-            {songs && <Playlist id={id} songs={songs} onRemoveSong={onRemoveSong} isUserStation={isUserStation} openModal={openModal} setOpenModal={setOpenModal} setIsLiked={setIsLiked} setIsEdit={setIsEdit} saveSongInAlbum={saveSongInAlbum}></Playlist>}
+            {songs && <Playlist id={id} songs={songs} onRemoveSong={onRemoveSong} isUserStation={isUserStation} openModal={openModal} setOpenModal={setOpenModal} setIsLiked={setIsLiked} setIsEdit={setIsEdit} saveSongInAlbum={saveSongInAlbum} playSong={playSong}></Playlist>}
             
             {id!=='liked' && isUserStation && <SearchStation currStation={currStation} setCurrStation={setCurrStation} onSaveSong={onSaveSong} />}
             {isEdit  && <Edit entity={currStation} setIsEdit={setIsEdit} entityType={'station'} />}
