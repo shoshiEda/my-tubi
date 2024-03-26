@@ -5,9 +5,8 @@ import { useSelector } from 'react-redux'
 import { utilService } from "../services/util.service.js"
 import { useEffectUpdate } from "../customHooks/useEffectUpdate.js"
 import { apiService } from '../services/api.service'
-import { saveStation } from '../store/station.actions'
-import { editUser } from '../store/user.actions'
-import { setCurrPlaying } from '../store/system.actions'
+import { setCurrPlaying,setPlay } from '../store/system.actions'
+
 
 
 
@@ -29,7 +28,8 @@ export function SearchStation({currStation,onSaveSong}){
     const [input,setInput] =useState('')
     const setSelectedSongDebounced = useRef(utilService.debounce(selectedSong => fetchSearchResults(selectedSong)));
     const user = useSelector(storeState => storeState.userModule.user)
-    const currSong=user.currSong
+    const currSong = useSelector(storeState => storeState.systemModule.currSong)
+    const isPlay = useSelector(storeState => storeState.systemModule.isPlay)     
     const [searchList, setSearchList] = useState(null)
 
 
@@ -52,6 +52,13 @@ export function SearchStation({currStation,onSaveSong}){
         setInput(target.value)
     }
 
+    async function onSetPlay(song,station=null){
+        try{ 
+            await setCurrPlaying(song,station)    
+        }
+        catch (error) {console.log(error)}
+    }
+
 
     async function fetchSearchResults(selectedSong) {
         try {
@@ -62,28 +69,16 @@ export function SearchStation({currStation,onSaveSong}){
         catch (err) { console.log(err) }
     }
 
-    async function onPlaySong(playSong,idx){
-        
-        if(currSong && currSong.trackId===playSong.trackId)
-        {
-    
-        }
+    function setSongPlay(song){
+        if(currSong && currSong.trackId===song.trackId){
+            setPlay(!isPlay)}
         else{
-            searchList.map(song=>song.isPlaying=false)
-            if(user) user.currSong=playSong
+            setPlay(true)
+            onSetPlay(song)
         }
-        searchList[idx].isPlaying=!searchList[idx].isPlaying
-        setCurrPlaying(playSong)
-        try{ 
-            if(user) await editUser(user)   
-            await saveStation(currStation) 
-            setSearchList(searchList)   
-        }
-        catch (error) {console.log(error)}
     }
 
-
-   
+    
 
     return(
         <section className='station-search'>
@@ -98,10 +93,10 @@ export function SearchStation({currStation,onSaveSong}){
                             {searchList.map((song,idx) =>
                                 <li className='single-song-result grid' key={idx}>
                                     <div className='img-play-title-artist-container grid'>
-                                        <div className='song-image-play' onClick={() => onPlaySong(song,idx)}>
+                                        <div className='song-image-play' onClick={() => setSongPlay(song)}>
                                             <img className='song-img'  src={song.imgUrl}></img>
                                             
-                                                 <img className="play-button svg" src={song.isPlaying ? pause : play } />
+                                                 <img className="play-button svg" src={(currSong && currSong.trackId===song.trackId && isPlay) ? pause : play } />
                                                 
                                         </div>
 

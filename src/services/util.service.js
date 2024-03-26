@@ -7,7 +7,8 @@ export const utilService = {
     saveToStorage,
     loadFromStorage,
     getRandomColor,
-    animateCSS
+    animateCSS,
+    formatTime
 }
 
 function makeId(length = 6) {
@@ -19,6 +20,12 @@ function makeId(length = 6) {
     }
 
     return txt
+}
+
+function formatTime(timeInSeconds) {
+    const minutes = Math.floor(timeInSeconds / 60)
+    const seconds = Math.floor(timeInSeconds % 60)
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} `
 }
 
 function makeLorem(size = 100) {
@@ -74,7 +81,7 @@ function getRandomColor(){
 }
 
 function animateCSS(el, animation) {
-    /*const prefix = 'animate__'
+    const prefix = 'animate__'
     return new Promise((resolve, reject) => {
         const animationName = `${prefix}${animation}`
 
@@ -87,6 +94,6 @@ function animateCSS(el, animation) {
             resolve('Animation ended')
         }
         el.addEventListener('animationend', handleAnimationEnd, { once: true })
-    })*/
+    })
 }
 

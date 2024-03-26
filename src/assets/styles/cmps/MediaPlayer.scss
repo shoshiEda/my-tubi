@@ -5,6 +5,10 @@
     display: flex;
     justify-content: space-between;
 
+    .you-tube{
+        display: none;
+    }
+
     .btns{
         margin-inline: 3rem;
     }
@@ -72,6 +76,13 @@
 
             &:hover{
                 opacity: 1;
+            }
+        }
+
+        .progress-bar{
+            p{
+                font-size: 0.8rem;
+                margin-inline: 0.8rem;
             }
         }
     }

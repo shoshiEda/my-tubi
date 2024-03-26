@@ -4,9 +4,9 @@ import { Link } from "react-router-dom"
 
 
 import { loadStations } from '../store/station.actions'
-import { setCurrPlaying } from '../store/system.actions'
-import { editUser } from '../store/user.actions'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
+import { setCurrPlaying,setPlay } from '../store/system.actions'
+
 
 
 
@@ -20,9 +20,11 @@ import pause from '../assets/img/icons/pause.svg'
 
 export function HomePage() {
     const stationTypes = useSelector(storeState => storeState.stationModule.stationTypes)
-    const user = useSelector(storeState => storeState.userModule.user)
     const stations = useSelector(storeState => storeState.stationModule.stations)
-    const [isStationPlaying, setIsStationPlaying] = useState(false)
+    const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
+    const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
+    const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
+
 
     useBackgroundFromImage()
 
@@ -32,18 +34,24 @@ export function HomePage() {
         loadStations()
     }, [])
 
-    async function playStation(station){
-        if(!station.songs || !station.songs.length) return
-        setIsStationPlaying(!isStationPlaying)
-        if(user){
-            user.currSong=station.songs[0]
-            user.currStation=station
-        }   
-        setCurrPlaying(station.songs[0],station)
+
+    async function onSetPlay(song,station=null){
         try{ 
-            if(user)await editUser(user)     
+            await setCurrPlaying(song,station)    
         }
         catch (error) {console.log(error)}
+    }
+
+    function setAlbumPlay(currStation){
+        if(!isStationFirstTimePlaying && currStation._id===currPlayingStation._id){
+        setPlay(!isPlay)
+        }
+        else{
+            setPlay(true)
+            onSetPlay(currStation.songs[0],currStation)
+            setsStationFirstTimePlayin(false)
+        }
+        setIsStationPlaying(!isStationPlaying)
     }
 
     return (
@@ -61,10 +69,10 @@ export function HomePage() {
                                 <button
                                 onClick={(event) => {
                                     event.preventDefault()
-                                    playStation(station)
+                                    setAlbumPlay(station)
                                 }} 
                                 className="play-bg">
-                                <img className="play-button" src={isStationPlaying? pause : play } />
+                                <img className="play-button" src={(currPlayingStation && (currPlayingStation._id===station._id) && isPlay)? pause : play } />
                                 </button>
                                 <p className='station-name'>{station.name}</p>
                                 <p className="description">{station.description}</p>

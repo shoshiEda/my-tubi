@@ -2,8 +2,7 @@ import { useParams } from "react-router"
 import React, { useEffect,useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from "react-router-dom"
-import { setCurrPlaying } from '../store/system.actions'
-import { editUser } from '../store/user.actions'
+import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
 
 
@@ -20,7 +19,9 @@ export function StationsOfType(){
 
     const { type } = useParams()
     let stations = useSelector(storeState => storeState.stationModule.stations)
-    const user = useSelector(storeState => storeState.userModule.user)
+    const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
+    const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
+    const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
     const [isStationPlaying, setIsStationPlaying] = useState(false)
     useBackgroundFromImage()
 
@@ -29,20 +30,24 @@ export function StationsOfType(){
         stations = loadStations(type)
     }, [])
 
-    async function playStation(station){
-        if(!station.songs || !station.songs.length) return
-        setIsStationPlaying(!isStationPlaying)
-        if(user){
-            user.currSong=station.songs[0]
-            user.currStation=station
-        }   
-        setCurrPlaying(station.songs[0],station)
+    async function onSetPlay(song,station=null){
         try{ 
-            if(user)await editUser(user)     
+            await setCurrPlaying(song,station)    
         }
         catch (error) {console.log(error)}
     }
 
+    function setAlbumPlay(currStation){
+        if(!isStationFirstTimePlaying && currStation._id===currPlayingStation._id){
+        setPlay(!isPlay)
+        }
+        else{
+            setPlay(true)
+            onSetPlay(currStation.songs[0],currStation)
+            setsStationFirstTimePlayin(false)
+        }
+        setIsStationPlaying(!isStationPlaying)
+    }
     return (
         <section>
             <h3>{type}</h3>
@@ -54,10 +59,10 @@ export function StationsOfType(){
                                 <button
                                 onClick={(event) => {
                                     event.preventDefault()
-                                    playStation(station)
+                                    setAlbumPlay(station)
                                 }} 
                                 className="play-bg">
-                                <img className="play-button" src={isStationPlaying? pause : play } />
+                                <img className="play-button" src={(currPlayingStation && (currPlayingStation._id===station._id) && isPlay)? pause : play } />
                                 </button>
                                 <p className='station-name'>{station.name}</p>
                                 <p className="description">{station.description}</p>

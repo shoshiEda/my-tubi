@@ -1,5 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import YouTube from 'react-youtube'
+import { useRef } from 'react'
+import { setCurrPlaying,setPlay } from '../store/system.actions'
+import { utilService } from '../services/util.service'
+import { ProgressBar } from './ProgressBar'
+
+
+
+
+
+
 
 import notes from '../assets/img/icons/notes.svg'
 import shuffle from '../assets/img/icons/shuffle.svg'
@@ -16,27 +27,130 @@ import fullScrean from '../assets/img/icons/fullScrean.svg'
 
 export function MediaPlayer() {
     
-    const song=useSelector(storeState => storeState.systemModule.currSong) || {imgUrl:notes, name:'',artist:'',isPlaying:true}
+    const song=useSelector(storeState => storeState.systemModule.currSong) || {imgUrl:notes, name:'',artist:''}
     const station = useSelector(storeState => storeState.systemModule.currStation) || null
+    const user = useSelector(storeState => storeState.userModule.user) || null
+    const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
 
-    const [volume,setVolume]=useState(50)
     const [isHovered, setIsHovered] = useState(false);
+    const playerRef = useRef(null)
+    const [isRepeat, setIsRepeat] = useState(false)
+    const [isShuffle, setIsShuffle] = useState(false)
+    const [playerReady, setPlayerReady] = useState(false);
+    const [volume, setVolume] = useState(50);
+    const [prevVolume, setPrevVolume] = useState(50);
+    const [tempPlayer, setTemptPlayer] = useState(null);
 
 
+    console.log(isPlay,song,station)
+
+   
+    let songIndexInStation = -1;
+    if (station && station.songs) {
+        songIndexInStation = station.songs.findIndex(Song => song.trackId === Song.trackId);
+    }
+
+    const opts = {
+        height: '1',
+        width: '1',
+        playerVars: {
+          autoplay: isPlay ? 1 : 0,
+          controls: 0,
+        },
+      }
+
+      useEffect(() => {
+        if (!playerReady) return;
+        const player = playerRef.current?.internalPlayer;
+        if (!player) return;
+        player.setVolume(volume);
+        if (isPlay) {
+            player.playVideo();
+        } else {
+            player.pauseVideo();
+        }
+    }, [volume, isPlay, playerReady]);
+
+    async function onChangeSong(diff)
+    {
+        if(!station) return
+        if(diff===1 && songIndexInStation!==station.songs.length-1 || (diff===-1 && songIndexInStation))
+        {
+            if(user){
+                user.currSong=(station.songs[songIndexInStation+diff])
+            } 
+        }
+        try{ 
+            await setCurrPlaying(station.songs[songIndexInStation+diff])
+        }
+        catch (error) {console.log(error)}
+       
+    }
+    
+
+
+      async function onEnd() {
+        if(!station || !station.songs) return
+        let nextSong
+        
+        if (isRepeat) {
+            const player = playerRef.current?.internalPlayer
+            player.playVideo()
+            return
+        }
+        else if(isShuffle){
+           const idx=utilService.getRandomIntInclusive(0, station.songs.length-1)
+           nextSong=station.songs[idx]
+        }
+         else {
+            if(songIndexInStation!==station.songs.length-1)    nextSong=station.songs[songIndexInStation+1]
+            else nextSong=station.songs[0]
+         }
+        try{ 
+            await setCurrPlaying(nextSong) 
+            }
+            catch (error) {console.log(error)}
+            }
+       
+        
+    
+
+    function onReady(ev) {
+        console.log(ev.target);
+        setPlayerReady(true);
+        setTemptPlayer(ev.target)
+        console.log(tempPlayer)
+        }
+
+            
+   
 
 
     function handleVolumeChange({target})
     {
-        setVolume(target.value)
+        const newVolume = target.value
+        if (playerRef.current && playerReady) {
+            playerRef.current.internalPlayer.setVolume(newVolume)
+            setVolume(newVolume)}
     }
 
     function mute()
     {
-        setVolume(0)
+        if(volume)
+        {
+            setPrevVolume(volume)
+            setVolume(0)
+        }
+        else{
+            setVolume(prevVolume)
+        }
+        if (playerRef.current && playerReady) {
+            playerRef.current.internalPlayer.setVolume(volume)           
+            }
     }
     
 
-    const {imgUrl,name,artist,isPlaying} = song
+    const {imgUrl,name,artist,trackId} = song
     return (
         <footer className="media-player">
            <section className='song-info'>
@@ -47,22 +161,19 @@ export function MediaPlayer() {
                 </div>
                 
            </section>
-
+           <YouTube videoId={trackId} opts={opts} onEnd={onEnd} onReady={onReady} ref={playerRef} />
            <section className='audio-control'>
                 <div className='btns'>
-                    <button /*onClick={onShuffle}*/><img className='svg' src={shuffle} /></button>
-                    <button /*onClick={(() => onChangeSong(-1))}*/><img className='svg' src={prevSong}/></button>
-                    <button className='play-song'><img className='play-svg' src={isPlaying? play : pause}/></button>
-                    <button /*onClick={(() => onChangeSong(1))}*/><img className='svg' src={nextSong}/></button>
-                    <button /*onClick={onRepeat}*/><img className='svg' src={repeat}/></button>
+                    <button onClick={()=>{setIsShuffle(!isShuffle)
+                    setIsRepeat(false)}}><img style={{opacity:isShuffle?'1' : '0.7'}} className='svg' src={shuffle} /></button>
+                    <button onClick={(() => onChangeSong(-1))}><img className='svg' src={prevSong}/></button>
+                    <button className='play-song' onClick={()=>setPlay(!isPlay)}><img className='play-svg' src={isPlay? pause : play}/></button>
+                    <button onClick={(() => onChangeSong(1))}><img className='svg' src={nextSong}/></button>
+                    <button onClick={()=>{setIsRepeat(!isRepeat)
+                    setIsShuffle(false)}}><img style={{opacity:isRepeat?'1' : '0.7'}} className='svg' src={repeat}/></button>
                 </div>
-                <div className='progress-bar'>
-                    <p style={{ color: 'white' }}>{/*progress ? progress.timeElapsed : '0:00'*/} </p>
-                    <div /*onClick={handleProgressbar}*/ className="bar" style={{ width: '100%', height: '4px', backgroundColor: 'gray' }}>
-                        <div className='bar-mov' style={{ height: '100%', /*width: `${progress ? progress.progressPercentage : 0}%`,*/ backgroundColor: 'white' }} />
-                    </div>
-                    <p className='text-left' style={{ color: 'white' }}>{/*progress ? progress.time :*/ '0:00'} </p>
-                </div>
+                <ProgressBar player={tempPlayer} />
+
             </section>
             <section className="volume-section">
                 <button /*onClick={toggleFullScreen}*/><img className='svg' src={fullScrean}/></button>

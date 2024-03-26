@@ -7,7 +7,9 @@ import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromIma
 import { editUser } from '../store/user.actions'
 import { Edit } from '../cmps/Edit.jsx'
 import { saveStation } from '../store/station.actions'
-import { setCurrPlaying } from '../store/system.actions'
+import { setCurrPlaying,setPlay } from '../store/system.actions'
+import { FullHeart } from '../../services/icons.service'
+
 
 
 
@@ -15,7 +17,7 @@ import { setCurrPlaying } from '../store/system.actions'
 
 import plus from '../assets/img/icons/plus.svg'
 import  Heart  from '../assets/img/icons/heart.svg'
-import  FullHeart  from '../assets/img/icons/full-heart.svg'
+//import  FullHeart  from '../assets/img/icons/full-heart.svg'
 import  Pause  from '../assets/img/icons/pause.svg'
 import  Play  from '../assets/img/icons/play.svg'
 
@@ -35,6 +37,9 @@ export function SearchPage() {
 
     const user = useSelector(storeState => storeState.userModule.user)
     const currSong = useSelector(storeState => storeState.systemModule.currSong)
+    const currStation = useSelector(storeState => storeState.systemModule.currStation)
+    const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
+
 
     const genres = ["New", 'Music', 'Pop', 'Hip-Hop', 'Rap', 'Latino', 'Indie', 'Rock', 'Podcusts', 'Live', 'Sport', 'Meditation', 'Party', 'Electronic', 'For sleep']
 
@@ -57,36 +62,12 @@ export function SearchPage() {
         catch (err) { console.log(err) }
     }
 
-    async function playSong(playSong,idx){
-
-        let playingStation
-        
-        if(currSong && currSong.trackId===playSong.trackId)
-        {
-    
-        }
-        else{
-            if(idx!==-1){
-            searchList.map(song=>song.isPlaying=false)
-            setIsStationPlaying(false)
-            if(user) user.currSong=playSong
-            }
-            else{
-                if(user) user.currSong=searchList[0]
-                playingStation={name: params.searchTerm, songs:searchList}
-                if(user) user.currStation = playingStation
-            }
-        }
-        idx!==-1 ? searchList[idx].isPlaying=!searchList[idx].isPlaying : setIsStationPlaying(!isStationPlaying)
-        idx!==-1? setCurrPlaying(playSong) : setCurrPlaying(searchList[0],playingStation)
+    async function onSetPlay(song,station=null){
         try{ 
-            if(user) await editUser(user)   
-            setSearchList(searchList)   
+            await setCurrPlaying(song,station)    
         }
         catch (error) {console.log(error)}
     }
-
-    
 
 
     async function setIsLiked(idx,isLiked){
@@ -103,8 +84,26 @@ export function SearchPage() {
           editUser(user,'likedSongs',updatedSong,true)
     }
 
+    function setAlbumPlay(){
+        if(currStation && currStation._id===params.searchTerm){
+        setPlay(!isPlay)
+        }
+        else{
+            setPlay(true)
+            onSetPlay(searchList[0],{_id:params.searchTerm,name:params.searchTerm,songs:searchList})
+        }
+        setIsStationPlaying(!isStationPlaying)
+    }
 
-    
+    function setSongPlay(song){
+        if(currSong && currSong.trackId===song.trackId){
+            setPlay(!isPlay)}
+        else{
+            setPlay(true)
+            onSetPlay(song)
+        }
+    }
+
 
     async function saveSongInAlbum(currStation,song){
         const updatedStation = { ...currStation }
@@ -153,7 +152,7 @@ export function SearchPage() {
                             <h3>{params.searchTerm}</h3>
                         </div>
                         <button className="play-bg">
-                             <img onClick={()=>playSong(searchList[0],-1)} className="play-button" src={isStationPlaying ? Pause : Play } />
+                             <img onClick={setAlbumPlay} className="play-button" src={isStationPlaying ? Pause : Play } />
                         </button>
                     </div>
 
@@ -169,7 +168,7 @@ export function SearchPage() {
                                         <div className='song-image-play'>
                                             <img  src={song.imgUrl}></img>
                                             
-                                                 <img onClick={()=>playSong(song,idx)} className="play-button" src={song.isPlaying ? Pause : Play } />
+                                            <img onClick={()=>setSongPlay(song)} className="play-button" src={(currSong && currSong.trackId===song.trackId && isPlay) ? Pause : Play } />
                                                 
                                         </div>
 
@@ -178,10 +177,10 @@ export function SearchPage() {
                                             {(song.artist !== 'Unknown') && <p>{song.artist}</p>}
                                         </div>
                                     </div>
-
+                                    <FullHeart className='fill'/>
                                     <div className='duration-add flex'>
                                     {user &&<button className="add-button" style={{ opacity: song.isLiked ? 1 : '' }}>
-                                        <img onClick={()=>setIsLiked(idx,song.isLiked)} src={song.isLiked? FullHeart : Heart}/>
+                                        <img className={"like animate__animated " + (song.isLiked ? 'fill empty animate__heartBeat' : 'fill animate__shakeX')}  onClick={()=>setIsLiked(idx,song.isLiked)} src={song.isLiked? FullHeart : Heart}/>
                                         </button>}
                                         <p>{song.duration}</p>
                                         {user && <button className='add-button' onClick={() => setOpenModal({isOpen:!openModal.isOpen,idx:idx})}><img className='plus' src={plus} /></button>}

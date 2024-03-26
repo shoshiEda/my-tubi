@@ -11,14 +11,15 @@ import { useSelector } from "react-redux"
 
 
 
-export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModal, setOpenModal, setIsLiked ,setIsEdit ,saveSongInAlbum ,playSong }) {
+export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModal, setOpenModal, setIsLiked ,setIsEdit ,saveSongInAlbum ,setSongPlay }) {
 
     //const activeContextMenuId = useSelector(storeState => storeState.appMoudle.playlistContextMenu)
     //const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 })
 
     //const contextMenuRef = useRef(null)
     const user = useSelector(storeState => storeState.userModule.user)
-
+    const currSong = useSelector(storeState => storeState.systemModule.currSong)
+    const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
     
 
    
@@ -78,7 +79,7 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
         >
             <div>
                 <p className="idx">{idx + 1}</p>
-                <img onClick={()=>playSong(song)} className="play svg" src={song.isPlaying? pause :play}/>
+                <img onClick={()=>setSongPlay(song)} className="play svg" src={(currSong && currSong.trackId===song.trackId && isPlay) ? pause :play}/>
             </div>
             <div className="artist-and-image grid">  
                 <div className="img-list-con">

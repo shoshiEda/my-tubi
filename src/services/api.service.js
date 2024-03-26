@@ -22,9 +22,9 @@ export const apiService = {
 async function getContent(search) {
 
     const destTube = `part=snippet&q=${search}&videoCategoryId=10&type=video&maxResults=${maxResults}`
+    
     try {
         const responseArtist = await axios.get(URL_ARTIST_TUBE + destTube)
-
         const promisesSongs = responseArtist.data.items.map(async ytItem => {
             try {
                 const searchInfo = parseSongString(ytItem.snippet.title)
@@ -38,7 +38,6 @@ async function getContent(search) {
                     imgUrl: ytItem.snippet.thumbnails.medium.url,
                     addedAt: Date.now(),
                     isLiked:false,
-                    isPlaying:false
                 }
             }
             catch (err) { throw err }

@@ -16,7 +16,7 @@ import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromIma
 import { editUser } from '../store/user.actions'
 import { useNavigate } from "react-router-dom"
 import { saveStation } from '../store/station.actions'
-import { setCurrPlaying } from '../store/system.actions'
+import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { stationService } from '../services/station.service.js'
 
 
@@ -26,6 +26,9 @@ import { stationService } from '../services/station.service.js'
 export function StationDetails() {
     const user = useSelector(storeState => storeState.userModule.user) || null
     const currSong = useSelector(storeState => storeState.systemModule.currSong)
+    const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
+    const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
+
     const { id } = useParams()
     const [isEdit, setIsEdit] = useState(false)
     const [currStation, setCurrStation] = useState(null)
@@ -35,6 +38,8 @@ export function StationDetails() {
     const isUserLikedAlbum = (!isUserStation && LikedIdx!==-1)? true : false
     const [openModal, setOpenModal] = useState({isOpen:false,idx:-1})
     const [isStationPlaying, setIsStationPlaying] = useState(false)
+    const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
+
 
 
 
@@ -59,6 +64,14 @@ export function StationDetails() {
             setCurrStation(setLikedStation())
         }
     }
+
+    async function onSetPlay(song,station=null){
+        try{ 
+            await setCurrPlaying(song,station)    
+        }
+        catch (error) {console.log(error)}
+    }
+
 
     function setLikedStation() {
         return {
@@ -109,6 +122,27 @@ export function StationDetails() {
         catch (err) { console.log(err) }
     }
 
+    function setAlbumPlay(){
+        if(!isStationFirstTimePlaying && currStation._id===currPlayingStation._id){
+        setPlay(!isPlay)
+        }
+        else{
+            setPlay(true)
+            onSetPlay(currStation.songs[0],currStation)
+            setsStationFirstTimePlayin(false)
+        }
+        setIsStationPlaying(!isStationPlaying)
+    }
+
+    function setSongPlay(song){
+        if(currSong && currSong.trackId===song.trackId){
+            setPlay(!isPlay)}
+        else{
+            setPlay(true)
+            onSetPlay(song)
+        }
+    }
+
     async function setLikedAlbum(){
         if(!user) return 
         isUserLikedAlbum?       
@@ -127,8 +161,7 @@ export function StationDetails() {
         setCurrStation(updatedStation)
         console.log(currStation)
         try{
-            const newStation = await saveStation(currStation)
-            console.log(newStation)
+            await saveStation(currStation)
             const idx = user.stasions.findIndex(station => station._id===currStation._id)
             user.stasions[idx]=currStation
             await editUser(user)
@@ -146,7 +179,6 @@ export function StationDetails() {
             }
         } else {
             const idx = currStation.songs.findIndex(song=>song.trackId===deletadSong.trackId)
-            console.log(idx,currStation.songs,deletadSong)
             currStation.songs.splice(idx,1)
             try{
                 await saveStation(currStation)
@@ -158,44 +190,14 @@ export function StationDetails() {
     }
 }
 
-async function playStation(){
+async function onSetPlay(song,station=null){
     if(!currStation.songs || !currStation.songs.length) return
-    setIsStationPlaying(!isStationPlaying)
-    if(user){
-        user.currSong=currStation.songs[0]
-        user.currStation=currStation
-    }   
-    setCurrPlaying(currStation.songs[0],currStation)
     try{ 
-        if(user)await editUser(user)     
+        await setCurrPlaying(song,station)    
     }
     catch (error) {console.log(error)}
 }
-
-async function playSong(playSong){
-    const idx = currStation.songs.findIndex(song=>song.trackId===playSong.trackId)
-    setIsStationPlaying(false)
-    
-    if(currSong && currSong.trackId===playSong.trackId)
-    {
-
-    }
-    else{
-        currStation.songs.map(song=>song.isPlaying=false)
-        if(user){
-            user.currSong=playSong
-            user.currStation=currStation
-        }   
-    }
-    currStation.songs[idx].isPlaying=!currStation.songs[idx].isPlaying
-    setCurrPlaying(playSong,currStation)
-    try{ 
-        if(user) await editUser(user)   
-    }
-    catch (error) {console.log(error)}
-}
-
-    
+  
 
     if (!currStation) return <div>...Loading</div>
 
@@ -219,7 +221,7 @@ async function playSong(playSong){
                             <p>duration: {culcDuration()}</p>
                         </div>}
                 </div>
-                <button onClick={playStation}  className="play-bg">
+                <button onClick={setAlbumPlay}  className="play-bg">
                              <img className="play-button" src={isStationPlaying? pause : play } />
                         </button>
                         {!isUserStation && <img onClick={setLikedAlbum} className="big-heart svg" src={isUserLikedAlbum && user? fullHeart:heart}/>}
@@ -231,7 +233,7 @@ async function playSong(playSong){
             </section>
             <br />
             <hr />
-            {songs && <Playlist id={id} songs={songs} onRemoveSong={onRemoveSong} isUserStation={isUserStation} openModal={openModal} setOpenModal={setOpenModal} setIsLiked={setIsLiked} setIsEdit={setIsEdit} saveSongInAlbum={saveSongInAlbum} playSong={playSong}></Playlist>}
+            {songs && <Playlist id={id} songs={songs} onRemoveSong={onRemoveSong} isUserStation={isUserStation} openModal={openModal} setOpenModal={setOpenModal} setIsLiked={setIsLiked} setIsEdit={setIsEdit} saveSongInAlbum={saveSongInAlbum} setSongPlay={setSongPlay}></Playlist>}
             
             {id!=='liked' && isUserStation && <SearchStation currStation={currStation} setCurrStation={setCurrStation} onSaveSong={onSaveSong} />}
             {isEdit  && <Edit entity={currStation} setIsEdit={setIsEdit} entityType={'station'} />}
