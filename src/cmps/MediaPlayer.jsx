@@ -3,22 +3,20 @@ import { useSelector } from 'react-redux'
 import YouTube from 'react-youtube'
 import { useRef } from 'react'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
+import { editUser } from '../store/user.actions'
+
 import { utilService } from '../services/util.service'
 import { ProgressBar } from './ProgressBar'
-
-
-
-
-
-
+import { FullHeart } from '../services/icons.service.jsx'
+import { Heart } from '../services/icons.service.jsx'
+import { Shuffle } from '../services/icons.service.jsx'
+import { Repeat } from '../services/icons.service.jsx'
 
 import notes from '../assets/img/icons/notes.svg'
-import shuffle from '../assets/img/icons/shuffle.svg'
 import prevSong from '../assets/img/icons/prevSong.svg'
 import play from '../assets/img/icons/play.svg'
 import pause from '../assets/img/icons/pause.svg'
 import nextSong from '../assets/img/icons/nextSong.svg'
-import repeat from '../assets/img/icons/repeat.svg'
 import Volume from '../assets/img/icons/volume.svg'
 import Mute from '../assets/img/icons/mute.svg'
 import fullScrean from '../assets/img/icons/fullScrean.svg'
@@ -41,9 +39,8 @@ export function MediaPlayer() {
     const [prevVolume, setPrevVolume] = useState(50);
     const [tempPlayer, setTemptPlayer] = useState(null);
 
-
-    console.log(isPlay,song,station)
-
+    const index = user.likedSongs.findIndex(Song=>Song.trackId===song.trackId)
+    const isSongLiked=index === -1 ? false : true
    
     let songIndexInStation = -1;
     if (station && station.songs) {
@@ -70,6 +67,20 @@ export function MediaPlayer() {
             player.pauseVideo();
         }
     }, [volume, isPlay, playerReady]);
+
+    async function setIsLiked(){
+        console.log(song,user)
+        if(!user) return
+        let updatedSong=song
+        updatedSong.isLiked=!song.isLiked       
+        try{
+            updatedSong.isLiked?     
+            editUser(user,'likedSongs',updatedSong,true)
+            :
+            editUser(user,'likedSongs',updatedSong,false)
+        } 
+        catch (error) {console.log(error)}       
+    }
 
     async function onChangeSong(diff)
     {
@@ -116,10 +127,8 @@ export function MediaPlayer() {
     
 
     function onReady(ev) {
-        console.log(ev.target);
         setPlayerReady(true);
         setTemptPlayer(ev.target)
-        console.log(tempPlayer)
         }
 
             
@@ -159,18 +168,24 @@ export function MediaPlayer() {
                     <p>{name}</p>
                     <p>{artist}</p>
                 </div>
+                {user &&<button className={"like-btn small animate__animated "
+                                            +
+                                        (isSongLiked ? 'fill empty animate__heartBeat' : 'fill animate__shakeX')}
+                                        onClick={setIsLiked}>
+                                        {isSongLiked ? <FullHeart /> : <Heart />}
+                                    </button>}
                 
            </section>
            <YouTube videoId={trackId} opts={opts} onEnd={onEnd} onReady={onReady} ref={playerRef} />
            <section className='audio-control'>
                 <div className='btns'>
-                    <button onClick={()=>{setIsShuffle(!isShuffle)
-                    setIsRepeat(false)}}><img style={{opacity:isShuffle?'1' : '0.7'}} className='svg' src={shuffle} /></button>
+                    <button className={isShuffle?'fill' : 'non-fill'} onClick={()=>{setIsShuffle(!isShuffle)
+                    setIsRepeat(false)}}><Shuffle/></button>
                     <button onClick={(() => onChangeSong(-1))}><img className='svg' src={prevSong}/></button>
                     <button className='play-song' onClick={()=>setPlay(!isPlay)}><img className='play-svg' src={isPlay? pause : play}/></button>
                     <button onClick={(() => onChangeSong(1))}><img className='svg' src={nextSong}/></button>
-                    <button onClick={()=>{setIsRepeat(!isRepeat)
-                    setIsShuffle(false)}}><img style={{opacity:isRepeat?'1' : '0.7'}} className='svg' src={repeat}/></button>
+                    <button className={isRepeat?'fill' : 'non-fill'} onClick={()=>{setIsRepeat(!isRepeat)
+                    setIsShuffle(false)}}><Repeat/></button>
                 </div>
                 <ProgressBar player={tempPlayer} />
 

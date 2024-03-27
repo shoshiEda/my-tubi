@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link } from "react-router-dom"
 import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
+import { Loading } from '../cmps/Loading.jsx'
 
 
 import albumCover from '../assets/img/pics/album-cover.jpeg'
@@ -48,6 +49,7 @@ export function StationsOfType(){
         }
         setIsStationPlaying(!isStationPlaying)
     }
+    if (!stations) return <div><Loading/></div>
     return (
         <section>
             <h3>{type}</h3>

@@ -3,14 +3,13 @@ import { useSelector } from "react-redux"
 import { useParams } from "react-router"
 import { loadStation } from "../store/station.actions"
 import { Edit } from '../cmps/Edit.jsx'
+import { Loading } from '../cmps/Loading.jsx'
 import { Playlist } from "../cmps/Playlist"
 import { SearchStation } from '../cmps/SearchStation.jsx'
 import notes from '../assets/img/icons/notes.svg'
 import dot from '../assets/img/icons/dot.svg'
 import play from '../assets/img/icons/play.svg'
 import pause from '../assets/img/icons/pause.svg'
-import heart from '../assets/img/icons/heart.svg'
-import fullHeart from '../assets/img/icons/full-heart.svg'
 import likedCover from '../assets/img/pics/liked-cover.png'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
 import { editUser } from '../store/user.actions'
@@ -18,6 +17,8 @@ import { useNavigate } from "react-router-dom"
 import { saveStation } from '../store/station.actions'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { stationService } from '../services/station.service.js'
+import { FullHeart } from '../services/icons.service.jsx'
+import { Heart } from '../services/icons.service.jsx'
 
 
 
@@ -86,22 +87,11 @@ export function StationDetails() {
         return stationService.getStationDuration(currStation.songs)
     }
 
-    async function setIsLiked(song){
-
-        let updatedSong=song
-        updatedSong.isLiked=!song.isLiked
-        const idx = currStation.songs.findIndex(oldSong=>oldSong._id===updatedSong._id)
-        let updatedSongs=currStation.songs
-        updatedSongs[idx]=updatedSong
-        setCurrStation(prevStation => ({
-            ...prevStation,
-            songs: updatedSongs
-        }))
-        updatedSong.isLiked?       
-          editUser(user,'likedSongs',updatedSong,false)
-          :
-          editUser(user,'likedSongs',updatedSong,true)
-          navigate('/station/'+id)
+    async function setIsLiked(song,action){
+        try{
+            editUser(user,'likedSongs',song,action)
+        }
+        catch (err) { console.log(err) }
     }
 
 
@@ -199,7 +189,7 @@ async function onSetPlay(song,station=null){
 }
   
 
-    if (!currStation) return <div>...Loading</div>
+    if (!currStation) return <div><Loading/></div>
 
     const { imgUrl, type, createdBy, name, songs, description } = currStation
 
@@ -224,8 +214,13 @@ async function onSetPlay(song,station=null){
                 <button onClick={setAlbumPlay}  className="play-bg">
                              <img className="play-button" src={isStationPlaying? pause : play } />
                         </button>
-                        {!isUserStation && <img onClick={setLikedAlbum} className="big-heart svg" src={isUserLikedAlbum && user? fullHeart:heart}/>}
-            </header>
+                 {!isUserStation &&<button className={"like-btn big big-heart animate__animated "
+                                                +
+                                            (isUserLikedAlbum && user? 'shown animate__heartBeat' : 'animate__shakeX')}
+                                            onClick={setLikedAlbum}>
+                                            {isUserLikedAlbum && user ? <FullHeart /> : <Heart />}
+                                        </button>}
+                    </header>
 
             <section className="station-details-control">
                 <div className="station-details-control-left">

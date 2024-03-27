@@ -95,9 +95,8 @@ h3{
     .big-heart{
         width: 3.5rem;
         height: 3.5rem;
-        opacity: 0.7;
         position: absolute;
-        top:16.5rem;
+        top:16.2rem;
         right:10rem;
         
     }
@@ -400,13 +399,19 @@ position: relative;
             border-radius: calc($panel-gap / 2);
         }
     }
+    .shown{
+        svg{
+        opacity: 1;
+        }
+    }
 
     svg {
         width: 1rem;
         height: 1rem;
-        filter: brightness(300%) contrast(10%) !important;
-        opacity: 1;
+        opacity: 0;       
     }
+
+    
 
     p:first-of-type {
         text-align: center;
@@ -477,6 +482,10 @@ position: relative;
         .icon{
             opacity: 1;
         }
+        svg{
+            opacity: 1;
+        }
+       
     }
 
     .artist-and-image {

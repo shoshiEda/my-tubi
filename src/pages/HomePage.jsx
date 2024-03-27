@@ -6,9 +6,7 @@ import { Link } from "react-router-dom"
 import { loadStations } from '../store/station.actions'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
 import { setCurrPlaying,setPlay } from '../store/system.actions'
-
-
-
+import { Loading } from '../cmps/Loading.jsx'
 
 import albumCover from '../assets/img/pics/album-cover.jpeg'
 import play from '../assets/img/icons/play.svg'
@@ -53,7 +51,7 @@ export function HomePage() {
         }
         setIsStationPlaying(!isStationPlaying)
     }
-
+    if (!stations) return <div><Loading/></div>
     return (
         <section>
             {stationTypes.map(type => {

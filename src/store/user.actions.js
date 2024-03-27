@@ -65,15 +65,20 @@ export async function loadUser(userId) {
 }
 
 export async function editUser(user,field='',value='',isAdd= undefined){
-
     if(isAdd && isAdd!==undefined){
-        if (!Array.isArray(user[field]))    user[field]=[] 
-        if(value==='likedSongs') value._id=utilService.makeId()      
+        if (!Array.isArray(user[field]))    user[field]=[]     
         user[field].push(value)
     }
     else if(isAdd===false){
-        const idx = user[field].findIndex(obj => obj._id===value._id)
-        user[field].splice(idx,1)
+        if(field==='likedSongs')
+        {
+            const idx = user[field].findIndex(obj => obj.trackId===value.trackId)
+            user[field].splice(idx,1)
+        }
+        else{
+            const idx = user[field].findIndex(obj => obj._id===value._id)
+            user[field].splice(idx,1)
+        }
     }
     try{
         const updatedUser = await userService.updateUser(user)

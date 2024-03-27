@@ -8,7 +8,8 @@ import { editUser } from '../store/user.actions'
 import { Edit } from '../cmps/Edit.jsx'
 import { saveStation } from '../store/station.actions'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
-import { FullHeart } from '../../services/icons.service'
+import { FullHeart } from '../services/icons.service.jsx'
+import { Heart } from '../services/icons.service.jsx'
 
 
 
@@ -16,8 +17,6 @@ import { FullHeart } from '../../services/icons.service'
 
 
 import plus from '../assets/img/icons/plus.svg'
-import  Heart  from '../assets/img/icons/heart.svg'
-//import  FullHeart  from '../assets/img/icons/full-heart.svg'
 import  Pause  from '../assets/img/icons/pause.svg'
 import  Play  from '../assets/img/icons/play.svg'
 
@@ -46,11 +45,19 @@ export function SearchPage() {
     const params = useParams()
     const navigate = useNavigate()
 
+    
+
     useEffect(() => {
         params.searchTerm ? fetchSearchResults() : setSearchList(null)
     }, [params.searchTerm])
 
     useBackgroundFromImage('')
+
+    function isSongLiked(song){
+        const index = user.likedSongs.findIndex(Song=>Song.trackId===song.trackId)
+        console.log(index)
+        return index === -1 ? false : true
+    }
 
 
     async function fetchSearchResults() {
@@ -177,11 +184,15 @@ export function SearchPage() {
                                             {(song.artist !== 'Unknown') && <p>{song.artist}</p>}
                                         </div>
                                     </div>
-                                    <FullHeart className='fill'/>
+                                    
                                     <div className='duration-add flex'>
-                                    {user &&<button className="add-button" style={{ opacity: song.isLiked ? 1 : '' }}>
-                                        <img className={"like animate__animated " + (song.isLiked ? 'fill empty animate__heartBeat' : 'fill animate__shakeX')}  onClick={()=>setIsLiked(idx,song.isLiked)} src={song.isLiked? FullHeart : Heart}/>
-                                        </button>}
+
+                                    {user &&<button className={"like-btn small animate__animated "
+                                            +
+                                        (isSongLiked(song) ? 'shown animate__heartBeat' : 'animate__shakeX')}
+                                        onClick={()=>setIsLiked(idx,song.isLiked)}>
+                                        {isSongLiked(song) ? <FullHeart /> : <Heart />}
+                                    </button>}
                                         <p>{song.duration}</p>
                                         {user && <button className='add-button' onClick={() => setOpenModal({isOpen:!openModal.isOpen,idx:idx})}><img className='plus' src={plus} /></button>}
                                     </div>

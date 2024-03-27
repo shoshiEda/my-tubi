@@ -1,0 +1,49 @@
+.loading{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 111px;
+    left: 294px;
+    background-color: $clr12;
+    z-index: 10;
+   
+    .loading-conteiner{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: 5% -50%;
+        display:flex;
+        flex-direction: row;
+    
+    
+        div{
+            position: relative;
+            background-color:$clr13;
+            width:3rem;
+            height: 3rem;
+            margin: 0.5em;
+            border-radius: 50%;
+            animation: grow 700ms infinite;
+        }
+        
+        @keyframes grow {
+            75% {
+                scale: 1;
+            }
+            100% {
+                scale: 1.2 1.2;
+            }
+        }
+        div:nth-child(1) {
+            animation-delay: 100ms;
+        }
+        
+        div:nth-child(2) {
+            animation-delay: 200ms;
+        }
+        
+        div:nth-child(3) {
+            animation-delay: 300ms;
+        }
+    }
+}
