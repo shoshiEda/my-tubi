@@ -18,19 +18,26 @@ import pause from '../assets/img/icons/pause.svg'
 
 export function HomePage() {
     const stationTypes = useSelector(storeState => storeState.stationModule.stationTypes)
-    const stations = useSelector(storeState => storeState.stationModule.stations)
     const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
     const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
-
+    const [stations, setStations] = useState(null)
 
     useBackgroundFromImage()
 
     
 
     useEffect(() => {
-        loadStations()
+        onLoadStations()
     }, [])
+
+    async function onLoadStations(){
+        try{ 
+            const newStations = await loadStations()
+            setStations(newStations)  
+        }
+        catch (error) {console.log(error)}
+    }
 
 
     async function onSetPlay(song,station=null){
@@ -51,6 +58,8 @@ export function HomePage() {
         }
         setIsStationPlaying(!isStationPlaying)
     }
+console.log(stations)
+
     if (!stations) return <div><Loading/></div>
     return (
         <section>

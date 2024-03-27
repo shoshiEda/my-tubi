@@ -17,7 +17,7 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
     const currSong = useSelector(storeState => storeState.systemModule.currSong)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
 
-    const index = user.likedSongs.findIndex(Song=>Song.trackId===song.trackId)
+    const index = user? user.likedSongs.findIndex(Song=>Song.trackId===song.trackId) : -1
     const isSongLiked=index === -1 ? false : true
     
  
@@ -37,16 +37,18 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
             <p >{song.artist}</p>
            
             <div className="durasion-and-icons">
-            {isUserStation && id !== 'liked' && <button className={"like-btn small animate__animated "
+            {user && id !== 'liked' && <button className={"like-btn small animate__animated "
                                             +
                                         (isSongLiked ? 'shown animate__heartBeat' : 'animate__shakeX')}
                                         onClick={()=>setIsLiked(song,!isSongLiked)}>
             
                                         {isSongLiked ? <FullHeart className='shown' /> : <Heart />}
                                     </button>}
-            {isUserStation && id === 'liked' && <img onClick={()=>setOpenModal({isOpen:!openModal.isOpen,idx:idx})} className="icon svg" src={plus}/>}
+            {user && id === 'liked' && <img onClick={()=>setOpenModal({isOpen:!openModal.isOpen,idx:idx})} className="icon svg" src={plus}/>}
             <p>{song.duration}</p>
             {isUserStation && <img className="icon svg" src={trash} onClick={()=>onRemoveSong(song)}/>}
+            {user && id !== 'liked' && <img onClick={()=>setOpenModal({isOpen:!openModal.isOpen,idx:idx})} className="icon svg" src={plus}/>}
+
             </div>
             {openModal.isOpen && openModal.idx===idx && <div  className='modal'><ul>
                                             <p onClick={()=>{

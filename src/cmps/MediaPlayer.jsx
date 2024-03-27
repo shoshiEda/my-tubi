@@ -39,7 +39,7 @@ export function MediaPlayer() {
     const [prevVolume, setPrevVolume] = useState(50);
     const [tempPlayer, setTemptPlayer] = useState(null);
 
-    const index = user.likedSongs.findIndex(Song=>Song.trackId===song.trackId)
+    const index = user? user.likedSongs.findIndex(Song=>Song.trackId===song.trackId):-1
     const isSongLiked=index === -1 ? false : true
    
     let songIndexInStation = -1;

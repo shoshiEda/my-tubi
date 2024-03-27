@@ -11,6 +11,7 @@ export async function loadStations(filterSortBy = '') {
         console.log("stations:", stations)
         store.dispatch({ type: SET_STATIONS, stations })
         console.log('Load complete')
+        return stations
     }
     catch (err) {
         console.log('Station Action -> Cannot load stations', err)

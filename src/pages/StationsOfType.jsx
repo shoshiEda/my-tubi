@@ -19,17 +19,25 @@ import { loadStations } from '../store/station.actions'
 export function StationsOfType(){
 
     const { type } = useParams()
-    let stations = useSelector(storeState => storeState.stationModule.stations)
     const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
     const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
     const [isStationPlaying, setIsStationPlaying] = useState(false)
+    const [stations, setStations] = useState(null)
     useBackgroundFromImage()
 
 
     useEffect(() => {
-        stations = loadStations(type)
+        onLoadStations(type)
     }, [])
+
+    async function onLoadStations(type){
+        try{ 
+            const newStations = await loadStations(type)
+            setStations(newStations)  
+        }
+        catch (error) {console.log(error)}
+    }
 
     async function onSetPlay(song,station=null){
         try{ 
