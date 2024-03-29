@@ -29,6 +29,7 @@ export function StationDetails() {
     const currSong = useSelector(storeState => storeState.systemModule.currSong)
     const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
+    const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
 
     const { id } = useParams()
     const [isEdit, setIsEdit] = useState(false)
@@ -51,6 +52,7 @@ export function StationDetails() {
         onLoadstation()
     }, [id])
 
+    console.log(currStation)
     useBackgroundFromImage(currStation?.imgUrl)
 
     async function onLoadstation() {
@@ -189,14 +191,14 @@ async function onSetPlay(song,station=null){
 }
   
 
-    if (!currStation) return <div><Loading/></div>
+    if (!currStation) return (isComputer? <div>Loading...</div> : <div><Loading/></div>)
 
     const { imgUrl, type, createdBy, name, songs, description } = currStation
 
     const amount = songs?.length || ''
 
     return (
-        <section className="station-details">
+        <section className={"station-details" + (isComputer? '' :' for-cell')}>
             <header className="station-header">
                 <img src={imgUrl || notes} onClick={() => (isUserStation && id!=='liked')? setIsEdit(true):''} />
                 <div className="station-header-info">

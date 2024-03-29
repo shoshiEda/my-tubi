@@ -1,3 +1,6 @@
+import ColorThief from 'colorthief'
+
+
 export const utilService = {
     makeId,
     makeLorem,
@@ -8,7 +11,7 @@ export const utilService = {
     loadFromStorage,
     getRandomColor,
     animateCSS,
-    formatTime
+    formatTime,
 }
 
 function makeId(length = 6) {
@@ -21,6 +24,7 @@ function makeId(length = 6) {
 
     return txt
 }
+
 
 function formatTime(timeInSeconds) {
     const minutes = Math.floor(timeInSeconds / 60)

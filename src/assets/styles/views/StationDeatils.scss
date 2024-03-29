@@ -5,6 +5,8 @@
 
 
 
+
+
 hr{
     width: 100%; 
     height: 1px; 
@@ -734,23 +736,22 @@ position: relative;
                     gap: 60px;
                     margin-bottom: 16px;
                 }
-
-
             }
 
             div {
-                // grid-area: content;
-                // width: 100%;
+            
                 padding-right: 10px;
-
-
-                // .song-list {
-                //     grid-template-columns: 10% 20% 30% 20% 20%;
-                // }
             }
         }
     }
+}
 
-
+.for-cell{
+    svg{
+        opacity: 1;
+    }
+    .station-details-list .durasion-and-icons .icon{
+        opacity: 1;
+    }
 
 }

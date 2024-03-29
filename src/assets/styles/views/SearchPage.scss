@@ -282,3 +282,18 @@
 .browse-all {
     margin: 16px 0;
 }
+
+.for-cell{
+    .search-hero .results-section .search-result-list .single-song-result .duration-add .add-button{
+        opacity: 1;
+    }
+
+    .search-hero .results-section .search-result-list .single-song-result .duration-add .like-btn{
+        opacity: 1;
+    }
+
+    .search-hero .top-result-section .play-bg{
+        opacity: 1;
+        top:11rem;
+    }
+}

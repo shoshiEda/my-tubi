@@ -22,6 +22,8 @@ export function HomePage() {
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
     const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
     const [stations, setStations] = useState(null)
+    const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
+
 
     useBackgroundFromImage()
 
@@ -58,11 +60,11 @@ export function HomePage() {
         }
         setIsStationPlaying(!isStationPlaying)
     }
-console.log(stations)
 
-    if (!stations) return <div><Loading/></div>
+    if (!stations) return (isComputer? <div>Loading...</div> : <div><Loading/></div>)
+
     return (
-        <section>
+        <section className={isComputer? 'for-computer' :' for-cell'}>
             {stationTypes.map(type => {
                 const filteredStations = stations.filter(station => station.type === type)
                 return (

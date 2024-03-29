@@ -21,6 +21,7 @@ export function StationsOfType(){
     const { type } = useParams()
     const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
+    const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
     const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
     const [isStationPlaying, setIsStationPlaying] = useState(false)
     const [stations, setStations] = useState(null)
@@ -61,7 +62,8 @@ export function StationsOfType(){
     return (
         <section>
             <h3>{type}</h3>
-            <section className="stations-by-type">
+            <section className={"stations-by-type" + (isComputer? '' :' for-cell')}>
+
             {stations.map((station =>
                              <Link to={'/station/' + station._id} className='station-card' key={station._id}>
                             <div  >

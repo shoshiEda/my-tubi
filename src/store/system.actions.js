@@ -1,6 +1,6 @@
 import { userService } from '../services/user.service.js'
 import { store } from '../store/store.js'
-import { SET_SEARCH,SET_CURR_SONG,SET_CURR_STATION,SET_PLAY } from '../store/system.reducer'
+import { SET_SEARCH,SET_CURR_SONG,SET_CURR_STATION,SET_PLAY ,SET_DEVICE} from '../store/system.reducer'
 import { editUser } from '../store/user.actions'
 
 
@@ -9,6 +9,21 @@ export function setHeaderSearch(value){
         type: SET_SEARCH,
         value
     })
+}
+
+export function checkDevice()
+{
+    if (window.matchMedia("(pointer: coarse)").matches) {
+        store.dispatch({
+            type: SET_DEVICE,
+            term:false
+        })
+    } else if(window.matchMedia("(pointer: fine)").matches) {
+        store.dispatch({
+            type: SET_DEVICE,
+            term:true
+        })    }
+    
 }
 
 export function setPlay(term){

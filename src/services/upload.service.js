@@ -1,6 +1,10 @@
+
 export const uploadService = {
-  uploadImg
+  uploadImg,
+ 
 }
+
+
 async function uploadImg(ev) {
   const CLOUD_NAME = "dghlmxfvd"
   const UPLOAD_PRESET = "j5wqjtvx"

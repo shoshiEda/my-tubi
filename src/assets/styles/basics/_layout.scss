@@ -7,7 +7,6 @@
     grid-template-areas:
         "left-sidebar main"
         "player player";
-    //gap: $panel-gap;
     height: 100vh;
     overflow: hidden;
     gap: $panel-gap;
@@ -38,23 +37,9 @@
 .main-content {
     grid-area: main;
     overflow-y: auto; 
-
-    //this is if we want css variables changed by js
-    // --left-sidebar-width: 420px;
-    // --panel-width: 292px;
-    // --content-spacing: clamp(16px, 16px + (100vw - var(--left-sidebar-width, 0px) - var(--panel-width, 0px) - 600px)/424*8, 24px);
-    // padding: 16px var(--content-spacing);
-
     border-radius: $panel-gap;
 }
 
-// .home-page{overflow-y: auto;////////////////////NEW
-// }
-
-.right-sidebar {
-    grid-area: right-sidebar;
-    color: pink;
-}
 
 .search-page {
     grid-area: main;
@@ -73,7 +58,6 @@
 .station-page {
     grid-area: main;
 
-    // padding: 24px;
 
     form {
         gap: calc($panel-gap*2);
@@ -138,12 +122,37 @@
     }
 }
 
-.main-container.MOBILE {
+.main-container-for-mobile {
+    height:100vh;
     display: grid;
-    grid-template-rows: 80% 10% 10%;
+    grid-template-rows: auto;
     grid-template-columns: 100vw;
     grid-template-areas:
         " main"
         " player"
-        " left-sidebar";
+        " bottom-manu";
+
+    .bottom-manu{
+        grid-area: bottom-manu;
+    }
+    .media-player{
+        grid-area: player;
+    
+    }
+    
+    .main-content {
+        grid-area: main;
+        overflow-y: auto; 
+        border-radius: $panel-gap;
+        height: calc(100vh - 11rem);
+    }
+    
+    
+    .search-page {
+        grid-area: main;
+    }
+    
+    .login-form {
+        grid-area: main;
+    }
 }

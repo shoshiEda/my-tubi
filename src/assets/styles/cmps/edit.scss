@@ -8,6 +8,8 @@
         opacity:0.5;
     }
 
+   
+
     .modal-content{
         position: absolute;
         z-index: 5;
@@ -81,4 +83,14 @@
 
     }
 
-}
+    .edit-for-cell{
+        width:80%;
+
+        button{
+                font-weight: bold;
+                color:$clr9 ;
+                background-color: $clr13;
+            }
+        }
+    }
+

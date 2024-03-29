@@ -22,6 +22,7 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
 
   const [credentials, setCredentials] = useState(initialCardentials)
   const stationTypes = useSelector(storeState => storeState.stationModule.stationTypes)
+  const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
   const navigate = useNavigate()
   const user = useSelector(storeState => storeState.userModule.user)
 
@@ -98,7 +99,7 @@ if(!credentials) return( <div>Loading...</div>)
   return (
     <div id='modalBackdrop' className="modal-backdrop" >
       <div className='modal-background' onClick={closeModal}></div>
-      <div className="modal-content">
+      <div className={"modal-content" +(isComputer? '' :' edit-for-cell')}>
         <form onSubmit={isEditEntity}>
           <h2>{(entityType==='user')? 'Edit your profile' : 'Album details'}</h2>
           <div className='details'>

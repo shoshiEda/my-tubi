@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { useSelector } from "react-redux"
+import { Link } from 'react-router-dom'
 
 import { userService } from '../services/user.service'
 import { Edit} from '../cmps/Edit.jsx'
@@ -13,6 +14,8 @@ import userIcon from '../assets/img/icons/user.svg'
 export function UserDetails(){
      const [user, setUser] = useState(userService.getLoggedinUser())
      const [isEdit, setIsEdit] =useState(false)
+     const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
+
 
 
 
@@ -20,7 +23,7 @@ export function UserDetails(){
     if (!user) return <h1>loadings....</h1>
     return user && 
     <div className='user-page'>
-    <div className='user-details'>
+    <div className={'user-details' + (isComputer? '' : ' for-cell')}>
       <div className="image-container">
         {loggedInUser.imgUrl ?
                 <img className='user-img' src={user.imgUrl}></img>

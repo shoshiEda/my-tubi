@@ -38,6 +38,8 @@ export function SearchPage() {
     const currSong = useSelector(storeState => storeState.systemModule.currSong)
     const currStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
+    const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
+
 
 
     const genres = ["New", 'Music', 'Pop', 'Hip-Hop', 'Rap', 'Latino', 'Indie', 'Rock', 'Podcusts', 'Live', 'Sport', 'Meditation', 'Party', 'Electronic', 'For sleep']
@@ -133,7 +135,7 @@ export function SearchPage() {
      if(searchList && !searchList.length)  return <h3>There are no results</h3>
 
     return (
-        <section>
+        <section className={isComputer? '' :' for-cell'}>
             {!params.searchTerm &&
                 <Fragment>
                     <h1 className='browse-all'>Browse all</h1>

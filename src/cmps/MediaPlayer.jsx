@@ -4,8 +4,8 @@ import YouTube from 'react-youtube'
 import { useRef } from 'react'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { editUser } from '../store/user.actions'
+import { utilService } from "../services/util.service.js"
 
-import { utilService } from '../services/util.service'
 import { ProgressBar } from './ProgressBar'
 import { FullHeart } from '../services/icons.service.jsx'
 import { Heart } from '../services/icons.service.jsx'
@@ -20,6 +20,8 @@ import nextSong from '../assets/img/icons/nextSong.svg'
 import Volume from '../assets/img/icons/volume.svg'
 import Mute from '../assets/img/icons/mute.svg'
 import fullScrean from '../assets/img/icons/fullScrean.svg'
+import prevPage from '../assets/img/icons/prevPage.svg'
+
 
 
 
@@ -38,10 +40,17 @@ export function MediaPlayer() {
     const [volume, setVolume] = useState(50);
     const [prevVolume, setPrevVolume] = useState(50);
     const [tempPlayer, setTemptPlayer] = useState(null);
+    const [isFullScreen, setIsFullScreen] = useState(false);
+
+    
 
     const index = user? user.likedSongs.findIndex(Song=>Song.trackId===song.trackId):-1
     const isSongLiked=index === -1 ? false : true
+
+    const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
    
+
+
     let songIndexInStation = -1;
     if (station && station.songs) {
         songIndexInStation = station.songs.findIndex(Song => song.trackId === Song.trackId);
@@ -68,16 +77,15 @@ export function MediaPlayer() {
         }
     }, [volume, isPlay, playerReady]);
 
+
+
     async function setIsLiked(){
-        console.log(song,user)
-        if(!user) return
-        let updatedSong=song
-        updatedSong.isLiked=!song.isLiked       
+        if(!user) return     
         try{
-            updatedSong.isLiked?     
-            editUser(user,'likedSongs',updatedSong,true)
+            isSongLiked?     
+            editUser(user,'likedSongs',song,false)
             :
-            editUser(user,'likedSongs',updatedSong,false)
+            editUser(user,'likedSongs',song,true)
         } 
         catch (error) {console.log(error)}       
     }
@@ -157,14 +165,47 @@ export function MediaPlayer() {
             playerRef.current.internalPlayer.setVolume(volume)           
             }
     }
+
+    
+    function setFullScreen(){
+        if(song)
+        setIsFullScreen(true)
+    }
+
+    console.log(isFullScreen,(!isComputer && !isFullScreen))
+    
     
 
     const {imgUrl,name,artist,trackId} = song
-    return (
-        <footer className="media-player">
+    if(!isComputer && !isFullScreen)
+    return(
+        <footer className="media-player-for-cell"  onClick={setFullScreen}>
+        <section className='song-info flex align-center'>
+             <div className={name?'' :'song-img'}><img className= {name?'cover-img' :'svg'} src={imgUrl} /></div>
+             <div>
+                 <p>{name}</p>
+                 <p>{artist}</p>
+             </div>
+             {user &&<button className={"like-btn small animate__animated "
+                                         +
+                                     (isSongLiked ? 'fill empty animate__heartBeat' : 'fill animate__shakeX')}
+                                     onClick={setIsLiked}>
+                                     {isSongLiked ? <FullHeart /> : <Heart />}
+                                 </button>}
+             
+        </section>
+        <YouTube videoId={trackId} opts={opts} onEnd={onEnd} onReady={onReady} ref={playerRef} />
+        <button className='play-song' onClick={(e) => { e.stopPropagation()
+             setPlay(!isPlay) }}><img className='svg' src={isPlay? pause : play}/></button>
+        </footer>
+        )
+    else return (
+        <footer className={isFullScreen?'media-player full-screen' :'media-player'} >
+            {isFullScreen &&  <button className='back'><img className='svg' onClick={()=>setIsFullScreen(false)} src={prevPage} alt="previous page" title="previous page"/></button>
+}
            <section className='song-info'>
                 <div className={name?'' :'song-img'}><img className= {name?'cover-img' :'svg'} src={imgUrl} /></div>
-                <div>
+                <div className='song-details'>
                     <p>{name}</p>
                     <p>{artist}</p>
                 </div>
@@ -191,7 +232,7 @@ export function MediaPlayer() {
 
             </section>
             <section className="volume-section">
-                <button /*onClick={toggleFullScreen}*/><img className='svg' src={fullScrean}/></button>
+                <button onClick={setFullScreen}><img className='svg' src={fullScrean}/></button>
                 <div className="volume">            
                     <input
                      onMouseEnter={() => setIsHovered(true)}

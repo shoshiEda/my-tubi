@@ -6,11 +6,14 @@ export const SET_SEARCH = 'SET_SEARCH'
 export const SET_CURR_SONG = 'SET_CURR_SONG'
 export const SET_CURR_STATION = 'SET_CURR_STATION'
 export const SET_PLAY = "SET_PLAY"
+export const SET_DEVICE = "SET_DEVICE"
+
 
 
 
 
 const initialState = {
+  isComputer:false,
   isLoading: false,
   isSearch:false,
   currSong:userService.getLoggedinUser()? userService.getLoggedinUser().currSong : null,
@@ -33,6 +36,8 @@ export function systemReducer (state = initialState, action = {}) {
       return { ...state, currStation: {...state.currStation, ...action.station }}
     case SET_PLAY:
         return { ...state, isPlay: action.term }
+    case SET_DEVICE:
+        return { ...state, isComputer: action.term }
     default: return state
   }
 }

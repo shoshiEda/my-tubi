@@ -99,6 +99,8 @@
    
 }
 
+
+
 .stations-conteiner{
 
     display: flex;
@@ -136,4 +138,19 @@
         
     }
 
+}
+
+.for-cell{
+   .image-container{
+    margin: 0;
+        .user-img{
+            width: 40vw;
+            height: 40vw;
+        }
+   }
+   .user-info{
+    h3{
+        font-size: 10vw;
+    }
+   }
 }
