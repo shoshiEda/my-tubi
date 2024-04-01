@@ -28,6 +28,7 @@ export function RootCmp() {
 
     checkDevice()
 
+
     return (
         <div className={isComputer? 'main-container' :"main-container-for-mobile"}>
           <Router>

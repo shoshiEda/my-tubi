@@ -13,62 +13,102 @@ export const userService = {
     getById,
     remove,
     updateUser,
-    getEmptyCredentials
+    getEmptyCredentials,
+    addUserLikedSong,
+    removeUserLikedSong,
+    addUserStation,
+    removeUserStation
 }
 
 window.userService = userService
 
 
 function getUsers() {
-    return storageService.query('user')
-    // return httpService.get(`user`)
+    //return storageService.query('user')
+     return httpService.get(`user`)
 }
 
 
 
 async function getById(userId) {
-    const user = await storageService.get('user', userId)
-    // const user = await httpService.get(`user/${userId}`)
+    //const user = await storageService.get('user', userId)
+     const user = await httpService.get(`user/${userId}`)
     return user
 }
 
 function remove(userId) {
-    return storageService.remove('user', userId)
-    // return httpService.delete(`user/${userId}`)
+    //return storageService.remove('user', userId)
+     return httpService.delete(`user/${userId}`)
 }
 
 async function updateUser(user) {
    
-    await storageService.put('user', user)
-
-    // const user = await httpService.put(`user/${_id}`, {_id, score})
+    //await storageService.put('user', user)
+     const updatedUser = await httpService.put(`user/${user._id}`, user)
 
     // When admin updates other user's details, do not update loggedinUser
+    if (getLoggedinUser()._id === updatedUser._id) saveLocalUser(updatedUser)
+    return updatedUser
+}
+
+async function addUserLikedSong(user,song) {
+   
+     const updatedSong = await httpService.post(`user/${user._id}/song`, song)
+     user.likedSongs? user.likedSongs.push(updatedSong) : user.likedSongs[0]=updatedSong
     if (getLoggedinUser()._id === user._id) saveLocalUser(user)
     return user
 }
 
+async function removeUserLikedSong(user,song) {
+   
+    const DeletedSongId = await httpService.delete(`user/${user._id}/song/${song.trackId}`, song)
+    const idx = user.likedSongs.findIndex(song=>song.trackId===DeletedSongId)
+    user.likedSongs.splice(idx,1)
+
+    if (getLoggedinUser()._id === user._id) saveLocalUser(user)
+    return user
+}
+
+async function addUserStation(user,station) {
+   
+    const updatedStation = station._id? await httpService.put(`user/${user._id}/station/${station._id}`, station) : await httpService.post(`user/${user._id}/station`, station)
+    user.stations? user.stations.unshift(updatedStation) : user.stations=[updatedStation]
+   if (getLoggedinUser()._id === user._id) saveLocalUser(user)
+   return user
+}
+
+async function removeUserStation(user,station) {
+  
+   const DeletedStationId = await httpService.delete(`user/${user._id}/station/${station._id}`, station)
+   const idx = user.stations.findIndex(station=>station._id===DeletedStationId)
+   user.stations.splice(idx,1)
+
+   if (getLoggedinUser()._id === user._id) saveLocalUser(user)
+   return user
+}
+
+
 async function login(userCred) {
-    const users = await storageService.query('user')
-    const user = users.find(user => user.username === userCred.username)
-    // const user = await httpService.post('auth/login', userCred)
+    //const users = await storageService.query('user')
+    //const user = users.find(user => user.username === userCred.username)
+     const user = await httpService.post('auth/login', userCred)
     if (user) return saveLocalUser(user)
 }
 
 async function signup(userCred) {
-    const user = await storageService.post('user', userCred)
-    // const user = await httpService.post('auth/signup', userCred)
+    //const user = await storageService.post('user', userCred)
+     const user = await httpService.post('auth/signup', userCred)
     return saveLocalUser(user)
 }
 
 async function logout() {
-    sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
-    // return await httpService.post('auth/logout')
+    //sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
+     return await httpService.post('auth/logout')
 }
 
 
 function saveLocalUser(user) {
-    user = { _id: user._id, username: user.username, imgUrl: user.imgUrl || '' ,likedSongs:user.likedSongs || [],stasions:user.stasions|| [],likedStasions:user.likedStasions || [], currSong:user.currSong || null, currStation:user.currStation|| null }
+    user = { _id: user._id, username: user.username, imgUrl: user.imgUrl || '' ,likedSongs:user.likedSongs || [],stations:user.stations|| [],likedStations:user.likedStations || [], currSong:user.currSong || null, currStation:user.currStation|| null }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     return user
 }
@@ -77,7 +117,7 @@ function getLoggedinUser() {
     return JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
 }
 
-function getEmptyCredentials(email = '', imgUrl = "", username = '', password = '', stations = [], likedSongs = [],likedStasions=[]) {
+function getEmptyCredentials(email = '', imgUrl = "", username = '', password = '', stations = [], likedSongs = [],likedStations=[]) {
     return {
         email,
         username,
@@ -85,7 +125,7 @@ function getEmptyCredentials(email = '', imgUrl = "", username = '', password = 
         stations,
         imgUrl,
         likedSongs,
-        likedStasions
+        likedStations
     }
 }
 

@@ -87,8 +87,38 @@ export async function saveStation(station) {
 
     try {
         const savedStation = await stationService.save(station)
+        console.log(savedStation)
         store.dispatch({ type: type, station: savedStation })
         return savedStation
+    }
+    catch (err) {
+        console.log('Station Action -> Cannot save station', err)
+        throw err
+    }
+}
+
+export async function saveSongOnStation(station,song) {
+    station.songs? station.songs.push(song) : station.songs=[(song)]
+
+    try {
+        await stationService.addSong(station,song)
+        store.dispatch({ type: SET_CURR_STATION, station: station })
+        return station
+    }
+    catch (err) {
+        console.log('Station Action -> Cannot save station', err)
+        throw err
+    }
+}
+
+export async function removeSongOnStation(station,song) {
+
+    const idx = station.songs.findIndex(Song=>Song.trackId===song.trackId)
+    if(idx!==-1) station.songs.splice(idx,1)
+    try {
+        await stationService.removeSong(station,song)
+        store.dispatch({ type: SET_CURR_STATION, station: station })
+        return station
     }
     catch (err) {
         console.log('Station Action -> Cannot save station', err)

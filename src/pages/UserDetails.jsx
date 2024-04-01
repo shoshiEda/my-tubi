@@ -9,6 +9,7 @@ import { Edit} from '../cmps/Edit.jsx'
 
 import editIcon from '../assets/img/icons/edit.svg'
 import userIcon from '../assets/img/icons/user.svg'
+import albumCover from '../assets/img/pics/album-cover.jpeg'
 
 
 export function UserDetails(){
@@ -40,14 +41,14 @@ export function UserDetails(){
       <div className='user-info'>
             <p>Profile</p>
             <h3 onClick={()=>setIsEdit(true)}> {loggedInUser.username} </h3>
-            <p>You have {user.stasions ? user.stasions.length : 0} {user.stasions.length === 1 ? ' album' : ' albums'}</p>
+            <p>You have {user.stations ? user.stations.length : 0} {user.stations.length === 1 ? ' album' : ' albums'}</p>
       </div>
       {isEdit && < Edit entity={user} setEntity={setUser} setIsEdit={setIsEdit} entityType={'user'}/>}
     </div>
-    {  user.stasions &&<h2>Your albums:</h2>}
-    {  user.stasions && <ul className=" stations-conteiner clean-list">
+    {  user.stations &&<h2>Your albums:</h2>}
+    {  user.stations && <ul className=" stations-conteiner clean-list">
                     {
-                        user.stasions.map(station =>
+                        user.stations.map(station =>
                                 <Link to={'/station/' + station._id} className='station-card' key={station._id}>
                                <div  >
                                    <img className='album-cover' src={station.imgUrl || albumCover} />

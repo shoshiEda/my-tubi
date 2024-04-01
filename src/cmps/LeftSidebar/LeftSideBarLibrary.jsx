@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { Edit} from '../Edit.jsx'
 
-////import { removeStation, saveStation, setCurrStation, setUserStations } from "../../store/actions/station.actions"
+import {  setUserStations } from "../../store/user.actions.js"
 //import { stationService } from "../../services/station.service"
 import { editUser } from "../../store/user.actions.js"
 
@@ -27,25 +27,17 @@ export function LeftSideBarLibrary() {
     const [filterSort, setFilterSort] = useState({ txt: '', sortBy: '' })
     const [showSearch, setShowSearch] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [userStations, setUserStations] = useState(user? [...user.stasions, ...user.likedStasions]: [])
+    const [userStations, setUserStationss] = useState(setStations())
     const [isEdit, setIsEdit] =useState(false)
     const [selectedIdx, setSelectedIdx] = useState(null);
-
-
-   
-
-    useEffect(() => {
-        if (user) {
-            FilterList()
-            }
-    }, [user]);
 
 
     useEffect(() => {
         if (user) {
         FilterList()
+        setUserStationss(setStations())
         }
-    }, [filterSort.txt, filterSort.sortBy, user?.stasions, user?.likedStasions]);
+    }, [filterSort.txt, filterSort.sortBy,user]);
 
     const handleClick = (idx) => {
         if (selectedIdx === idx) {
@@ -57,12 +49,19 @@ export function LeftSideBarLibrary() {
 
    
 
+    function setStations(){
+        if(!user || (!user.stations && !user.likedStations)) return []
+        if(user.stations && !user.likedStations) return user.stations
+        if(!user.stations && !user.likedStations) return user.likedStations
+        if(user.stations && user.likedStations) return [...user.stations, ...user.likedStations]
+    }  
+
     async function onRemoveStation( station) {
-        const type = station.createdBy===user.username? 'stasions' : 'likedStasions'
+        const type = station.createdBy._id===user._id? 'stations' : 'likedStations'
         try {           
-            await editUser(user,type,station,false)
+            type ==='stations'? await setUserStations(station,false):''
         }
-        catch (err) { console.log(user.stasions) }
+        catch (err) { console.log(user.stations) }
 
     }
 
@@ -86,13 +85,14 @@ export function LeftSideBarLibrary() {
     
 
     function FilterList() {
+        console.log('filter')
         const regex = new RegExp(filterSort.txt, 'i')
-        let newList = [...user.stasions, ...user.likedStasions].filter(station => regex.test(station.name || station.createdBy));
+        let newList = userStations.filter(station => regex.test(station.name || station.createdBy.username));
 
          if (filterSort.sortBy === 'name') newList.sort((stationA, stationB) => stationA.name.localeCompare(stationB.name))
-        else if (filterSort.sortBy === 'by') newList.sort((stationA, stationB) => stationA.createdBy.localeCompare(stationB.createdBy))
+        else if (filterSort.sortBy === 'by') newList.sort((stationA, stationB) => stationA.createdBy.username.localeCompare(stationB.createdBy.username))
         else if (filterSort.sortBy === 'createdAt') newList.sort((stationA, stationB) => stationA.createdAt - stationB.createdAt)
-        setUserStations(newList)
+        setUserStationss(newList)
 
     }
 
@@ -159,7 +159,7 @@ export function LeftSideBarLibrary() {
                                     <div className='album-info flex  column'>
   
                                         <p>{station.name}</p>
-                                        <p className='flex align-center'>by:{station.createdBy}</p>
+                                        <p className='flex align-center'>by:{station.createdBy.username}</p>
                                         </div>
                                         </div>
                                         </Link>

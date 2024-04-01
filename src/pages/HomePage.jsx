@@ -30,7 +30,7 @@ export function HomePage() {
     
 
     useEffect(() => {
-        onLoadStations()
+        //onLoadStations()
     }, [])
 
     async function onLoadStations(){

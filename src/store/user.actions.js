@@ -64,22 +64,8 @@ export async function loadUser(userId) {
     }
 }
 
-export async function editUser(user,field='',value='',isAdd= undefined){
-    if(isAdd && isAdd!==undefined){
-        if (!Array.isArray(user[field]))    user[field]=[]     
-        user[field].push(value)
-    }
-    else if(isAdd===false){
-        if(field==='likedSongs')
-        {
-            const idx = user[field].findIndex(obj => obj.trackId===value.trackId)
-            user[field].splice(idx,1)
-        }
-        else{
-            const idx = user[field].findIndex(obj => obj._id===value._id)
-            user[field].splice(idx,1)
-        }
-    }
+export async function editUser(user){
+   
     try{
         const updatedUser = await userService.updateUser(user)
         store.dispatch({ type: SET_USER, user:updatedUser })
@@ -89,4 +75,72 @@ export async function editUser(user,field='',value='',isAdd= undefined){
         console.log(err)
     }
 }
+
+
+export async function setLikedSongs(song,isAdd=true){
+    const user = await userService.getLoggedinUser()
+    if(isAdd){
+        try{
+            const updatedUser = await userService.addUserLikedSong(user,song)
+            store.dispatch({ type: SET_USER, user:updatedUser })
+            return updatedUser
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+    else{
+        try{
+            const updatedUser = await userService.removeUserLikedSong(user,song)
+            store.dispatch({ type: SET_USER, user:updatedUser })
+            return updatedUser
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+
+}
+
+
+
+export async function setUserStations(station,isAdd=true){
+    const user = await userService.getLoggedinUser()
+    if(isAdd){
+        try{
+            const updatedUser = await userService(uaddUserStationser,station)
+            store.dispatch({ type: SET_USER, user:updatedUser })
+            return updatedUser
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+    else{
+        try{
+            const updatedUser = await userService.removeUserStation(user,station)
+            console.log(updatedUser)
+            store.dispatch({ type: SET_USER, user:updatedUser })
+            return updatedUser
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+
+}
+
+export async function editUserStations(station){
+    const user = await userService.getLoggedinUser()
+        try{
+            const updatedUser = await userService.addUserStation(user,station)
+            store.dispatch({ type: SET_USER, user:updatedUser })
+            return updatedUser
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+
+
 

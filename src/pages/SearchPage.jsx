@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router"
 import { useSelector } from 'react-redux'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
-import { editUser } from '../store/user.actions'
+import { editUser,setLikedSongs } from '../store/user.actions'
 import { Edit } from '../cmps/Edit.jsx'
 import { saveStation } from '../store/station.actions'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
@@ -81,17 +81,16 @@ export function SearchPage() {
 
     async function setIsLiked(idx,isLiked){
         const updatedSong = searchList[idx]
-        updatedSong.isLiked=!searchList[idx].isLiked
-        setSearchList(prevList => {
-            const newList = [...prevList]
-            newList[idx] = updatedSong; 
-            return newList
-          }) 
-          isLiked?       
-          editUser(user,'likedSongs',updatedSong,false)
-          :
-          editUser(user,'likedSongs',updatedSong,true)
+        try{ 
+            isLiked?       
+            await setLikedSongs(updatedSong,false)
+            :
+            await setLikedSongs(updatedSong)   
+        }
+        catch (error) {console.log(error)}
     }
+         
+    
 
     function setAlbumPlay(){
         if(currStation && currStation._id===params.searchTerm){
@@ -119,10 +118,10 @@ export function SearchPage() {
         updatedStation.songs? updatedStation.songs.push(song) : updatedStation.songs=[(song)]
         try{
             await saveStation(updatedStation)
-            const idx = user.stasions.findIndex(station => station._id===updatedStation._id)
+            const idx = user.stations.findIndex(station => station._id===updatedStation._id)
             if(idx!==-1)
             {
-                user.stasions[idx]=updatedStation
+                user.stations[idx]=updatedStation
                 await editUser(user)
             }
             setOpenModal({isOpen:false,idx:-1})
@@ -192,7 +191,7 @@ export function SearchPage() {
                                     {user &&<button className={"like-btn small animate__animated "
                                             +
                                         (isSongLiked(song) ? 'shown animate__heartBeat' : 'animate__shakeX')}
-                                        onClick={()=>setIsLiked(idx,song.isLiked)}>
+                                        onClick={()=>setIsLiked(idx,isSongLiked(song))}>
                                         {isSongLiked(song) ? <FullHeart /> : <Heart />}
                                     </button>}
                                         <p>{song.duration}</p>
@@ -204,7 +203,7 @@ export function SearchPage() {
                                                 setIsEdit(true) 
                                                 setOpenModal({isOpen:false,idx:-1})}
                                                 }>Add a new album</p>
-                                            {user.stasions && user.stasions.map((station,idx)=> <li key={idx} onClick={()=>saveSongInAlbum(station,song)}>{station.name}</li>)}
+                                            {user.stations && user.stations.map((station,idx)=> <li key={idx} onClick={()=>saveSongInAlbum(station,song)}>{station.name}</li>)}
                                             </ul></div>}
                                             
                                 </li>

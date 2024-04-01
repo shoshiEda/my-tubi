@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 
-import { editUser } from '../store/user.actions'
+import { editUser,editUserStations } from '../store/user.actions'
 import { saveStation } from '../store/station.actions'
-import { userService } from '../services/user.service'
+import { setUserStations } from '../store/user.actions'
 import { ImgUploader } from './ImgUploader'
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -38,7 +38,6 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
 
   async function isEditEntity(e){
     e.preventDefault()
-
     if(entityType==='user') {
       
       let updatedUser=entity
@@ -60,20 +59,15 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
       updatedAlbum.imgUrl = credentials.imgUrl
       updatedAlbum.type = credentials.type || 'Mixed'
       updatedAlbum.description = credentials.description
-      updatedAlbum.createdAt = Date.now()
-      console.log(user)
 
       try{
         const newUpdatedAlbum = await saveStation(updatedAlbum)
-        if(!updatedAlbum._id) await editUser(user,'stasions',newUpdatedAlbum,true)
-        else{
-          const idx = user.stasions.findIndex(station => station._id===newUpdatedAlbum._id)
-          user.stasions[idx]=newUpdatedAlbum
-          await editUser(user)
-      }
 
-        navigate(`/station/${newUpdatedAlbum._id}`)
-        setEntity()
+        if(!updatedAlbum._id) await setUserStations(newUpdatedAlbum,true)
+        else{
+          await editUserStations(newUpdatedAlbum)
+      }
+      console.log(user)
         setIsEdit(false)  
     }
     catch(err){

@@ -23,7 +23,7 @@ export function UserLibaryIndex() {
     const [filterSort, setFilterSort] = useState({ txt: '', sortBy: '' })
     const [showSearch, setShowSearch] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [userStations, setUserStations] = useState(user? [...user.stasions, ...user.likedStasions]: [])
+    const [userStations, setUserStations] = useState(user? [...user.stations, ...user.likedStations]: [])
     const [isEdit, setIsEdit] =useState(false)
     const [selectedIdx, setSelectedIdx] = useState(null);
 
@@ -41,7 +41,7 @@ export function UserLibaryIndex() {
         if (user) {
         FilterList()
         }
-    }, [filterSort.txt, filterSort.sortBy, user?.stasions, user?.likedStasions]);
+    }, [filterSort.txt, filterSort.sortBy, user?.stations, user?.likedStations]);
 
     const handleClick = (idx) => {
         if (selectedIdx === idx) {
@@ -54,11 +54,11 @@ export function UserLibaryIndex() {
    
 
     async function onRemoveStation( station) {
-        const type = station.createdBy===user.username? 'stasions' : 'likedStasions'
+        const type = station.createdBy===user.username? 'stations' : 'likedStations'
         try {           
             await editUser(user,type,station,false)
         }
-        catch (err) { console.log(user.stasions) }
+        catch (err) { console.log(user.stations) }
 
     }
 
@@ -83,7 +83,7 @@ export function UserLibaryIndex() {
 
     function FilterList() {
         const regex = new RegExp(filterSort.txt, 'i')
-        let newList = [...user.stasions, ...user.likedStasions].filter(station => regex.test(station.name || station.createdBy));
+        let newList = [...user.stations, ...user.likedStations].filter(station => regex.test(station.name || station.createdBy));
 
          if (filterSort.sortBy === 'name') newList.sort((stationA, stationB) => stationA.name.localeCompare(stationB.name))
         else if (filterSort.sortBy === 'by') newList.sort((stationA, stationB) => stationA.createdBy.localeCompare(stationB.createdBy))

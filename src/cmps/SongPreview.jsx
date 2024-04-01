@@ -20,7 +20,7 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
     const index = user? user.likedSongs.findIndex(Song=>Song.trackId===song.trackId) : -1
     const isSongLiked=index === -1 ? false : true
     
- 
+    console.log(isUserStation)
 
     return (
         <li key={idx} className="station-details-list"
@@ -47,7 +47,7 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
             {user && id === 'liked' && <img onClick={()=>setOpenModal({isOpen:!openModal.isOpen,idx:idx})} className="icon svg" src={plus}/>}
             <p>{song.duration}</p>
             {isUserStation && <img className="icon svg" src={trash} onClick={()=>onRemoveSong(song)}/>}
-            {user && id !== 'liked' && <img onClick={()=>setOpenModal({isOpen:!openModal.isOpen,idx:idx})} className="icon svg" src={plus}/>}
+            {user && !isUserStation && id !== 'liked' && <img onClick={()=>setOpenModal({isOpen:!openModal.isOpen,idx:idx})} className="icon svg" src={plus}/>}
 
             </div>
             {openModal.isOpen && openModal.idx===idx && <div  className='modal'><ul>
@@ -55,7 +55,7 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
                                                 setIsEdit(true) 
                                                 setOpenModal({isOpen:false,idx:-1})}
                                                 }>Add a new album</p>
-                                            {user.stasions && user.stasions.map((station,idx)=> <li key={idx} onClick={()=>saveSongInAlbum(song,station)}>{station.name}</li>)}
+                                            {user.stations && user.stations.map((station,idx)=> <li key={idx} onClick={()=>saveSongInAlbum(song,station)}>{station.name}</li>)}
                                             </ul></div>}
         </li>
     )

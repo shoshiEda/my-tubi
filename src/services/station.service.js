@@ -14,97 +14,57 @@ export const stationService = {
     get,
     save,
     remove,
-    getDefaultStation,
     getEmptyStation,
     convertTimeFormat,
-    getStationDuration
+    getStationDuration,
+    addSong,
+    removeSong
 }
 
 async function query(type = '') {
-    try{
-        let stations = await storageService.query('station')
-        console.log(stations)
-        if(type) stations = stations.filter(station=> station.type===type)
-        return stations
-    }
-    catch (err) {
-        console.log('Station Action -> Cannot load stations', err)
-        throw err
-    }
-    
-    //return httpService.get(BASE_URL, filterSortBy)
+ 
+    return httpService.get(BASE_URL, type)
 }
 
 async function get(stationId) {
-    const station = await storageService.get('station', stationId)
-    return station
-    //return httpService.get(BASE_URL + stationId)
+    //const station = await storageService.get('station', stationId)
+    //return station
+    return httpService.get(BASE_URL + stationId)
 }
 
-async function save(stationData) {
-   
+async function save(station) {
 
-    if (stationData._id){
-        const updatedStation = await storageService.put('station', stationData)
-        return updatedStation
-    }
-    else{
-        stationData.createdBy = loggedInUser.username
-        const newStation = await storageService.post('station', stationData)
-        return newStation
-    }
+    if (station._id) return httpService.put(BASE_URL  + station._id, station)
+    return httpService.post(BASE_URL , station)
+}
 
-    /*const edit = 'edit/'
-    if (station._id) return httpService.put(BASE_URL + edit + station._id, station)
-    return httpService.post(BASE_URL + edit, station)*/
+async function addSong(station,song) {
 
+     return httpService.post(BASE_URL  + station._id+'/song', song)
+}
+
+async function removeSong(station,song) {
+
+    return httpService.delete(BASE_URL  + station._id+`/song/${song.trackId}`, song)
 }
 
 async function remove(stationId) {
-    await storageService.remove('station', stationId)
-   // return httpService.delete(BASE_URL + stationId)
+    //await storageService.remove('station', stationId)
+    return httpService.delete(BASE_URL + stationId)
 }
 
-function getEmptyStation(name = '', idx = '', imgUrl = '', createdBy = { _id: '', username: '', }) {
-    console.log("createdBy:", createdBy)
+function getEmptyStation(){
     return {
-
-        name: name + idx,
-        stationListTitle: '',
-        type: "playlist",
-        tags: [],
+        name: '', 
+        type: '',
         imgUrl: imgUrl,
-        createdBy:createdBy,
-        likedByUsers: 0,
+        createdBy:{ _id: '', username: ''},
         songs: [],
         duration: '',
         description:''
     }
 }
 
-function getDefaultStation() {
-
-    let station = {
-        "_id": utilService.makeId(),
-        "name": utilService.makeLorem(2),
-        "stationListTitle": 'Welcome to YoutubeFy',
-        "type": "playlist",
-        "tags": ["deafult"],
-        "stationImgUrl": 'https://i.scdn.co/image/ab67706f0000000374be24e6ba30b6497b60fca5',
-        "createdBy": {
-            "_id": utilService.makeId(),
-            "username": utilService.makeLorem(1),
-            "profileImg": ""
-        },
-        "likedByUsers": ['', ''],
-        description:''
-
-    }
-
-    let songs = []
-    station.songs = songs
-    return station
-}
 
 
 function getStationDuration(items) {

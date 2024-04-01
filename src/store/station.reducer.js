@@ -22,7 +22,11 @@ export function stationReducer(state = intialState, action = {}) {
             return { ...state, stations: action.stations }
 
         case SET_CURR_STATION:
-            return { ...state, currStation: action.station }
+            return { ...state, currStation: { 
+                ...state.currStation,
+                ...action.station 
+            }  }
+            break
 
         case ADD_STATION:
             stations = [...state.stations, action.station]
@@ -46,7 +50,7 @@ export function stationReducer(state = intialState, action = {}) {
     }
 
      // For debug:
-     //window.userState = state
-    //console.log('State:', state)
+     window.userState = state
+    console.log('State:', state)
     return state
 }

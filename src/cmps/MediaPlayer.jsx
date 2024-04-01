@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import YouTube from 'react-youtube'
 import { useRef } from 'react'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
-import { editUser } from '../store/user.actions'
+import { setLikedSongs } from '../store/user.actions'
 import { utilService } from "../services/util.service.js"
 
 import { ProgressBar } from './ProgressBar'
@@ -83,9 +83,9 @@ export function MediaPlayer() {
         if(!user) return     
         try{
             isSongLiked?     
-            editUser(user,'likedSongs',song,false)
+            setLikedSongs(song,false)
             :
-            editUser(user,'likedSongs',song,true)
+            setLikedSongs(song)
         } 
         catch (error) {console.log(error)}       
     }

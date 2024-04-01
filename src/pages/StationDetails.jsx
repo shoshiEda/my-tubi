@@ -12,9 +12,9 @@ import play from '../assets/img/icons/play.svg'
 import pause from '../assets/img/icons/pause.svg'
 import likedCover from '../assets/img/pics/liked-cover.png'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
-import { editUser } from '../store/user.actions'
+import { editUser,setLikedSongs } from '../store/user.actions'
 import { useNavigate } from "react-router-dom"
-import { saveStation } from '../store/station.actions'
+import { saveStation,setCurrStation,saveSongOnStation,removeSongOnStation } from '../store/station.actions'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { stationService } from '../services/station.service.js'
 import { FullHeart } from '../services/icons.service.jsx'
@@ -26,6 +26,7 @@ import { Heart } from '../services/icons.service.jsx'
 
 export function StationDetails() {
     const user = useSelector(storeState => storeState.userModule.user) || null
+    const currStation = useSelector(storeState => storeState.stationModule.currStation) || null
     const currSong = useSelector(storeState => storeState.systemModule.currSong)
     const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
@@ -33,29 +34,26 @@ export function StationDetails() {
 
     const { id } = useParams()
     const [isEdit, setIsEdit] = useState(false)
-    const [currStation, setCurrStation] = useState(null)
-    const idx =  user? user.stasions.findIndex(station => station._id === id) :-1
+    const idx =  user? user.stations.findIndex(station => station._id === id) :-1
     const isUserStation = (idx===-1 && id!=='liked')? false:true
-    const LikedIdx = user? user.likedStasions.findIndex(station => station._id===id) :0
+    const LikedIdx = (user && user.likedStations)? user.likedStations.findIndex(station => station._id===id) :0
     const isUserLikedAlbum = (!isUserStation && LikedIdx!==-1)? true : false
     const [openModal, setOpenModal] = useState({isOpen:false,idx:-1})
     const [isStationPlaying, setIsStationPlaying] = useState(false)
     const [isStationFirstTimePlaying, setsStationFirstTimePlayin] = useState(true)
 
 
-
-
-
     const navigate = useNavigate()
 
-    useEffect(() => {
-        onLoadstation()
-    }, [id])
 
-    console.log(currStation)
+
+    useEffect(() => {
+        onLoadStation()
+    }, [id,user])
+
     useBackgroundFromImage(currStation?.imgUrl)
 
-    async function onLoadstation() {
+    async function onLoadStation() {
         if (id !== 'liked') {
             try {
                 const station = await loadStation(id)
@@ -80,7 +78,8 @@ export function StationDetails() {
         return {
             imgUrl: likedCover,
             name: 'Songs you liked',
-            songs: user.likedSongs || []
+            songs: user.likedSongs || [],
+            _id:'liked'
         }
     }
 
@@ -91,7 +90,7 @@ export function StationDetails() {
 
     async function setIsLiked(song,action){
         try{
-            editUser(user,'likedSongs',song,action)
+            setLikedSongs(song,action)
         }
         catch (err) { console.log(err) }
     }
@@ -102,14 +101,7 @@ export function StationDetails() {
         updatedStation.songs? updatedStation.songs.push(song) : updatedStation.songs=[(song)]
         try{
             await saveStation(updatedStation)
-            const idx = user.stasions.findIndex(station => station._id===updatedStation._id)
-            if(idx!==-1)
-            {
-                user.stasions[idx]=updatedStation
-                await editUser(user)
-            }
             setOpenModal({isOpen:false,idx:-1})
-            navigate('/station/'+id)
         }
         catch (err) { console.log(err) }
     }
@@ -138,9 +130,9 @@ export function StationDetails() {
     async function setLikedAlbum(){
         if(!user) return 
         isUserLikedAlbum?       
-        editUser(user,'likedStasions',currStation,false)
+        editUser(user,'likedStations',currStation,false)
         :
-        editUser(user,'likedStasions',currStation,true)
+        editUser(user,'likedStations',currStation,true)
         navigate('/station/'+id)
     }
 
@@ -148,16 +140,8 @@ export function StationDetails() {
 
     async function onSaveSong(song){
         
-        const updatedStation = { ...currStation }
-        updatedStation.songs? updatedStation.songs.push(song) : updatedStation.songs=[(song)]
-        setCurrStation(updatedStation)
-        console.log(currStation)
         try{
-            await saveStation(currStation)
-            const idx = user.stasions.findIndex(station => station._id===currStation._id)
-            user.stasions[idx]=currStation
-            await editUser(user)
-            
+             await saveSongOnStation(currStation,song)
         }
         catch (err) { console.log(err) }
     }
@@ -165,18 +149,14 @@ export function StationDetails() {
     async function onRemoveSong(deletadSong){
         if (id === 'liked') {
             try {        
-                await editUser(user,'likedSongs',deletadSong,false)
+                await setLikedSongs(deletadSong,false)
             } catch (error) {
                 console.error("Error loading station:", error)
             }
         } else {
-            const idx = currStation.songs.findIndex(song=>song.trackId===deletadSong.trackId)
-            currStation.songs.splice(idx,1)
+            
             try{
-                await saveStation(currStation)
-                const stationIdx = user.stasions.findIndex(station => station._id===currStation._id)
-                user.stasions[stationIdx]=currStation
-                await editUser(user)
+                await removeSongOnStation(currStation,deletadSong)
             }
          catch (error) {console.log(error)}
     }
@@ -191,9 +171,10 @@ async function onSetPlay(song,station=null){
 }
   
 
-    if (!currStation) return (isComputer? <div>Loading...</div> : <div><Loading/></div>)
+    if (!currStation || !Object.keys(currStation).length || (currStation._id!==id)) return (isComputer? <div>Loading...</div> : <div><Loading/></div>)
 
     const { imgUrl, type, createdBy, name, songs, description } = currStation
+    console.log(currStation)
 
     const amount = songs?.length || ''
 
@@ -205,7 +186,7 @@ async function onSetPlay(song,station=null){
                     <h1 onClick={() => (isUserStation && id!=='liked')? setIsEdit(true):''}>{name}</h1>
                     <p className="description">{description}</p>
                     <br />
-                    <p className="by">{createdBy}</p>
+                    <p className="by">{id==='liked'? user.username : createdBy.username}</p>
                     {amount &&
                         <div>
                             <p>{amount} songs</p>
