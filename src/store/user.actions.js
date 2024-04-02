@@ -105,11 +105,13 @@ export async function setLikedSongs(song,isAdd=true){
 
 
 export async function setUserStations(station,isAdd=true){
+    console.log(station)
     const user = await userService.getLoggedinUser()
     if(isAdd){
         try{
-            const updatedUser = await userService(uaddUserStationser,station)
+            const updatedUser = await userService.addUserStation(user,station)
             store.dispatch({ type: SET_USER, user:updatedUser })
+            console.log(updatedUser)
             return updatedUser
         }
         catch(err){
@@ -133,13 +135,42 @@ export async function setUserStations(station,isAdd=true){
 export async function editUserStations(station){
     const user = await userService.getLoggedinUser()
         try{
-            const updatedUser = await userService.addUserStation(user,station)
-            store.dispatch({ type: SET_USER, user:updatedUser })
-            return updatedUser
+            const newUser = await userService.editUserStation(user,station)
+            console.log('newUser:',newUser)
+            store.dispatch({ type: SET_USER, user:newUser })
+            return newUser
         }
         catch(err){
             console.log(err)
         }
+    }
+
+    export async function setUserLikedStations(station,isAdd=true){
+        console.log(station)
+        const user = await userService.getLoggedinUser()
+        if(isAdd){
+            try{
+                const updatedUser = await userService.addUserLikedStation(user,station)
+                store.dispatch({ type: SET_USER, user:updatedUser })
+                console.log(updatedUser)
+                return updatedUser
+            }
+            catch(err){
+                console.log(err)
+            }
+        }
+        else{
+            try{
+                const updatedUser = await userService.removeUserLikedStation(user,station)
+                console.log(updatedUser)
+                store.dispatch({ type: SET_USER, user:updatedUser })
+                return updatedUser
+            }
+            catch(err){
+                console.log(err)
+            }
+        }
+    
     }
 
 

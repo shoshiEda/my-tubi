@@ -17,7 +17,10 @@ export const userService = {
     addUserLikedSong,
     removeUserLikedSong,
     addUserStation,
-    removeUserStation
+    editUserStation,
+    removeUserStation,
+    addUserLikedStation,
+    removeUserLikedStation
 }
 
 window.userService = userService
@@ -70,11 +73,35 @@ async function removeUserLikedSong(user,song) {
 }
 
 async function addUserStation(user,station) {
-   
-    const updatedStation = station._id? await httpService.put(`user/${user._id}/station/${station._id}`, station) : await httpService.post(`user/${user._id}/station`, station)
-    user.stations? user.stations.unshift(updatedStation) : user.stations=[updatedStation]
+
+    console.log(user,station)
+   try{
+    const updatedStation  = await httpService.post(`user/${user._id}/station`, station)
+    user.stations ? user.stations.unshift(updatedStation) : user.stations=[updatedStation]
    if (getLoggedinUser()._id === user._id) saveLocalUser(user)
+   console.log(user)
    return user
+   }
+   catch(err){
+    console.log(err)
+    throw err
+}
+}
+
+async function editUserStation(user,station) {
+
+   try{
+    const updatedStation = await httpService.put(`user/${user._id}/station/${station._id}`, station) 
+    console.log(updatedStation)
+    const idx = user.stations.findIndex(Station=>Station._id===station._id)
+    user.stations[idx]=updatedStation
+    if (getLoggedinUser()._id === user._id) saveLocalUser(user)
+   return user
+   }
+   catch(err){
+    console.log(err)
+    throw err
+}
 }
 
 async function removeUserStation(user,station) {
@@ -127,6 +154,32 @@ function getEmptyCredentials(email = '', imgUrl = "", username = '', password = 
         likedSongs,
         likedStations
     }
+}
+
+async function addUserLikedStation(user,station) {
+
+    console.log(user,station)
+   try{
+    const updatedStation  = await httpService.post(`user/${user._id}/liked-station`, station)
+    user.likedStations ? user.likedStations.unshift(updatedStation) : user.likedStations=[updatedStation]
+   if (getLoggedinUser()._id === user._id) saveLocalUser(user)
+   console.log(user)
+   return user
+   }
+   catch(err){
+    console.log(err)
+    throw err
+}
+}
+
+async function removeUserLikedStation(user,station) {
+  
+   const DeletedStationId = await httpService.delete(`user/${user._id}/liked-station/${station._id}`, station)
+   const idx = user.likedStations.findIndex(station=>station._id===DeletedStationId)
+   user.likedStations.splice(idx,1)
+
+   if (getLoggedinUser()._id === user._id) saveLocalUser(user)
+   return user
 }
 
 

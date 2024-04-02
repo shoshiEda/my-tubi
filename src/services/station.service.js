@@ -23,7 +23,7 @@ export const stationService = {
 
 async function query(type = '') {
  
-    return httpService.get(BASE_URL, type)
+    return httpService.get(BASE_URL, {type})
 }
 
 async function get(stationId) {

@@ -170,10 +170,7 @@ export function MediaPlayer() {
     function setFullScreen(){
         if(song)
         setIsFullScreen(true)
-    }
-
-    console.log(isFullScreen,(!isComputer && !isFullScreen))
-    
+    }    
     
 
     const {imgUrl,name,artist,trackId} = song

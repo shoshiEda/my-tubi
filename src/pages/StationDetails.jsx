@@ -12,9 +12,9 @@ import play from '../assets/img/icons/play.svg'
 import pause from '../assets/img/icons/pause.svg'
 import likedCover from '../assets/img/pics/liked-cover.png'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
-import { editUser,setLikedSongs } from '../store/user.actions'
+import { setUserLikedStations,setLikedSongs } from '../store/user.actions'
 import { useNavigate } from "react-router-dom"
-import { saveStation,setCurrStation,saveSongOnStation,removeSongOnStation } from '../store/station.actions'
+import { saveSongOnStation,removeSongOnStation } from '../store/station.actions'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { stationService } from '../services/station.service.js'
 import { FullHeart } from '../services/icons.service.jsx'
@@ -26,15 +26,17 @@ import { Heart } from '../services/icons.service.jsx'
 
 export function StationDetails() {
     const user = useSelector(storeState => storeState.userModule.user) || null
-    const currStation = useSelector(storeState => storeState.stationModule.currStation) || null
     const currSong = useSelector(storeState => storeState.systemModule.currSong)
     const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
     const isComputer = useSelector(storeState => storeState.systemModule.isComputer)
 
+    const [currStation, setCurrStation] = useState(null)
+
+
     const { id } = useParams()
     const [isEdit, setIsEdit] = useState(false)
-    const idx =  user? user.stations.findIndex(station => station._id === id) :-1
+    const idx =  user && user.stations &&user.stations.length? user.stations.findIndex(station => station._id === id) :-1
     const isUserStation = (idx===-1 && id!=='liked')? false:true
     const LikedIdx = (user && user.likedStations)? user.likedStations.findIndex(station => station._id===id) :0
     const isUserLikedAlbum = (!isUserStation && LikedIdx!==-1)? true : false
@@ -46,8 +48,8 @@ export function StationDetails() {
     const navigate = useNavigate()
 
 
-
     useEffect(() => {
+        console.log('useEfect')
         onLoadStation()
     }, [id,user])
 
@@ -97,14 +99,13 @@ export function StationDetails() {
 
 
     async function  saveSongInAlbum(song,station){
-        const updatedStation = { ...station }
-        updatedStation.songs? updatedStation.songs.push(song) : updatedStation.songs=[(song)]
         try{
-            await saveStation(updatedStation)
+            await saveSongOnStation(station,song)
             setOpenModal({isOpen:false,idx:-1})
+       }
+       catch (err) { console.log(err) }         
         }
-        catch (err) { console.log(err) }
-    }
+    
 
     function setAlbumPlay(){
         if(!isStationFirstTimePlaying && currStation._id===currPlayingStation._id){
@@ -130,9 +131,9 @@ export function StationDetails() {
     async function setLikedAlbum(){
         if(!user) return 
         isUserLikedAlbum?       
-        editUser(user,'likedStations',currStation,false)
+        setUserLikedStations(currStation,false)
         :
-        editUser(user,'likedStations',currStation,true)
+        setUserLikedStations(currStation,true)
         navigate('/station/'+id)
     }
 
@@ -174,7 +175,6 @@ async function onSetPlay(song,station=null){
     if (!currStation || !Object.keys(currStation).length || (currStation._id!==id)) return (isComputer? <div>Loading...</div> : <div><Loading/></div>)
 
     const { imgUrl, type, createdBy, name, songs, description } = currStation
-    console.log(currStation)
 
     const amount = songs?.length || ''
 

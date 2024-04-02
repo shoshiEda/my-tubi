@@ -50,7 +50,7 @@ export function stationReducer(state = intialState, action = {}) {
     }
 
      // For debug:
-     window.userState = state
-    console.log('State:', state)
+     //window.userState = state
+    //console.log('State:', state)
     return state
 }

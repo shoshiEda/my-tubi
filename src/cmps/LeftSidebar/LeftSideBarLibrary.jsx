@@ -31,6 +31,7 @@ export function LeftSideBarLibrary() {
     const [isEdit, setIsEdit] =useState(false)
     const [selectedIdx, setSelectedIdx] = useState(null);
 
+    console.log(user,userStations)
 
     useEffect(() => {
         if (user) {
@@ -50,10 +51,10 @@ export function LeftSideBarLibrary() {
    
 
     function setStations(){
-        if(!user || (!user.stations && !user.likedStations)) return []
-        if(user.stations && !user.likedStations) return user.stations
-        if(!user.stations && !user.likedStations) return user.likedStations
-        if(user.stations && user.likedStations) return [...user.stations, ...user.likedStations]
+        if(!user || (!user.stations.length && !user.likedStations.length)) return []
+        if(user.stations.length && !user.likedStations.length) return user.stations
+        if(!user.stations.length && !user.likedStations.length) return user.likedStations
+        if(user.stations.length && user.likedStations.length) return [...user.stations, ...user.likedStations]
     }  
 
     async function onRemoveStation( station) {

@@ -17,6 +17,7 @@ import pause from '../assets/img/icons/pause.svg'
 
 
 export function HomePage() {
+    const user = useSelector(storeState => storeState.userModule.user)
     const stationTypes = useSelector(storeState => storeState.stationModule.stationTypes)
     const currPlayingStation = useSelector(storeState => storeState.systemModule.currStation)
     const isPlay = useSelector(storeState => storeState.systemModule.isPlay) 
@@ -26,12 +27,13 @@ export function HomePage() {
 
 
     useBackgroundFromImage()
+    console.log(stations)
 
     
 
     useEffect(() => {
-        //onLoadStations()
-    }, [])
+        onLoadStations()
+    }, [user])
 
     async function onLoadStations(){
         try{ 

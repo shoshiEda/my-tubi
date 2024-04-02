@@ -58,7 +58,7 @@ export function StationsOfType(){
         }
         setIsStationPlaying(!isStationPlaying)
     }
-    if (!stations) return <div><Loading/></div>
+    if (!stations) return isComputer?<div>Loading...</div>:<div><Loading/></div>
     return (
         <section>
             <h3>{type}</h3>

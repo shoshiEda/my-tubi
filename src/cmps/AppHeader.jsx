@@ -19,7 +19,7 @@ export function AppHeader() {
 
     const navigate = useNavigate()
 
-    console.log('render:',user)
+    //console.log('render:',user)
 
     
     async function navigateTo(diff)

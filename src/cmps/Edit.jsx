@@ -67,7 +67,6 @@ export function Edit({ entity ={} ,setEntity,setIsEdit,entityType}) {
         else{
           await editUserStations(newUpdatedAlbum)
       }
-      console.log(user)
         setIsEdit(false)  
     }
     catch(err){

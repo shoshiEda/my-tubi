@@ -20,9 +20,6 @@ export async function loadStations(filterSortBy = '') {
 
 }
 
-export function setCurrStation(station) {
-    store.dispatch({ type: SET_CURR_STATION, station })
-}
 
 export async function setUserStations(stations) {
 
@@ -87,7 +84,6 @@ export async function saveStation(station) {
 
     try {
         const savedStation = await stationService.save(station)
-        console.log(savedStation)
         store.dispatch({ type: type, station: savedStation })
         return savedStation
     }

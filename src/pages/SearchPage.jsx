@@ -4,9 +4,9 @@ import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router"
 import { useSelector } from 'react-redux'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
-import { editUser,setLikedSongs } from '../store/user.actions'
+import { setLikedSongs } from '../store/user.actions'
 import { Edit } from '../cmps/Edit.jsx'
-import { saveStation } from '../store/station.actions'
+import { saveSongOnStation } from '../store/station.actions'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { FullHeart } from '../services/icons.service.jsx'
 import { Heart } from '../services/icons.service.jsx'
@@ -57,7 +57,6 @@ export function SearchPage() {
 
     function isSongLiked(song){
         const index = user.likedSongs.findIndex(Song=>Song.trackId===song.trackId)
-        console.log(index)
         return index === -1 ? false : true
     }
 
@@ -114,21 +113,13 @@ export function SearchPage() {
 
 
     async function saveSongInAlbum(currStation,song){
-        const updatedStation = { ...currStation }
-        updatedStation.songs? updatedStation.songs.push(song) : updatedStation.songs=[(song)]
         try{
-            await saveStation(updatedStation)
-            const idx = user.stations.findIndex(station => station._id===updatedStation._id)
-            if(idx!==-1)
-            {
-                user.stations[idx]=updatedStation
-                await editUser(user)
-            }
+            await saveSongOnStation(currStation,song)
             setOpenModal({isOpen:false,idx:-1})
-            navigate('/search/'+params.searchTerm)
+       }
+       catch (err) { console.log(err) }         
         }
-        catch (err) { console.log(err) }
-    }
+    
 
    
      if(searchList && !searchList.length)  return <h3>There are no results</h3>

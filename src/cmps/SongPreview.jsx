@@ -20,7 +20,6 @@ export function SongPreview({id,song,idx , onRemoveSong, isUserStation, openModa
     const index = user? user.likedSongs.findIndex(Song=>Song.trackId===song.trackId) : -1
     const isSongLiked=index === -1 ? false : true
     
-    console.log(isUserStation)
 
     return (
         <li key={idx} className="station-details-list"
