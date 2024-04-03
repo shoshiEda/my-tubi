@@ -6,6 +6,8 @@ import { Edit } from '../cmps/Edit.jsx'
 import { Loading } from '../cmps/Loading.jsx'
 import { Playlist } from "../cmps/Playlist"
 import { SearchStation } from '../cmps/SearchStation.jsx'
+import { showSuccessMsg } from '../services/event-bus.service.js'
+
 import notes from '../assets/img/icons/notes.svg'
 import dot from '../assets/img/icons/dot.svg'
 import play from '../assets/img/icons/play.svg'
@@ -90,11 +92,17 @@ export function StationDetails() {
         return stationService.getStationDuration(currStation.songs)
     }
 
-    async function setIsLiked(song,action){
-        try{
-            setLikedSongs(song,action)
+    async function setIsLiked(song, action) {
+        try {
+            await setLikedSongs(song, action);
+            if (!isComputer && action) {
+                showSuccessMsg('The song successfully added to your liked songs');
+            } else if (!isComputer && !action)  {
+                showSuccessMsg('The song successfully removed from your liked songs');
+            }
+        } catch (err) {
+            console.log(err);
         }
-        catch (err) { console.log(err) }
     }
 
 
@@ -102,6 +110,7 @@ export function StationDetails() {
         try{
             await saveSongOnStation(station,song)
             setOpenModal({isOpen:false,idx:-1})
+            showSuccessMsg(`The song successfully was addae to the album:${station.name}`)
        }
        catch (err) { console.log(err) }         
         }
@@ -130,11 +139,17 @@ export function StationDetails() {
 
     async function setLikedAlbum(){
         if(!user) return 
-        isUserLikedAlbum?       
-        setUserLikedStations(currStation,false)
-        :
-        setUserLikedStations(currStation,true)
-        navigate('/station/'+id)
+        try{
+            if(isUserLikedAlbum){
+                await setUserLikedStations(currStation,false)
+                showSuccessMsg('The album successfully removed from your liked albums');
+            }       
+            else{
+                await setUserLikedStations(currStation,true)
+                showSuccessMsg('The album successfully added to your liked albums');
+            }
+        }
+        catch (err) { console.log(err) }         
     }
 
     

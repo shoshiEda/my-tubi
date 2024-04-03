@@ -42,6 +42,7 @@ export async function setUserStations(stations) {
 
 export async function loadStation(stationId) {
     
+    
     try {
         let station = await stationService.get(stationId)
         store.dispatch({ type: SET_CURR_STATION, station })

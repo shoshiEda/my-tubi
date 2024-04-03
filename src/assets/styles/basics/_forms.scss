@@ -21,4 +21,19 @@ button {
     color: $clr5;
 }
 
+.user-msg{
+    position: absolute;
+    background-color: $clr11;
+    color:$clr5;
+    font-weight: bold;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 5;
+
+    .error{
+        background-color: $clr15;
+    }
+}
 

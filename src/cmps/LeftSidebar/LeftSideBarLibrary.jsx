@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { Edit} from '../Edit.jsx'
 
-import {  setUserStations } from "../../store/user.actions.js"
+import {  setUserStations,setUserLikedStations } from "../../store/user.actions.js"
 //import { stationService } from "../../services/station.service"
 import { editUser } from "../../store/user.actions.js"
 
@@ -31,14 +31,21 @@ export function LeftSideBarLibrary() {
     const [isEdit, setIsEdit] =useState(false)
     const [selectedIdx, setSelectedIdx] = useState(null);
 
-    console.log(user,userStations)
+    console.log(userStations)
+
+
+    useEffect(() => {
+        if (user) {
+        FilterList()
+        }
+    }, [filterSort.txt, filterSort.sortBy]);
 
     useEffect(() => {
         if (user) {
         FilterList()
         setUserStationss(setStations())
         }
-    }, [filterSort.txt, filterSort.sortBy,user]);
+    }, [user]);
 
     const handleClick = (idx) => {
         if (selectedIdx === idx) {
@@ -60,7 +67,7 @@ export function LeftSideBarLibrary() {
     async function onRemoveStation( station) {
         const type = station.createdBy._id===user._id? 'stations' : 'likedStations'
         try {           
-            type ==='stations'? await setUserStations(station,false):''
+            type ==='stations'? await setUserStations(station,false):await setUserLikedStations(station,false)
         }
         catch (err) { console.log(user.stations) }
 
@@ -77,7 +84,6 @@ export function LeftSideBarLibrary() {
 
     function submitFilter(ev){
         ev.preventDefault()
-        console.log(filterSort)
         FilterList()
     }
 
@@ -86,15 +92,18 @@ export function LeftSideBarLibrary() {
     
 
     function FilterList() {
-        console.log('filter')
+        if(filterSort.txt==='')
+        {
+            console.log('hi')
+            setUserStationss(setStations())
+            return
+        }
         const regex = new RegExp(filterSort.txt, 'i')
         let newList = userStations.filter(station => regex.test(station.name || station.createdBy.username));
-
          if (filterSort.sortBy === 'name') newList.sort((stationA, stationB) => stationA.name.localeCompare(stationB.name))
         else if (filterSort.sortBy === 'by') newList.sort((stationA, stationB) => stationA.createdBy.username.localeCompare(stationB.createdBy.username))
         else if (filterSort.sortBy === 'createdAt') newList.sort((stationA, stationB) => stationA.createdAt - stationB.createdAt)
         setUserStationss(newList)
-
     }
 
     if (!user ) return <div className='no-user-msg'>In order to save <br/> your own albums<br/> please log in</div>
@@ -160,7 +169,7 @@ export function LeftSideBarLibrary() {
                                     <div className='album-info flex  column'>
   
                                         <p>{station.name}</p>
-                                        <p className='flex align-center'>by:{station.createdBy.username}</p>
+                                        <p className='flex align-center'>{station.createdBy.username}</p>
                                         </div>
                                         </div>
                                         </Link>

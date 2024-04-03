@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import { useBackgroundFromImage } from "../cmps/CustomHooks/useBackgroundFromImage"
 import { setLikedSongs } from '../store/user.actions'
 import { Edit } from '../cmps/Edit.jsx'
+import { showSuccessMsg } from '../services/event-bus.service.js'
 import { saveSongOnStation } from '../store/station.actions'
 import { setCurrPlaying,setPlay } from '../store/system.actions'
 import { FullHeart } from '../services/icons.service.jsx'
@@ -81,10 +82,17 @@ export function SearchPage() {
     async function setIsLiked(idx,isLiked){
         const updatedSong = searchList[idx]
         try{ 
-            isLiked?       
-            await setLikedSongs(updatedSong,false)
-            :
-            await setLikedSongs(updatedSong)   
+            if(isLiked)     
+            {
+                await setLikedSongs(updatedSong,false)
+                isComputer? '':showSuccessMsg('The song successfully added to your liked songs')
+            }
+            else
+            {
+                await setLikedSongs(updatedSong)
+                isComputer? '':showSuccessMsg('The song successfully removed from your liked songs')
+
+            }  
         }
         catch (error) {console.log(error)}
     }
@@ -116,6 +124,7 @@ export function SearchPage() {
         try{
             await saveSongOnStation(currStation,song)
             setOpenModal({isOpen:false,idx:-1})
+            showSuccessMsg(`The song successfully added to the album: ${currStation.name}`)
        }
        catch (err) { console.log(err) }         
         }
@@ -139,9 +148,9 @@ export function SearchPage() {
             }
             {searchList &&
 
-                <div className='search-hero grid'>
+                <div className={isComputer? 'search-hero grid' :'search-hero'}>
                     <div>
-                        <h2 className="section-title">Top result</h2>
+                        <h2 className="section-title top">Top result</h2>
                     </div>
                     <div className='top-result-section'>
                         <div className='image-container'>

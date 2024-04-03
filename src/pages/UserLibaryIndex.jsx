@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { Edit} from '../cmps/Edit.jsx'
-import { editUser } from "../store/user.actions.js"
+import {setUserStations,setUserLikedStations} from '../store/user.actions.js'
 
 import Delete from "../assets/img/icons/delete.svg"
 import Plus from "../assets/img/icons/plus.svg"
@@ -18,82 +18,88 @@ import LikedCover from '../assets/img/pics/liked-cover.png'
 
 
 export function UserLibaryIndex() {
- 
-    const user = useSelector(storeState => storeState.userModule.user)
-    const [filterSort, setFilterSort] = useState({ txt: '', sortBy: '' })
-    const [showSearch, setShowSearch] = useState(false)
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [userStations, setUserStations] = useState(user? [...user.stations, ...user.likedStations]: [])
-    const [isEdit, setIsEdit] =useState(false)
-    const [selectedIdx, setSelectedIdx] = useState(null);
-
-
-   
-
-    useEffect(() => {
-        if (user) {
+        const user = useSelector(storeState => storeState.userModule.user)
+    
+        const [filterSort, setFilterSort] = useState({ txt: '', sortBy: '' })
+        const [showSearch, setShowSearch] = useState(false)
+        const [isModalOpen, setIsModalOpen] = useState(false)
+        const [userStations, setUserStationss] = useState(setStations())
+        const [isEdit, setIsEdit] =useState(false)
+        const [selectedIdx, setSelectedIdx] = useState(null);
+    
+        console.log(user,userStations)
+    
+        useEffect(() => {
+            if (user) {
             FilterList()
+            setUserStationss(setStations())
             }
-    }, [user]);
-
-
-    useEffect(() => {
-        if (user) {
-        FilterList()
-        }
-    }, [filterSort.txt, filterSort.sortBy, user?.stations, user?.likedStations]);
-
-    const handleClick = (idx) => {
-        if (selectedIdx === idx) {
-          setSelectedIdx(null);
-        } else {
-          setSelectedIdx(idx);
-        }
-      }
-
-   
-
-    async function onRemoveStation( station) {
-        const type = station.createdBy===user.username? 'stations' : 'likedStations'
-        try {           
-            await editUser(user,type,station,false)
-        }
-        catch (err) { console.log(user.stations) }
-
-    }
-
-    function setSort(value){
-        setFilterSort(prev => ({ ...prev, sortBy: value }))
-        FilterList()
-    }
-
-    function handleChange({ target }) {   
-        setFilterSort(prev => ({ ...prev, txt: target.value }))
-    }
-
-    function submitFilter(ev){
-        ev.preventDefault()
-        console.log(filterSort)
-        FilterList()
-    }
-
+        }, [filterSort.txt, filterSort.sortBy,user]);
     
-
+        const handleClick = (idx) => {
+            if (selectedIdx === idx) {
+              setSelectedIdx(null);
+            } else {
+              setSelectedIdx(idx);
+            }
+          }
     
-
-    function FilterList() {
-        const regex = new RegExp(filterSort.txt, 'i')
-        let newList = [...user.stations, ...user.likedStations].filter(station => regex.test(station.name || station.createdBy));
-
-         if (filterSort.sortBy === 'name') newList.sort((stationA, stationB) => stationA.name.localeCompare(stationB.name))
-        else if (filterSort.sortBy === 'by') newList.sort((stationA, stationB) => stationA.createdBy.localeCompare(stationB.createdBy))
-        else if (filterSort.sortBy === 'createdAt') newList.sort((stationA, stationB) => stationA.createdAt - stationB.createdAt)
-        setUserStations(newList)
-
-    }
-
-    //if (!user ) return <div className='no-user-msg'>In order to save <br/> your own albums<br/> please log in</div>
-    return (
+       
+    
+        function setStations(){
+            if(!user || (!user.stations.length && !user.likedStations.length)) return []
+            if(user.stations.length && !user.likedStations.length) return user.stations
+            if(!user.stations.length && !user.likedStations.length) return user.likedStations
+            if(user.stations.length && user.likedStations.length) return [...user.stations, ...user.likedStations]
+        }  
+    
+        async function onRemoveStation(e,station) {
+            e.preventDefault()            
+            const type = station.createdBy._id === user._id ? 'stations' : 'likedStations';
+            try {
+                if (type === 'stations') {
+                    await setUserStations(station, false);
+                } else {
+                    await setUserLikedStations(station, false);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    
+        function setSort(value){
+            setFilterSort(prev => ({ ...prev, sortBy: value }))
+            FilterList()
+        }
+    
+        function handleChange({ target }) {   
+            setFilterSort(prev => ({ ...prev, txt: target.value }))
+        }
+    
+        function submitFilter(ev){
+            ev.preventDefault()
+            console.log(filterSort)
+            FilterList()
+        }
+    
+        
+    
+        
+    
+        function FilterList() {
+            console.log('filter')
+            const regex = new RegExp(filterSort.txt, 'i')
+            let newList = userStations.filter(station => regex.test(station.name || station.createdBy.username));
+    
+             if (filterSort.sortBy === 'name') newList.sort((stationA, stationB) => stationA.name.localeCompare(stationB.name))
+            else if (filterSort.sortBy === 'by') newList.sort((stationA, stationB) => stationA.createdBy.username.localeCompare(stationB.createdBy.username))
+            else if (filterSort.sortBy === 'createdAt') newList.sort((stationA, stationB) => stationA.createdAt - stationB.createdAt)
+            setUserStationss(newList)
+    
+        }
+    
+        if (!user ) return <div className='no-user-msg-for-cell'>In order to save <br/> your own albums<br/> please log in</div>
+        return (
     <div className="side-bar-main-content library-for-cell" >
 
             <section className="creation-and-toggle flex align-center justify-between">
@@ -154,11 +160,11 @@ export function UserLibaryIndex() {
                                     <div className='album-info flex  column'>
   
                                         <p>{station.name}</p>
-                                        <p className='flex align-center'>by:{station.createdBy}</p>
+                                        <p className='flex align-center'>{station.createdBy.username}</p>
                                         </div>
                                         </div>
                                         
-                                        <button onClick={(ev) => onRemoveStation(station)}><img className='svg delete' src={Delete}></img></button>
+                                        <button onClick={(ev) => onRemoveStation(ev,station)}><img className='svg delete' src={Delete}></img></button>
                                 </li>
                                 </Link>
                             

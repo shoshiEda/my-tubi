@@ -284,6 +284,14 @@
 }
 
 .for-cell{
+    .top-result-section{
+        display: none;
+    }
+
+    .section-title.top{
+        display: none;
+    }
+
     .search-hero .results-section .search-result-list .single-song-result .duration-add .add-button{
         opacity: 1;
     }

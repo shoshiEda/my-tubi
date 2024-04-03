@@ -1,5 +1,7 @@
 export const SHOW_MSG = 'show-msg'
 
+export const eventBus = createEventEmitter()
+
 function createEventEmitter() {
     const listenersMap = {}
     return {
@@ -14,9 +16,9 @@ function createEventEmitter() {
             listenersMap[evName].forEach(listener => listener(data))
         }
     }
+
 }
 
-export const eventBus = createEventEmitter()
 
 export function showUserMsg(msg) {
     eventBus.emit(SHOW_MSG, msg)
